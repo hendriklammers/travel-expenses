@@ -2,4 +2,5 @@ module Messages exposing (Msg(..))
 
 
 type Msg
-    = NoOp
+    = AddAmount
+    | UpdateAmount String
