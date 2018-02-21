@@ -1,35 +1,53 @@
 module Model exposing (Model, initial, update)
 
 import Messages exposing (Msg(..))
+import Types exposing (Category)
 
 
 type alias Model =
     { amount : Float
-    , category : Category
+    , category : Maybe Category
     , categories : List Category
     }
 
 
-type alias Category =
-    { id : Int
-    , name : String
-    }
+categories : List Category
+categories =
+    [ { id = 0
+      , name = "Food & Drink"
+      }
+    , { id = 1
+      , name = "Accomodation"
+      }
+    , { id = 2
+      , name = "Transportation"
+      }
+    , { id = 3
+      , name = "Shopping"
+      }
+    , { id = 4
+      , name = "Trips & Attractions"
+      }
+    , { id = 5
+      , name = "Other"
+      }
+    ]
 
 
 initial : Model
 initial =
     { amount = 0
-    , category =
-        { id = 0
-        , name = "Other"
-        }
-    , categories = []
+    , category = List.head categories
+    , categories = categories
     }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        NoOp ->
+            model ! []
+
         UpdateAmount value ->
             let
                 amount =
@@ -44,3 +62,6 @@ update msg model =
 
         AddAmount ->
             model ! []
+
+        SelectCategory category ->
+            { model | category = Just category } ! []
