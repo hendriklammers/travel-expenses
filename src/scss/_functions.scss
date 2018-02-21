@@ -1,0 +1,8 @@
+$base: 16px;
+@function rem($pixels) {
+  @if (unitless($pixels)) {
+    $pixels: $pixels * 1px;
+  }
+
+  @return $pixels / $base * 1rem;
+}
