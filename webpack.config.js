@@ -47,7 +47,7 @@ module.exports = {
             options: {
               verbose: true,
               warn: true,
-              debug: false
+              debug: true
             }
           }
         ]
