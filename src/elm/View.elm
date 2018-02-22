@@ -59,7 +59,10 @@ viewCategories { category, categories } =
 view : Model -> Html Msg
 view model =
     form
-        [ onSubmit AddExpense ]
+        [ onSubmit Submit
+        , H.method "post"
+        , H.action ""
+        ]
         [ viewCurrency model
         , viewCategories model
         , input

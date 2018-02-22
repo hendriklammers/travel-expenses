@@ -1,5 +1,7 @@
 module Model exposing (Model, initial, update)
 
+import Task
+import Date
 import Dict exposing (Dict)
 import Messages exposing (Msg(..))
 import Types exposing (Category, Expense, Currency)
@@ -100,12 +102,16 @@ update msg model =
             in
                 { model | amount = amount } ! []
 
-        AddExpense ->
+        Submit ->
+            ( model, Task.perform ReceiveDate Date.now )
+
+        ReceiveDate date ->
             let
                 expense =
                     { category = model.category
                     , amount = model.amount
                     , currency = model.currency
+                    , date = date
                     }
             in
                 { model | expenses = expense :: model.expenses } ! []

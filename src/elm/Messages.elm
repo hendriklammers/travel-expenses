@@ -1,10 +1,12 @@
 module Messages exposing (Msg(..))
 
+import Date exposing (Date)
 import Types exposing (Category)
 
 
 type Msg
-    = AddExpense
-    | UpdateAmount String
+    = UpdateAmount String
     | SelectCategory Category
     | SelectCurrency String
+    | Submit
+    | ReceiveDate Date

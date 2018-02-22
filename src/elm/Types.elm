@@ -19,8 +19,8 @@ type alias Expense =
     { category : Category
     , amount : Float
     , currency : Currency
+    , date : Date
 
-    -- , date : Date
     -- , id : Int
     -- , location : Location
     }
