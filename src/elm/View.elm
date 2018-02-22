@@ -17,23 +17,33 @@ import Types exposing (Category)
 import Messages exposing (Msg(..))
 
 
-viewCategory : Category -> Html Msg
-viewCategory { id, name } =
-    label []
-        [ input
-            [ H.type_ "radio"
-            , H.name "category"
-            , onClick NoOp
+viewCategory : Maybe Category -> Category -> Html Msg
+viewCategory active category =
+    let
+        checked =
+            case active of
+                Just current ->
+                    current == category
+
+                Nothing ->
+                    False
+    in
+        label []
+            [ input
+                [ H.type_ "radio"
+                , H.name "category"
+                , H.checked checked
+                , onClick (SelectCategory category)
+                ]
+                []
+            , text category.name
             ]
-            []
-        , text name
-        ]
 
 
-viewCategories : List Category -> Html Msg
-viewCategories categories =
+viewCategories : Model -> Html Msg
+viewCategories { category, categories } =
     fieldset []
-        (List.map viewCategory categories)
+        (List.map (viewCategory category) categories)
 
 
 view : Model -> Html Msg
@@ -42,7 +52,7 @@ view model =
         [ H.action ""
         , H.method "post"
         ]
-        [ viewCategories model.categories
+        [ viewCategories model
         , input
             [ H.type_ "number"
             , H.placeholder "Amount"
@@ -53,6 +63,6 @@ view model =
             ]
             []
         , button
-            [ H.type_ "submit", onClick AddAmount ]
+            [ H.type_ "submit", onClick AddExpense ]
             [ text "Add" ]
         ]

@@ -4,7 +4,6 @@ import Types exposing (Category)
 
 
 type Msg
-    = AddAmount
-    | NoOp
+    = AddExpense
     | UpdateAmount String
     | SelectCategory Category

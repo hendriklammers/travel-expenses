@@ -1,13 +1,14 @@
 module Model exposing (Model, initial, update)
 
 import Messages exposing (Msg(..))
-import Types exposing (Category)
+import Types exposing (Category, Expense)
 
 
 type alias Model =
     { amount : Float
     , category : Maybe Category
     , categories : List Category
+    , expenses : List Expense
     }
 
 
@@ -39,15 +40,13 @@ initial =
     { amount = 0
     , category = List.head categories
     , categories = categories
+    , expenses = []
     }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
-            model ! []
-
         UpdateAmount value ->
             let
                 amount =
@@ -60,7 +59,7 @@ update msg model =
             in
                 { model | amount = amount } ! []
 
-        AddAmount ->
+        AddExpense ->
             model ! []
 
         SelectCategory category ->
