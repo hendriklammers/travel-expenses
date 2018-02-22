@@ -7,11 +7,12 @@ import Types exposing (Category, Expense, Currency)
 
 type alias Model =
     { amount : Float
-    , category : Maybe Category
+    , category : Category
     , categories : List Category
-    , currency : Maybe Currency
+    , currency : Currency
     , currencies : Dict String Currency
     , expenses : List Expense
+    , error : String
     }
 
 
@@ -69,11 +70,18 @@ currencies =
 initial : Model
 initial =
     { amount = 0
-    , category = List.head categories
+    , category =
+        { id = 0
+        , name = "Food & Drink"
+        }
     , categories = categories
-    , currency = Dict.get "USD" currencies
+    , currency =
+        { code = "USD"
+        , name = "United States Dollar"
+        }
     , currencies = currencies
     , expenses = []
+    , error = ""
     }
 
 
@@ -93,14 +101,22 @@ update msg model =
                 { model | amount = amount } ! []
 
         AddExpense ->
-            model ! []
+            let
+                expense =
+                    { category = model.category
+                    , amount = model.amount
+                    , currency = model.currency
+                    }
+            in
+                { model | expenses = expense :: model.expenses } ! []
 
         SelectCategory category ->
-            { model | category = Just category } ! []
+            { model | category = category } ! []
 
         SelectCurrency selected ->
-            let
-                currency =
-                    Dict.get selected model.currencies
-            in
-                { model | currency = currency } ! []
+            case Dict.get selected model.currencies of
+                Just currency ->
+                    { model | currency = currency } ! []
+
+                Nothing ->
+                    model ! []

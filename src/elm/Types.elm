@@ -18,9 +18,9 @@ type alias Currency =
 type alias Expense =
     { category : Category
     , amount : Float
-    , currency : String
-    , date : Date
+    , currency : Currency
 
+    -- , date : Date
     -- , id : Int
     -- , location : Location
     }

@@ -14,28 +14,19 @@ import Html
         , option
         )
 import Html.Attributes as H
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (onClick, onInput, onSubmit)
 import Model exposing (Model)
 import Types exposing (Category, Currency)
 import Messages exposing (Msg(..))
 
 
-viewCurrencyOption : Maybe Currency -> Currency -> Html Msg
+viewCurrencyOption : Currency -> Currency -> Html Msg
 viewCurrencyOption active { code, name } =
-    let
-        selected =
-            case active of
-                Just current ->
-                    current.code == code
-
-                Nothing ->
-                    False
-    in
-        option
-            [ H.value code
-            , H.selected selected
-            ]
-            [ text (code ++ " - " ++ name) ]
+    option
+        [ H.value code
+        , H.selected (active.code == code)
+        ]
+        [ text (code ++ " - " ++ name) ]
 
 
 viewCurrency : Model -> Html Msg
@@ -45,27 +36,18 @@ viewCurrency { currencies, currency } =
         (List.map (viewCurrencyOption currency) (Dict.values currencies))
 
 
-viewCategory : Maybe Category -> Category -> Html Msg
+viewCategory : Category -> Category -> Html Msg
 viewCategory active category =
-    let
-        checked =
-            case active of
-                Just current ->
-                    current == category
-
-                Nothing ->
-                    False
-    in
-        label []
-            [ input
-                [ H.type_ "radio"
-                , H.name "category"
-                , H.checked checked
-                , onClick (SelectCategory category)
-                ]
-                []
-            , text category.name
+    label []
+        [ input
+            [ H.type_ "radio"
+            , H.name "category"
+            , H.checked (active == category)
+            , onClick (SelectCategory category)
             ]
+            []
+        , text category.name
+        ]
 
 
 viewCategories : Model -> Html Msg
@@ -77,9 +59,7 @@ viewCategories { category, categories } =
 view : Model -> Html Msg
 view model =
     form
-        [ H.action ""
-        , H.method "post"
-        ]
+        [ onSubmit AddExpense ]
         [ viewCurrency model
         , viewCategories model
         , input
@@ -92,6 +72,6 @@ view model =
             ]
             []
         , button
-            [ H.type_ "submit", onClick AddExpense ]
+            [ H.type_ "submit" ]
             [ text "Add" ]
         ]
