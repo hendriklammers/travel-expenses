@@ -7,3 +7,4 @@ type Msg
     = AddExpense
     | UpdateAmount String
     | SelectCategory Category
+    | SelectCurrency String

@@ -9,10 +9,18 @@ type alias Category =
     }
 
 
+type alias Currency =
+    { code : String
+    , name : String
+    }
+
+
 type alias Expense =
     { category : Category
     , amount : Float
     , currency : String
-    , id : Int
     , date : Date
+
+    -- , id : Int
+    -- , location : Location
     }

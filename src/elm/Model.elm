@@ -1,13 +1,16 @@
 module Model exposing (Model, initial, update)
 
+import Dict exposing (Dict)
 import Messages exposing (Msg(..))
-import Types exposing (Category, Expense)
+import Types exposing (Category, Expense, Currency)
 
 
 type alias Model =
     { amount : Float
     , category : Maybe Category
     , categories : List Category
+    , currency : Maybe Currency
+    , currencies : Dict String Currency
     , expenses : List Expense
     }
 
@@ -35,11 +38,41 @@ categories =
     ]
 
 
+
+-- Only the ones I currently use for now...
+
+
+currencies : Dict String Currency
+currencies =
+    Dict.fromList
+        (List.map
+            (\c -> ( c.code, c ))
+            [ { code = "USD"
+              , name = "United States Dollar"
+              }
+            , { code = "EUR"
+              , name = "Euro"
+              }
+            , { code = "THB"
+              , name = "Thai Baht"
+              }
+            , { code = "VND"
+              , name = "Vietnamese Dong"
+              }
+            , { code = "KHR"
+              , name = "Cambodian Riel"
+              }
+            ]
+        )
+
+
 initial : Model
 initial =
     { amount = 0
     , category = List.head categories
     , categories = categories
+    , currency = Dict.get "USD" currencies
+    , currencies = currencies
     , expenses = []
     }
 
@@ -64,3 +97,10 @@ update msg model =
 
         SelectCategory category ->
             { model | category = Just category } ! []
+
+        SelectCurrency selected ->
+            let
+                currency =
+                    Dict.get selected model.currencies
+            in
+                { model | currency = currency } ! []

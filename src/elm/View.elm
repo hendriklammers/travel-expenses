@@ -1,5 +1,6 @@
 module View exposing (view)
 
+import Dict
 import Html
     exposing
         ( Html
@@ -9,12 +10,39 @@ import Html
         , button
         , fieldset
         , label
+        , select
+        , option
         )
 import Html.Attributes as H
 import Html.Events exposing (onClick, onInput)
 import Model exposing (Model)
-import Types exposing (Category)
+import Types exposing (Category, Currency)
 import Messages exposing (Msg(..))
+
+
+viewCurrencyOption : Maybe Currency -> Currency -> Html Msg
+viewCurrencyOption active { code, name } =
+    let
+        selected =
+            case active of
+                Just current ->
+                    current.code == code
+
+                Nothing ->
+                    False
+    in
+        option
+            [ H.value code
+            , H.selected selected
+            ]
+            [ text (code ++ " - " ++ name) ]
+
+
+viewCurrency : Model -> Html Msg
+viewCurrency { currencies, currency } =
+    select
+        [ onInput SelectCurrency ]
+        (List.map (viewCurrencyOption currency) (Dict.values currencies))
 
 
 viewCategory : Maybe Category -> Category -> Html Msg
@@ -52,7 +80,8 @@ view model =
         [ H.action ""
         , H.method "post"
         ]
-        [ viewCategories model
+        [ viewCurrency model
+        , viewCategories model
         , input
             [ H.type_ "number"
             , H.placeholder "Amount"
