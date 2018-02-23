@@ -7,7 +7,6 @@ import Html
         , a
         , text
         , div
-        , section
         , input
         , nav
         , form
@@ -38,7 +37,10 @@ viewCurrency : Model -> Html Msg
 viewCurrency { currencies, currency } =
     div
         [ H.class "field" ]
-        [ div
+        [ label
+            [ H.class "label" ]
+            [ text "Currency" ]
+        , div
             [ H.class "control is-expanded" ]
             [ div
                 [ H.class "select is-fullwidth" ]
@@ -129,23 +131,26 @@ viewNavbar =
         ]
 
 
+viewForm : Model -> Html Msg
+viewForm model =
+    form
+        [ onSubmit Submit
+        , H.method "post"
+        , H.action ""
+        ]
+        [ viewCurrency model
+        , viewCategories model
+        , viewAmountInput model
+        , viewSubmitButton
+        ]
+
+
 view : Model -> Html Msg
 view model =
     div
         [ H.class "container-fluid" ]
         [ viewNavbar
-        , section
-            [ H.class "section" ]
-            [ form
-                [ onSubmit Submit
-                , H.class "container"
-                , H.method "post"
-                , H.action ""
-                ]
-                [ viewCurrency model
-                , viewCategories model
-                , viewAmountInput model
-                , viewSubmitButton
-                ]
-            ]
+        , div
+            [ H.class "column is-6 is-offset-3" ]
+            [ viewForm model ]
         ]
