@@ -36,14 +36,26 @@ viewCurrencyOption active { code, name } =
 
 viewCurrency : Model -> Html Msg
 viewCurrency { currencies, currency } =
-    select
-        [ onInput SelectCurrency ]
-        (List.map (viewCurrencyOption currency) (Dict.values currencies))
+    div
+        [ H.class "field" ]
+        [ div
+            [ H.class "control is-expanded" ]
+            [ div
+                [ H.class "select is-fullwidth" ]
+                [ select
+                    [ onInput SelectCurrency ]
+                    (List.map
+                        (viewCurrencyOption currency)
+                        (Dict.values currencies)
+                    )
+                ]
+            ]
+        ]
 
 
 viewCategory : Category -> Category -> Html Msg
 viewCategory active category =
-    label []
+    label [ H.class "radio" ]
         [ input
             [ H.type_ "radio"
             , H.name "category"
@@ -57,35 +69,45 @@ viewCategory active category =
 
 viewCategories : Model -> Html Msg
 viewCategories { category, categories } =
-    fieldset []
-        (List.map (viewCategory category) categories)
+    div [ H.class "field categories" ]
+        [ label
+            [ H.class "label" ]
+            [ text "Category" ]
+        , div
+            [ H.class "control" ]
+            (List.map (viewCategory category) categories)
+        ]
 
 
 viewAmountInput : Model -> Html Msg
 viewAmountInput model =
-    div
-        [ H.class "control" ]
-        [ input
-            [ H.type_ "number"
-            , H.placeholder "Amount"
-            , H.id "amount-input"
-            , H.class "input amount-input"
-            , H.step ".01"
-            , onInput UpdateAmount
+    div [ H.class "field" ]
+        [ div
+            [ H.class "control" ]
+            [ input
+                [ H.type_ "number"
+                , H.placeholder "Amount"
+                , H.id "amount-input"
+                , H.class "input amount-input"
+                , H.step ".01"
+                , onInput UpdateAmount
+                ]
+                []
             ]
-            []
         ]
 
 
 viewSubmitButton : Html Msg
 viewSubmitButton =
-    div
-        [ H.class "control" ]
-        [ button
-            [ H.type_ "submit"
-            , H.class "button is-primary is-large"
+    div [ H.class "field" ]
+        [ div
+            [ H.class "control" ]
+            [ button
+                [ H.type_ "submit"
+                , H.class "button is-primary is-medium is-fullwidth"
+                ]
+                [ text "Add" ]
             ]
-            [ text "Add" ]
         ]
 
 
@@ -112,10 +134,11 @@ view model =
     div
         [ H.class "container-fluid" ]
         [ viewNavbar
-        , div
-            [ H.class "container" ]
+        , section
+            [ H.class "section" ]
             [ form
                 [ onSubmit Submit
+                , H.class "container"
                 , H.method "post"
                 , H.action ""
                 ]

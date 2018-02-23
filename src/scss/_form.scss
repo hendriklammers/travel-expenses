@@ -1,0 +1,10 @@
+.categories {
+  .radio {
+    display: block;
+    margin: 0 0 rem(8) 0;
+  }
+
+  input[type="radio"] {
+    margin-right: rem(4);
+  }
+}
