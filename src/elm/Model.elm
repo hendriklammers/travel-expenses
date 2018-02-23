@@ -104,10 +104,7 @@ update msg model =
 
         Submit ->
             if model.amount <= 0 then
-                { model
-                    | error = Just "Please enter the amount of money spent"
-                }
-                    ! []
+                handleError model "Please enter the amount of money spent"
             else
                 ( model, Task.perform ReceiveDate Date.now )
 
@@ -131,7 +128,12 @@ update msg model =
                     { model | currency = currency } ! []
 
                 Nothing ->
-                    model ! []
+                    handleError model "Invalid currency selected"
 
         CloseError ->
             { model | error = Nothing } ! []
+
+
+handleError : Model -> String -> ( Model, Cmd Msg )
+handleError model message =
+    { model | error = Just message } ! []
