@@ -1,5 +1,6 @@
 const path = require('path')
 const autoprefixer = require('autoprefixer')
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 
 // TODO: Add production settings based on NODE_ENV
 module.exports = {
@@ -72,5 +73,17 @@ module.exports = {
     contentBase: __dirname + '/public',
     inline: true,
     port: 8000
-  }
+  },
+  plugins: [
+    new BrowserSyncPlugin(
+      {
+        host: 'localhost',
+        port: 3000,
+        proxy: 'http://localhost:8000/'
+      },
+      {
+        reload: false
+      }
+    )
+  ]
 }
