@@ -103,7 +103,13 @@ update msg model =
                 { model | amount = amount } ! []
 
         Submit ->
-            ( model, Task.perform ReceiveDate Date.now )
+            if model.amount <= 0 then
+                { model
+                    | error = Just "Please enter the amount of money spent"
+                }
+                    ! []
+            else
+                ( model, Task.perform ReceiveDate Date.now )
 
         ReceiveDate date ->
             let
