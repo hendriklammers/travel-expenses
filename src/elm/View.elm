@@ -57,7 +57,8 @@ viewCurrency { currencies, currency } =
 
 viewCategory : Category -> Category -> Html Msg
 viewCategory active category =
-    label [ H.class "radio" ]
+    label
+        [ H.class "radio" ]
         [ input
             [ H.type_ "radio"
             , H.name "category"
@@ -81,14 +82,17 @@ viewCategories { category, categories } =
         ]
 
 
-viewAmountInput : Model -> Html Msg
-viewAmountInput model =
+viewAmount : Model -> Html Msg
+viewAmount model =
     div [ H.class "field" ]
-        [ div
+        [ label
+            [ H.class "label" ]
+            [ text "Amount" ]
+        , div
             [ H.class "control" ]
             [ input
                 [ H.type_ "number"
-                , H.placeholder "Amount"
+                , H.placeholder "0.00"
                 , H.id "amount-input"
                 , H.class "input amount-input"
                 , H.step ".01"
@@ -138,9 +142,9 @@ viewForm model =
         , H.method "post"
         , H.action ""
         ]
-        [ viewCurrency model
+        [ viewAmount model
+        , viewCurrency model
         , viewCategories model
-        , viewAmountInput model
         , viewSubmitButton
         ]
 
@@ -151,6 +155,6 @@ view model =
         [ H.class "container-fluid" ]
         [ viewNavbar
         , div
-            [ H.class "column is-6 is-offset-3" ]
+            [ H.class "column is-half is-offset-one-quarter" ]
             [ viewForm model ]
         ]
