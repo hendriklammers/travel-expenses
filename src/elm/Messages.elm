@@ -10,3 +10,4 @@ type Msg
     | SelectCurrency String
     | Submit
     | ReceiveDate Date
+    | CloseError

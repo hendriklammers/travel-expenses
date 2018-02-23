@@ -5,9 +5,11 @@ import Html
     exposing
         ( Html
         , a
+        , article
         , text
         , div
         , input
+        , section
         , nav
         , form
         , button
@@ -137,24 +139,44 @@ viewNavbar =
 
 viewForm : Model -> Html Msg
 viewForm model =
-    form
-        [ onSubmit Submit
-        , H.method "post"
-        , H.action ""
+    section
+        [ H.class "section" ]
+        [ form
+            [ onSubmit Submit
+            , H.method "post"
+            , H.action ""
+            ]
+            [ viewAmount model
+            , viewCurrency model
+            , viewCategories model
+            , viewSubmitButton
+            ]
         ]
-        [ viewAmount model
-        , viewCurrency model
-        , viewCategories model
-        , viewSubmitButton
-        ]
+
+
+viewError : Maybe String -> Html Msg
+viewError message =
+    case message of
+        Just error ->
+            div
+                [ H.class "notification is-danger is-marginless is-radiusless" ]
+                [ button
+                    [ H.class "delete"
+                    , onClick CloseError
+                    ]
+                    []
+                , text error
+                ]
+
+        Nothing ->
+            text ""
 
 
 view : Model -> Html Msg
 view model =
     div
         [ H.class "container-fluid" ]
-        [ viewNavbar
-        , div
-            [ H.class "column is-half is-offset-one-quarter" ]
-            [ viewForm model ]
+        [ viewError model.error
+        , viewNavbar
+        , viewForm model
         ]

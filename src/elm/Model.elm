@@ -14,7 +14,7 @@ type alias Model =
     , currency : Currency
     , currencies : Dict String Currency
     , expenses : List Expense
-    , error : String
+    , error : Maybe String
     }
 
 
@@ -83,7 +83,7 @@ initial =
         }
     , currencies = currencies
     , expenses = []
-    , error = ""
+    , error = Nothing
     }
 
 
@@ -126,3 +126,6 @@ update msg model =
 
                 Nothing ->
                     model ! []
+
+        CloseError ->
+            { model | error = Nothing } ! []
