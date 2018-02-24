@@ -2,6 +2,7 @@ module Messages exposing (Msg(..))
 
 import Date exposing (Date)
 import Types exposing (Category)
+import Navigation exposing (Location)
 
 
 type Msg
@@ -12,3 +13,4 @@ type Msg
     | ReceiveDate Date
     | CloseError
     | ToggleMenu
+    | LocationChange Location

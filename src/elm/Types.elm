@@ -29,3 +29,12 @@ type alias Expense =
 type MenuState
     = MenuOpen
     | MenuClosed
+
+
+type Page
+    = InputPage
+    | OverviewPage
+
+
+type alias MenuItem =
+    ( String, Page )

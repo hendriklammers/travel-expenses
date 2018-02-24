@@ -4,7 +4,15 @@ import Task
 import Date
 import Dict exposing (Dict)
 import Messages exposing (Msg(..))
-import Types exposing (Category, Expense, Currency, MenuState(..))
+import Types
+    exposing
+        ( Category
+        , Expense
+        , Currency
+        , MenuState(..)
+        , Page(..)
+        )
+import Routing exposing (parseLocation)
 
 
 type alias Model =
@@ -15,6 +23,7 @@ type alias Model =
     , currencies : Dict String Currency
     , expenses : List Expense
     , error : Maybe String
+    , page : Page
     , menu : MenuState
     }
 
@@ -82,8 +91,8 @@ currenciesDict currencies =
         |> Dict.fromList
 
 
-initial : Model
-initial =
+initial : Page -> Model
+initial page =
     { amount = 0
     , category =
         { id = 0
@@ -97,6 +106,7 @@ initial =
     , currencies = currenciesDict currencies
     , expenses = []
     , error = Nothing
+    , page = page
     , menu = MenuClosed
     }
 
@@ -158,6 +168,9 @@ update msg model =
                             MenuOpen
             in
                 { model | menu = state } ! []
+
+        LocationChange location ->
+            { model | page = parseLocation location } ! []
 
 
 handleError : Model -> String -> ( Model, Cmd Msg )

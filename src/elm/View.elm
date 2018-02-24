@@ -24,7 +24,14 @@ import Html.Attributes as H
 import Html.Attributes.Aria as Aria
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Model exposing (Model)
-import Types exposing (Category, Currency, MenuState(..))
+import Types
+    exposing
+        ( Category
+        , Currency
+        , MenuState(..)
+        , Page(..)
+        , MenuItem
+        )
 import Messages exposing (Msg(..))
 
 
@@ -158,28 +165,44 @@ menuClass state =
             ""
 
 
+menuItems : List MenuItem
+menuItems =
+    [ ( "Input", InputPage )
+    , ( "Overview", OverviewPage )
+    ]
+
+
+viewMenuItem : Page -> MenuItem -> Html Msg
+viewMenuItem active ( label, page ) =
+    let
+        activeClass =
+            if active == page then
+                " is-active"
+            else
+                ""
+
+        href =
+            ("/#" ++ String.toLower label)
+    in
+        a
+            [ H.href href
+            , H.class ("navbar-item is-capitalized" ++ activeClass)
+            ]
+            [ text label ]
+
+
 viewMenu : Model -> Html Msg
-viewMenu { menu } =
+viewMenu { menu, page } =
     div
         [ H.class ("navbar-menu" ++ menuClass menu) ]
         [ div
             [ H.class "navbar-end" ]
-            [ a
-                [ H.href "/"
-                , H.class "navbar-item is-capitalized"
-                ]
-                [ text "Input" ]
-            , a
-                [ H.href "/overview"
-                , H.class "navbar-item is-capitalized"
-                ]
-                [ text "Overview" ]
-            ]
+            (List.map (viewMenuItem page) menuItems)
         ]
 
 
-viewForm : Model -> Html Msg
-viewForm model =
+viewInputPage : Model -> Html Msg
+viewInputPage model =
     section
         [ H.class "section" ]
         [ form
@@ -193,6 +216,23 @@ viewForm model =
             , viewSubmitButton
             ]
         ]
+
+
+viewOverviewPage : Model -> Html Msg
+viewOverviewPage model =
+    section
+        [ H.class "section" ]
+        [ text "Overview" ]
+
+
+viewPage : Model -> Html Msg
+viewPage model =
+    case model.page of
+        InputPage ->
+            viewInputPage model
+
+        OverviewPage ->
+            viewOverviewPage model
 
 
 viewError : Maybe String -> Html Msg
@@ -219,5 +259,5 @@ view model =
         [ H.class "container-fluid" ]
         [ viewError model.error
         , viewNavbar model
-        , viewForm model
+        , viewPage model
         ]
