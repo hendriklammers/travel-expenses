@@ -4,7 +4,7 @@ import Task
 import Date
 import Dict exposing (Dict)
 import Messages exposing (Msg(..))
-import Types exposing (Category, Expense, Currency)
+import Types exposing (Category, Expense, Currency, MenuState(..))
 
 
 type alias Model =
@@ -15,6 +15,7 @@ type alias Model =
     , currencies : Dict String Currency
     , expenses : List Expense
     , error : Maybe String
+    , menu : MenuState
     }
 
 
@@ -96,6 +97,7 @@ initial =
     , currencies = currenciesDict currencies
     , expenses = []
     , error = Nothing
+    , menu = MenuClosed
     }
 
 
@@ -144,6 +146,18 @@ update msg model =
 
         CloseError ->
             { model | error = Nothing } ! []
+
+        ToggleMenu ->
+            let
+                state =
+                    case model.menu of
+                        MenuOpen ->
+                            MenuClosed
+
+                        MenuClosed ->
+                            MenuOpen
+            in
+                { model | menu = state } ! []
 
 
 handleError : Model -> String -> ( Model, Cmd Msg )

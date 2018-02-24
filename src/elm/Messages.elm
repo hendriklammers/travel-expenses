@@ -11,3 +11,4 @@ type Msg
     | Submit
     | ReceiveDate Date
     | CloseError
+    | ToggleMenu

@@ -24,3 +24,8 @@ type alias Expense =
     -- , id : Int
     -- , location : Location
     }
+
+
+type MenuState
+    = MenuOpen
+    | MenuClosed

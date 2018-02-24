@@ -8,6 +8,7 @@ import Html
         , article
         , text
         , div
+        , span
         , input
         , section
         , nav
@@ -22,7 +23,7 @@ import Html.Attributes as H
 import Html.Attributes.Aria as Aria
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Model exposing (Model)
-import Types exposing (Category, Currency)
+import Types exposing (Category, Currency, MenuState(..))
 import Messages exposing (Msg(..))
 
 
@@ -119,20 +120,61 @@ viewSubmitButton =
         ]
 
 
-viewNavbar : Html Msg
-viewNavbar =
+viewNavbar : Model -> Html Msg
+viewNavbar model =
     nav
-        [ H.class "navbar is-dark has-shadow"
+        [ H.class "navbar is-dark"
         , Aria.role "navigation"
         , Aria.ariaLabel "main navigation"
         ]
         [ div
             [ H.class "navbar-brand" ]
+            -- [ a
+            --     [ H.href "/"
+            --     , H.class "navbar-item is-capitalized"
+            --     ]
+            --     [ text "Travel expenses" ]
+            [ viewBurger model
+            ]
+        , viewMenu model
+        ]
+
+
+viewBurger : Model -> Html Msg
+viewBurger { menu } =
+    div
+        [ H.class ("navbar-burger" ++ menuClass menu)
+        , onClick ToggleMenu
+        ]
+        (List.map (\_ -> span [] []) (List.range 0 2))
+
+
+menuClass : MenuState -> String
+menuClass state =
+    case state of
+        MenuOpen ->
+            " is-active"
+
+        MenuClosed ->
+            ""
+
+
+viewMenu : Model -> Html Msg
+viewMenu { menu } =
+    div
+        [ H.class ("navbar-menu" ++ menuClass menu) ]
+        [ div
+            [ H.class "navbar-end" ]
             [ a
                 [ H.href "/"
                 , H.class "navbar-item is-capitalized"
                 ]
-                [ text "Travel expenses" ]
+                [ text "Input" ]
+            , a
+                [ H.href "/overview"
+                , H.class "navbar-item is-capitalized"
+                ]
+                [ text "Overview" ]
             ]
         ]
 
@@ -177,6 +219,6 @@ view model =
     div
         [ H.class "container-fluid" ]
         [ viewError model.error
-        , viewNavbar
+        , viewNavbar model
         , viewForm model
         ]
