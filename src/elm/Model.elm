@@ -170,7 +170,7 @@ update msg model =
                 { model | menu = state } ! []
 
         LocationChange location ->
-            { model | page = parseLocation location } ! []
+            { model | page = parseLocation location, menu = MenuClosed } ! []
 
 
 handleError : Model -> String -> ( Model, Cmd Msg )
