@@ -3,7 +3,7 @@ module Main exposing (..)
 import Model exposing (Model)
 import Subscriptions exposing (subscriptions)
 import Messages exposing (Msg(..))
-import View exposing (view)
+import View.View exposing (view)
 import Navigation exposing (Location)
 import Routing exposing (parseLocation)
 
