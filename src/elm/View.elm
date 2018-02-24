@@ -10,6 +10,7 @@ import Html
         , div
         , span
         , input
+        , h1
         , section
         , nav
         , form
@@ -129,12 +130,10 @@ viewNavbar model =
         ]
         [ div
             [ H.class "navbar-brand" ]
-            -- [ a
-            --     [ H.href "/"
-            --     , H.class "navbar-item is-capitalized"
-            --     ]
-            --     [ text "Travel expenses" ]
-            [ viewBurger model
+            [ h1
+                [ H.class "navbar-item is-capitalized" ]
+                [ text "Travel expenses" ]
+            , viewBurger model
             ]
         , viewMenu model
         ]
