@@ -41,44 +41,44 @@ categories =
     ]
 
 
-
--- Only the ones I currently use for now...
-
-
-currencies : Dict String Currency
+currencies : List Currency
 currencies =
-    Dict.fromList
-        (List.map
-            (\c -> ( c.code, c ))
-            [ { code = "EUR"
-              , name = "Euro"
-              }
-            , { code = "IDR"
-              , name = "Indonesian Rupiah"
-              }
-            , { code = "KHR"
-              , name = "Cambodian Riel"
-              }
-            , { code = "LAK"
-              , name = "Laotian Kip"
-              }
-            , { code = "MYR"
-              , name = "Malaysian Ringgit"
-              }
-            , { code = "SGD"
-              , name = "Singapore Dollar"
-              }
-            , { code = "THB"
-              , name = "Thai Baht"
-              }
-            , { code = "USD"
-              , name = "United States Dollar"
-              }
-            , { code = "VND"
-              , name = "Vietnamese Dong"
-              }
-            ]
-        )
+    [ { code = "USD"
+      , name = "United States Dollar"
+      }
+    , { code = "EUR"
+      , name = "Euro"
+      }
+    , { code = "THB"
+      , name = "Thai Baht"
+      }
+    , { code = "VND"
+      , name = "Vietnamese Dong"
+      }
+    , { code = "KHR"
+      , name = "Cambodian Riel"
+      }
+    , { code = "LAK"
+      , name = "Laotian Kip"
+      }
+    , { code = "MYR"
+      , name = "Malaysian Ringgit"
+      }
+    , { code = "SGD"
+      , name = "Singapore Dollar"
+      }
+    , { code = "IDR"
+      , name = "Indonesian Rupiah"
+      }
+    ]
+
+
+currenciesDict : List Currency -> Dict String Currency
+currenciesDict currencies =
+    currencies
+        |> List.sortBy .code
+        |> List.map (\c -> ( c.code, c ))
+        |> Dict.fromList
 
 
 initial : Model
@@ -93,7 +93,7 @@ initial =
         { code = "USD"
         , name = "United States Dollar"
         }
-    , currencies = currencies
+    , currencies = currenciesDict currencies
     , expenses = []
     , error = Nothing
     }
