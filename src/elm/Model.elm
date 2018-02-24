@@ -50,20 +50,32 @@ currencies =
     Dict.fromList
         (List.map
             (\c -> ( c.code, c ))
-            [ { code = "USD"
-              , name = "United States Dollar"
-              }
-            , { code = "EUR"
+            [ { code = "EUR"
               , name = "Euro"
+              }
+            , { code = "IDR"
+              , name = "Indonesian Rupiah"
+              }
+            , { code = "KHR"
+              , name = "Cambodian Riel"
+              }
+            , { code = "LAK"
+              , name = "Laotian Kip"
+              }
+            , { code = "MYR"
+              , name = "Malaysian Ringgit"
+              }
+            , { code = "SGD"
+              , name = "Singapore Dollar"
               }
             , { code = "THB"
               , name = "Thai Baht"
               }
+            , { code = "USD"
+              , name = "United States Dollar"
+              }
             , { code = "VND"
               , name = "Vietnamese Dong"
-              }
-            , { code = "KHR"
-              , name = "Cambodian Riel"
               }
             ]
         )
