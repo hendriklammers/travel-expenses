@@ -8,14 +8,14 @@ import Navigation exposing (Location)
 import Routing exposing (parseLocation)
 
 
-init : Location -> ( Model, Cmd Msg )
-init location =
-    ( Model.initial (parseLocation location), Cmd.none )
+init : Int -> Location -> ( Model, Cmd Msg )
+init seed location =
+    ( Model.initial seed (parseLocation location), Cmd.none )
 
 
-main : Program Never Model Msg
+main : Program Int Model Msg
 main =
-    Navigation.program LocationChange
+    Navigation.programWithFlags LocationChange
         { init = init
         , subscriptions = subscriptions
         , update = Model.update

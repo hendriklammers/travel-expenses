@@ -13,6 +13,8 @@ import Types
         , Page(..)
         )
 import Routing exposing (parseLocation)
+import Random.Pcg exposing (Seed, initialSeed, step)
+import Uuid
 
 
 type alias Model =
@@ -21,6 +23,7 @@ type alias Model =
     , categories : List Category
     , currency : Currency
     , currencies : Dict String Currency
+    , currentSeed : Seed
     , expenses : List Expense
     , error : Maybe String
     , page : Page
@@ -91,8 +94,8 @@ currenciesDict currencies =
         |> Dict.fromList
 
 
-initial : Page -> Model
-initial page =
+initial : Int -> Page -> Model
+initial seed page =
     { amount = 0
     , category =
         { id = 0
@@ -104,6 +107,7 @@ initial page =
         , name = "United States Dollar"
         }
     , currencies = currenciesDict currencies
+    , currentSeed = initialSeed seed
     , expenses = []
     , error = Nothing
     , page = page
@@ -134,14 +138,22 @@ update msg model =
 
         ReceiveDate date ->
             let
+                ( id, newSeed ) =
+                    step Uuid.uuidGenerator model.currentSeed
+
                 expense =
                     { category = model.category
                     , amount = model.amount
                     , currency = model.currency
                     , date = date
+                    , id = id
                     }
             in
-                { model | expenses = expense :: model.expenses } ! []
+                { model
+                    | currentSeed = newSeed
+                    , expenses = expense :: model.expenses
+                }
+                    ! []
 
         SelectCategory category ->
             { model | category = category } ! []

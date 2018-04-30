@@ -1,6 +1,7 @@
 module Types exposing (..)
 
 import Date exposing (Date)
+import Uuid
 
 
 type alias Category =
@@ -20,8 +21,8 @@ type alias Expense =
     , amount : Float
     , currency : Currency
     , date : Date
+    , id : Uuid.Uuid
 
-    -- , id : Int
     -- , location : Location
     }
 
