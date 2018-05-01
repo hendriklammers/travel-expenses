@@ -46,23 +46,31 @@ view model =
 
 viewAmount : Model -> Html Msg
 viewAmount model =
-    div [ H.class "field" ]
-        [ label
-            [ H.class "label" ]
-            [ text "Amount" ]
-        , div
-            [ H.class "control" ]
-            [ input
-                [ H.type_ "number"
-                , H.placeholder "0.00"
-                , H.id "amount-input"
-                , H.class "input amount-input"
-                , H.step ".01"
-                , onInput UpdateAmount
+    let
+        value =
+            if model.amount <= 0 then
+                ""
+            else
+                toString model.amount
+    in
+        div [ H.class "field" ]
+            [ label
+                [ H.class "label" ]
+                [ text "Amount" ]
+            , div
+                [ H.class "control" ]
+                [ input
+                    [ H.type_ "number"
+                    , H.placeholder "0.00"
+                    , H.id "amount-input"
+                    , H.class "input amount-input"
+                    , H.step ".01"
+                    , H.value value
+                    , onInput UpdateAmount
+                    ]
+                    []
                 ]
-                []
             ]
-        ]
 
 
 viewCurrencyOption : Currency -> Currency -> Html Msg

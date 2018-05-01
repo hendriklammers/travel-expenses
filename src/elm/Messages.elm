@@ -10,7 +10,7 @@ type Msg
     | SelectCategory Category
     | SelectCurrency String
     | Submit
-    | ReceiveDate Date
+    | AddExpense Date
     | CloseError
     | ToggleMenu
     | LocationChange Location

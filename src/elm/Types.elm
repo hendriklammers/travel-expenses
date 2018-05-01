@@ -32,10 +32,10 @@ type MenuState
     | MenuClosed
 
 
+type alias MenuItem =
+    ( String, Page )
+
+
 type Page
     = InputPage
     | OverviewPage
-
-
-type alias MenuItem =
-    ( String, Page )

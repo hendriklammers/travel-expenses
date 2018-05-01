@@ -23,7 +23,7 @@ type alias Model =
     , categories : List Category
     , currency : Currency
     , currencies : Dict String Currency
-    , currentSeed : Seed
+    , seed : Seed
     , expenses : List Expense
     , error : Maybe String
     , page : Page
@@ -107,7 +107,7 @@ initial seed page =
         , name = "United States Dollar"
         }
     , currencies = currenciesDict currencies
-    , currentSeed = initialSeed seed
+    , seed = initialSeed seed
     , expenses = []
     , error = Nothing
     , page = page
@@ -134,26 +134,10 @@ update msg model =
             if model.amount <= 0 then
                 handleError model "Please enter the amount of money spent"
             else
-                ( model, Task.perform ReceiveDate Date.now )
+                ( model, Task.perform AddExpense Date.now )
 
-        ReceiveDate date ->
-            let
-                ( id, newSeed ) =
-                    step Uuid.uuidGenerator model.currentSeed
-
-                expense =
-                    { category = model.category
-                    , amount = model.amount
-                    , currency = model.currency
-                    , date = date
-                    , id = id
-                    }
-            in
-                { model
-                    | currentSeed = newSeed
-                    , expenses = expense :: model.expenses
-                }
-                    ! []
+        AddExpense date ->
+            addExpense model date
 
         SelectCategory category ->
             { model | category = category } ! []
@@ -183,6 +167,28 @@ update msg model =
 
         LocationChange location ->
             { model | page = parseLocation location, menu = MenuClosed } ! []
+
+
+addExpense : Model -> Date.Date -> ( Model, Cmd Msg )
+addExpense model date =
+    let
+        ( id, seed ) =
+            step Uuid.uuidGenerator model.seed
+
+        expense =
+            { category = model.category
+            , amount = model.amount
+            , currency = model.currency
+            , date = date
+            , id = id
+            }
+    in
+        { model
+            | seed = seed
+            , amount = 0
+            , expenses = expense :: model.expenses
+        }
+            ! []
 
 
 handleError : Model -> String -> ( Model, Cmd Msg )
