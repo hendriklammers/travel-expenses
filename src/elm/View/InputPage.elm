@@ -1,6 +1,5 @@
 module View.InputPage exposing (view)
 
-import Dict
 import Model exposing (Model)
 import Html
     exposing
@@ -109,7 +108,7 @@ viewCurrency { currencies, currency } =
                     [ onInput SelectCurrency ]
                     (List.map
                         (viewCurrencyOption currency)
-                        (Dict.values currencies)
+                        currencies
                     )
                 ]
             ]

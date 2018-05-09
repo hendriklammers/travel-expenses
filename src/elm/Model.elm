@@ -2,13 +2,13 @@ module Model exposing (Model, initial, update)
 
 import Task
 import Date
-import Dict exposing (Dict)
 import Messages exposing (Msg(..))
 import Types exposing (..)
 import Routing exposing (parseLocation)
 import Random.Pcg exposing (Seed, initialSeed, step)
 import Ports exposing (storeCurrency)
 import Uuid
+import List.Extra exposing (find)
 
 
 type alias Model =
@@ -16,7 +16,7 @@ type alias Model =
     , category : Category
     , categories : List Category
     , currency : Currency
-    , currencies : Dict String Currency
+    , currencies : List Currency
     , seed : Seed
     , expenses : List Expense
     , error : Maybe Error
@@ -80,14 +80,6 @@ currencies =
     ]
 
 
-currenciesDict : List Currency -> Dict String Currency
-currenciesDict currencies =
-    currencies
-        |> List.sortBy .code
-        |> List.map (\c -> ( c.code, c ))
-        |> Dict.fromList
-
-
 initial : Flags -> Page -> Model
 initial flags page =
     let
@@ -108,7 +100,7 @@ initial flags page =
             }
         , categories = categories
         , currency = currency
-        , currencies = currenciesDict currencies
+        , currencies = currencies
         , seed = initialSeed flags.seed
         , expenses = []
         , error = Nothing
@@ -148,7 +140,7 @@ update msg model =
             { model | category = category } ! []
 
         SelectCurrency selected ->
-            case Dict.get selected model.currencies of
+            case find (\{ code } -> selected == code) model.currencies of
                 Just currency ->
                     ( { model | currency = currency }, storeCurrency currency )
 
