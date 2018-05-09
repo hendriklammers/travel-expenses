@@ -4,16 +4,10 @@ import Task
 import Date
 import Dict exposing (Dict)
 import Messages exposing (Msg(..))
-import Types
-    exposing
-        ( Category
-        , Expense
-        , Currency
-        , MenuState(..)
-        , Page(..)
-        )
+import Types exposing (..)
 import Routing exposing (parseLocation)
 import Random.Pcg exposing (Seed, initialSeed, step)
+import Ports exposing (storeCurrency)
 import Uuid
 
 
@@ -25,7 +19,7 @@ type alias Model =
     , currencies : Dict String Currency
     , seed : Seed
     , expenses : List Expense
-    , error : Maybe String
+    , error : Maybe Error
     , page : Page
     , menu : MenuState
     }
@@ -94,25 +88,33 @@ currenciesDict currencies =
         |> Dict.fromList
 
 
-initial : Int -> Page -> Model
-initial seed page =
-    { amount = 0
-    , category =
-        { id = 0
-        , name = "Food & Drink"
+initial : Flags -> Page -> Model
+initial flags page =
+    let
+        currency =
+            case flags.currency of
+                Just c ->
+                    c
+
+                Nothing ->
+                    { code = "USD"
+                    , name = "United States Dollar"
+                    }
+    in
+        { amount = 0
+        , category =
+            { id = 0
+            , name = "Food & Drink"
+            }
+        , categories = categories
+        , currency = currency
+        , currencies = currenciesDict currencies
+        , seed = initialSeed flags.seed
+        , expenses = []
+        , error = Nothing
+        , page = page
+        , menu = MenuClosed
         }
-    , categories = categories
-    , currency =
-        { code = "USD"
-        , name = "United States Dollar"
-        }
-    , currencies = currenciesDict currencies
-    , seed = initialSeed seed
-    , expenses = []
-    , error = Nothing
-    , page = page
-    , menu = MenuClosed
-    }
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -132,7 +134,10 @@ update msg model =
 
         Submit ->
             if model.amount <= 0 then
-                handleError model "Please enter the amount of money spent"
+                handleError
+                    model
+                    AmountError
+                    "Please enter the amount of money spent"
             else
                 ( model, Task.perform AddExpense Date.now )
 
@@ -145,10 +150,13 @@ update msg model =
         SelectCurrency selected ->
             case Dict.get selected model.currencies of
                 Just currency ->
-                    { model | currency = currency } ! []
+                    ( { model | currency = currency }, storeCurrency currency )
 
                 Nothing ->
-                    handleError model "Invalid currency selected"
+                    handleError
+                        model
+                        CurrencyError
+                        "Invalid currency selected"
 
         CloseError ->
             { model | error = Nothing } ! []
@@ -186,11 +194,12 @@ addExpense model date =
         { model
             | seed = seed
             , amount = 0
+            , error = Nothing
             , expenses = expense :: model.expenses
         }
             ! []
 
 
-handleError : Model -> String -> ( Model, Cmd Msg )
-handleError model message =
-    { model | error = Just message } ! []
+handleError : Model -> ErrorType -> String -> ( Model, Cmd Msg )
+handleError model error message =
+    { model | error = Just ( error, message ) } ! []

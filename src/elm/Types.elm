@@ -32,6 +32,15 @@ type MenuState
     | MenuClosed
 
 
+type ErrorType
+    = CurrencyError
+    | AmountError
+
+
+type alias Error =
+    ( ErrorType, String )
+
+
 type alias MenuItem =
     ( String, Page )
 
@@ -39,3 +48,9 @@ type alias MenuItem =
 type Page
     = InputPage
     | OverviewPage
+
+
+type alias Flags =
+    { seed : Int
+    , currency : Maybe Currency
+    }

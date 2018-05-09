@@ -6,14 +6,15 @@ import Messages exposing (Msg(..))
 import View.View exposing (view)
 import Navigation exposing (Location)
 import Routing exposing (parseLocation)
+import Types exposing (Flags)
 
 
-init : Int -> Location -> ( Model, Cmd Msg )
-init seed location =
-    ( Model.initial seed (parseLocation location), Cmd.none )
+init : Flags -> Location -> ( Model, Cmd Msg )
+init flags location =
+    ( Model.initial flags (parseLocation location), Cmd.none )
 
 
-main : Program Int Model Msg
+main : Program Flags Model Msg
 main =
     Navigation.programWithFlags LocationChange
         { init = init

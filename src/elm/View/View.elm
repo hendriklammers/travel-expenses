@@ -20,6 +20,7 @@ import Types
         ( MenuState(..)
         , Page(..)
         , MenuItem
+        , Error
         )
 import Messages exposing (Msg(..))
 import View.InputPage as InputPageView
@@ -109,10 +110,10 @@ viewPage model =
             OverviewPageView.view model
 
 
-viewError : Maybe String -> Html Msg
-viewError message =
-    case message of
-        Just error ->
+viewError : Maybe Error -> Html Msg
+viewError error =
+    case error of
+        Just ( _, message ) ->
             div
                 [ H.class "notification is-danger is-marginless is-radiusless" ]
                 [ button
@@ -120,7 +121,7 @@ viewError message =
                     , onClick CloseError
                     ]
                     []
-                , text error
+                , text message
                 ]
 
         Nothing ->
