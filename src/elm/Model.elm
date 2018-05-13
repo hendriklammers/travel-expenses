@@ -86,14 +86,28 @@ initial : Flags -> Page -> Model
 initial flags page =
     let
         currency =
-            case flags.currency of
-                Just c ->
-                    c
-
-                Nothing ->
-                    { code = "USD"
-                    , name = "United States Dollar"
+            let
+                default =
+                    { code = "EUR"
+                    , name = "Euro"
                     }
+            in
+                case flags.currency of
+                    Just json ->
+                        case Decode.decodeString decodeCurrency json of
+                            Ok result ->
+                                result
+
+                            Err error ->
+                                -- TODO: Show message in UI
+                                let
+                                    log =
+                                        Debug.log "currency" error
+                                in
+                                    default
+
+                    Nothing ->
+                        default
 
         expenses =
             case flags.expenses of
@@ -161,7 +175,14 @@ update msg model =
         SelectCurrency selected ->
             case find (\{ code } -> selected == code) model.currencies of
                 Just currency ->
-                    ( { model | currency = currency }, storeCurrency currency )
+                    let
+                        cmd =
+                            currency
+                                |> encodeCurrency
+                                |> Encode.encode 0
+                                |> storeCurrency
+                    in
+                        ( { model | currency = currency }, cmd )
 
                 Nothing ->
                     handleError
@@ -211,6 +232,10 @@ addExpense model date =
           }
         , storeExpenses (encodeExpenses expenses)
         )
+
+
+
+-- TODO: Move json encoders/decoders to new file
 
 
 encodeCategory : Category -> Encode.Value
