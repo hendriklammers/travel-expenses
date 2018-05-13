@@ -89,6 +89,10 @@ currencies =
     ]
 
 
+
+-- TODO: Remove hardcoded defaults for currency and category
+
+
 initial : Flags -> Page -> Model
 initial flags page =
     let
@@ -133,7 +137,6 @@ initial flags page =
                 Nothing ->
                     []
     in
-        -- TODO: Use first category available from list
         { amount = 0
         , category =
             { id = "0"
