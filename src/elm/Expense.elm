@@ -16,7 +16,7 @@ import Uuid
 encodeCategory : Category -> Encode.Value
 encodeCategory { id, name } =
     Encode.object
-        [ ( "id", Encode.int id )
+        [ ( "id", Encode.string id )
         , ( "name", Encode.string name )
         ]
 
@@ -24,7 +24,7 @@ encodeCategory { id, name } =
 decodeCategory : Decoder Category
 decodeCategory =
     Decode.map2 Category
-        (Decode.field "id" Decode.int)
+        (Decode.field "id" Decode.string)
         (Decode.field "name" Decode.string)
 
 

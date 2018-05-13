@@ -5,7 +5,7 @@ import Uuid
 
 
 type alias Category =
-    { id : Int
+    { id : String
     , name : String
     }
 

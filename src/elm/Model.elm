@@ -36,22 +36,22 @@ type alias Model =
 
 categories : List Category
 categories =
-    [ { id = 0
+    [ { id = "5772822A-42B4-4605-A5C3-0504498C3432"
       , name = "Food & Drink"
       }
-    , { id = 1
+    , { id = "E7C07380-2899-4979-84B2-087E68BAC60C"
       , name = "Accomodation"
       }
-    , { id = 2
+    , { id = "92149113-B678-4EEE-ACB6-E346990A35B8"
       , name = "Transportation"
       }
-    , { id = 3
+    , { id = "6E632105-8A84-490F-AD33-A543E51669AE"
       , name = "Shopping"
       }
-    , { id = 4
+    , { id = "43641EFB-97D3-482D-9A6D-E2193979E383"
       , name = "Trips & Attractions"
       }
-    , { id = 5
+    , { id = "6063E8E0-0190-4DF6-8B35-D5F332F799FA"
       , name = "Other"
       }
     ]
@@ -133,9 +133,10 @@ initial flags page =
                 Nothing ->
                     []
     in
+        -- TODO: Use first category available from list
         { amount = 0
         , category =
-            { id = 0
+            { id = "0"
             , name = "Food & Drink"
             }
         , categories = categories
