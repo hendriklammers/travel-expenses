@@ -75,8 +75,9 @@ decodeExpense =
 
 
 encodeExpenses : List Expense -> String
-encodeExpenses xs =
-    List.map encodeExpense xs
+encodeExpenses expenses =
+    expenses
+        |> List.map encodeExpense
         |> Encode.list
         |> Encode.encode 0
 
