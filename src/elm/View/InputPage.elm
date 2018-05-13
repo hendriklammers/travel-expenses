@@ -19,12 +19,8 @@ import Html
 import Messages exposing (Msg(..))
 import Html.Attributes as H
 import Html.Events exposing (onClick, onInput, onSubmit)
-import Types
-    exposing
-        ( Category
-        , Currency
-        , ErrorType(..)
-        )
+import Types exposing (ErrorType(..))
+import Expense exposing (Category, Currency)
 
 
 view : Model -> Html Msg

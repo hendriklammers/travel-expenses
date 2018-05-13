@@ -1,16 +1,24 @@
 module Expense
     exposing
-        ( encodeExpenses
+        ( Category
+        , Currency
+        , Expense
+        , encodeExpenses
         , encodeCurrency
         , decodeExpenses
         , decodeCurrency
         )
 
-import Date
-import Types exposing (..)
+import Date exposing (Date)
 import Json.Encode as Encode
 import Json.Decode as Decode exposing (Decoder)
 import Uuid
+
+
+type alias Category =
+    { id : String
+    , name : String
+    }
 
 
 encodeCategory : Category -> Encode.Value
@@ -28,6 +36,12 @@ decodeCategory =
         (Decode.field "name" Decode.string)
 
 
+type alias Currency =
+    { code : String
+    , name : String
+    }
+
+
 encodeCurrency : Currency -> Encode.Value
 encodeCurrency { code, name } =
     Encode.object
@@ -43,6 +57,17 @@ decodeCurrency =
         (Decode.field "name" Decode.string)
 
 
+type alias Expense =
+    { category : Category
+    , amount : Float
+    , currency : Currency
+    , date : Date
+    , id : Uuid.Uuid
+
+    -- , location : Location
+    }
+
+
 encodeExpense : Expense -> Encode.Value
 encodeExpense { category, amount, currency, date, id } =
     Encode.object
@@ -52,16 +77,6 @@ encodeExpense { category, amount, currency, date, id } =
         , ( "date", Encode.float (Date.toTime date) )
         , ( "id", Uuid.encode id )
         ]
-
-
-decodeDate : Decoder Date.Date
-decodeDate =
-    Decode.andThen dateFromFloat Decode.float
-
-
-dateFromFloat : Float -> Decoder Date.Date
-dateFromFloat date =
-    Decode.succeed (Date.fromTime date)
 
 
 decodeExpense : Decoder Expense
@@ -85,3 +100,13 @@ encodeExpenses expenses =
 decodeExpenses : Decoder (List Expense)
 decodeExpenses =
     Decode.list decodeExpense
+
+
+decodeDate : Decoder Date.Date
+decodeDate =
+    Decode.andThen dateFromFloat Decode.float
+
+
+dateFromFloat : Float -> Decoder Date.Date
+dateFromFloat date =
+    Decode.succeed (Date.fromTime date)

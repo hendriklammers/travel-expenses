@@ -1,31 +1,5 @@
 module Types exposing (..)
 
-import Date exposing (Date)
-import Uuid
-
-
-type alias Category =
-    { id : String
-    , name : String
-    }
-
-
-type alias Currency =
-    { code : String
-    , name : String
-    }
-
-
-type alias Expense =
-    { category : Category
-    , amount : Float
-    , currency : Currency
-    , date : Date
-    , id : Uuid.Uuid
-
-    -- , location : Location
-    }
-
 
 type MenuState
     = MenuOpen

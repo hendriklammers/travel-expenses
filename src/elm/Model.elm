@@ -11,7 +11,10 @@ import Uuid
 import List.Extra exposing (find)
 import Expense
     exposing
-        ( encodeExpenses
+        ( Category
+        , Currency
+        , Expense
+        , encodeExpenses
         , encodeCurrency
         , decodeExpenses
         , decodeCurrency

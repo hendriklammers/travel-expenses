@@ -1,7 +1,7 @@
 module Messages exposing (Msg(..))
 
 import Date exposing (Date)
-import Types exposing (Category)
+import Expense exposing (Category)
 import Navigation exposing (Location)
 
 
