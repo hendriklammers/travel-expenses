@@ -7,26 +7,13 @@ const container = document.querySelector('#main')
 const currency = localStorage.currency
   ? JSON.parse(localStorage.currency)
   : null
-const app = Elm.Main.embed(container, { seed, currency })
+const expenses = localStorage.expenses ? localStorage.expenses : null
+const app = Elm.Main.embed(container, { seed, currency, expenses })
 
 app.ports.storeCurrency.subscribe(currency => {
   localStorage.currency = JSON.stringify(currency)
 })
 
-// (function() {
-//   'use strict'
-//
-//   const container = document.querySelector("#container")
-//   const app = window.Elm.Main.embed(container)
-//   const storage = window.localStorage
-//
-//   app.ports.sendScore.subscribe( score => {
-//     let highscore = storage.getItem('highscore')
-//     if (!highscore || highscore < score) {
-//       highscore = score
-//       storage.setItem('highscore', score)
-//     }
-//     app.ports.getScore.send(parseInt(highscore))
-//   })
-//
-// }())
+app.ports.storeExpenses.subscribe(expenses => {
+  localStorage.expenses = expenses
+})

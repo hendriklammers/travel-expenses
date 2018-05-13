@@ -1,15 +1,9 @@
 port module Ports exposing (..)
 
-import Types exposing (Currency)
-
-
--- import Json.Encode exposing (Value)
+import Types exposing (Currency, Expense)
 
 
 port storeCurrency : Currency -> Cmd msg
 
 
-
--- port storeSession : Maybe String -> Cmd msg
---
--- port onSessionChange : (Value -> msg) -> Sub msg
+port storeExpenses : String -> Cmd msg

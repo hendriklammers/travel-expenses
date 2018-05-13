@@ -53,4 +53,5 @@ type Page
 type alias Flags =
     { seed : Int
     , currency : Maybe Currency
+    , expenses : Maybe String
     }

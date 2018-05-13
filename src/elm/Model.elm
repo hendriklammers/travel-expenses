@@ -6,9 +6,11 @@ import Messages exposing (Msg(..))
 import Types exposing (..)
 import Routing exposing (parseLocation)
 import Random.Pcg exposing (Seed, initialSeed, step)
-import Ports exposing (storeCurrency)
+import Ports exposing (storeCurrency, storeExpenses)
 import Uuid
 import List.Extra exposing (find)
+import Json.Encode as Encode
+import Json.Decode as Decode exposing (Decoder)
 
 
 type alias Model =
@@ -92,6 +94,23 @@ initial flags page =
                     { code = "USD"
                     , name = "United States Dollar"
                     }
+
+        expenses =
+            case flags.expenses of
+                Just json ->
+                    case Decode.decodeString decodeExpenses json of
+                        Ok result ->
+                            result
+
+                        Err error ->
+                            let
+                                log =
+                                    Debug.log "expenses" error
+                            in
+                                []
+
+                Nothing ->
+                    []
     in
         { amount = 0
         , category =
@@ -102,7 +121,7 @@ initial flags page =
         , currency = currency
         , currencies = currencies
         , seed = initialSeed flags.seed
-        , expenses = []
+        , expenses = expenses
         , error = Nothing
         , page = page
         , menu = MenuClosed
@@ -175,21 +194,96 @@ addExpense model date =
         ( id, seed ) =
             step Uuid.uuidGenerator model.seed
 
-        expense =
+        expenses =
             { category = model.category
             , amount = model.amount
             , currency = model.currency
             , date = date
             , id = id
             }
+                :: model.expenses
     in
-        { model
+        ( { model
             | seed = seed
             , amount = 0
             , error = Nothing
-            , expenses = expense :: model.expenses
-        }
-            ! []
+            , expenses = expenses
+          }
+        , storeExpenses (encodeExpenses expenses)
+        )
+
+
+encodeCategory : Category -> Encode.Value
+encodeCategory { id, name } =
+    Encode.object
+        [ ( "id", Encode.int id )
+        , ( "name", Encode.string name )
+        ]
+
+
+decodeCategory : Decoder Category
+decodeCategory =
+    Decode.map2 Category
+        (Decode.field "id" Decode.int)
+        (Decode.field "name" Decode.string)
+
+
+encodeCurrency : Currency -> Encode.Value
+encodeCurrency { code, name } =
+    Encode.object
+        [ ( "code", Encode.string code )
+        , ( "name", Encode.string name )
+        ]
+
+
+decodeCurrency : Decoder Currency
+decodeCurrency =
+    Decode.map2 Currency
+        (Decode.field "code" Decode.string)
+        (Decode.field "name" Decode.string)
+
+
+encodeExpense : Expense -> Encode.Value
+encodeExpense { category, amount, currency, date, id } =
+    Encode.object
+        [ ( "category", encodeCategory category )
+        , ( "amount", Encode.float amount )
+        , ( "currency", encodeCurrency currency )
+        , ( "date", Encode.float (Date.toTime date) )
+        , ( "id", Uuid.encode id )
+        ]
+
+
+decodeDate : Decoder Date.Date
+decodeDate =
+    Decode.andThen dateFromFloat Decode.float
+
+
+dateFromFloat : Float -> Decoder Date.Date
+dateFromFloat date =
+    Decode.succeed (Date.fromTime date)
+
+
+decodeExpense : Decoder Expense
+decodeExpense =
+    Decode.map5 Expense
+        (Decode.field "category" decodeCategory)
+        (Decode.field "amount" Decode.float)
+        (Decode.field "currency" decodeCurrency)
+        (Decode.field "date" decodeDate)
+        (Decode.field "id" Uuid.decoder)
+
+
+encodeExpenses : List Expense -> String
+encodeExpenses xs =
+    List.map encodeExpense xs
+        |> Encode.list
+        |> Encode.encode 0
+
+
+decodeExpenses : Decoder (List Expense)
+decodeExpenses =
+    Decode.list decodeExpense
 
 
 handleError : Model -> ErrorType -> String -> ( Model, Cmd Msg )
