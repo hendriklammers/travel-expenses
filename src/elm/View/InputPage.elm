@@ -1,6 +1,6 @@
 module View.InputPage exposing (view)
 
-import Model exposing (Model)
+import Model exposing (Model, ErrorType(..))
 import Html
     exposing
         ( Html
@@ -19,7 +19,6 @@ import Html
 import Messages exposing (Msg(..))
 import Html.Attributes as H
 import Html.Events exposing (onClick, onInput, onSubmit)
-import Types exposing (ErrorType(..))
 import Expense exposing (Category, Currency)
 
 

@@ -14,17 +14,15 @@ import Html
 import Html.Attributes as H
 import Html.Attributes.Aria as Aria
 import Html.Events exposing (onClick)
-import Model exposing (Model)
-import Types
-    exposing
-        ( MenuState(..)
-        , Page(..)
-        , MenuItem
-        , Error
-        )
+import Model exposing (Model, MenuState(..), Error)
+import Routing exposing (Page(..))
 import Messages exposing (Msg(..))
 import View.InputPage as InputPageView
 import View.OverviewPage as OverviewPageView
+
+
+type alias MenuItem =
+    ( String, Page )
 
 
 viewNavbar : Model -> Html Msg

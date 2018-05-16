@@ -1,10 +1,18 @@
-module Model exposing (Model, initial, update)
+module Model
+    exposing
+        ( Model
+        , Flags
+        , initial
+        , update
+        , ErrorType(..)
+        , Error
+        , MenuState(..)
+        )
 
 import Task
 import Date
 import Messages exposing (Msg(..))
-import Types exposing (..)
-import Routing exposing (parseLocation)
+import Routing exposing (Page(..), parseLocation)
 import Random.Pcg exposing (Seed, initialSeed, step)
 import Ports exposing (storeCurrency, storeExpenses)
 import Uuid
@@ -21,6 +29,20 @@ import Expense
         )
 import Json.Encode as Encode
 import Json.Decode as Decode
+
+
+type MenuState
+    = MenuOpen
+    | MenuClosed
+
+
+type ErrorType
+    = CurrencyError
+    | AmountError
+
+
+type alias Error =
+    ( ErrorType, String )
 
 
 type alias Model =
@@ -94,6 +116,13 @@ currencies =
 
 
 -- TODO: Remove hardcoded defaults for currency and category
+
+
+type alias Flags =
+    { seed : Int
+    , currency : Maybe String
+    , expenses : Maybe String
+    }
 
 
 initial : Flags -> Page -> Model

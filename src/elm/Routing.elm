@@ -1,7 +1,11 @@
-module Routing exposing (parseLocation)
+module Routing exposing (Page(..), parseLocation)
 
-import Types exposing (Page(..))
 import Navigation exposing (Location)
+
+
+type Page
+    = InputPage
+    | OverviewPage
 
 
 parseLocation : Location -> Page
