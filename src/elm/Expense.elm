@@ -58,11 +58,11 @@ decodeCurrency =
 
 
 type alias Expense =
-    { category : Category
-    , amount : Float
-    , currency : Currency
+    { id : Uuid.Uuid
     , date : Date
-    , id : Uuid.Uuid
+    , amount : Float
+    , category : Category
+    , currency : Currency
 
     -- , location : Location
     }
@@ -71,22 +71,22 @@ type alias Expense =
 encodeExpense : Expense -> Encode.Value
 encodeExpense { category, amount, currency, date, id } =
     Encode.object
-        [ ( "category", encodeCategory category )
-        , ( "amount", Encode.float amount )
-        , ( "currency", encodeCurrency currency )
+        [ ( "id", Uuid.encode id )
         , ( "date", Encode.float (Date.toTime date) )
-        , ( "id", Uuid.encode id )
+        , ( "amount", Encode.float amount )
+        , ( "category", encodeCategory category )
+        , ( "currency", encodeCurrency currency )
         ]
 
 
 decodeExpense : Decoder Expense
 decodeExpense =
     Decode.map5 Expense
-        (Decode.field "category" decodeCategory)
-        (Decode.field "amount" Decode.float)
-        (Decode.field "currency" decodeCurrency)
-        (Decode.field "date" decodeDate)
         (Decode.field "id" Uuid.decoder)
+        (Decode.field "date" decodeDate)
+        (Decode.field "amount" Decode.float)
+        (Decode.field "category" decodeCategory)
+        (Decode.field "currency" decodeCurrency)
 
 
 encodeExpenses : List Expense -> String
