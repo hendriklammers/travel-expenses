@@ -43,10 +43,12 @@ viewAmount : Model -> Html Msg
 viewAmount model =
     let
         value =
-            if model.amount <= 0 then
-                ""
-            else
-                toString model.amount
+            case model.amount of
+                Just value ->
+                    toString value
+
+                Nothing ->
+                    ""
 
         errorClass =
             case model.error of

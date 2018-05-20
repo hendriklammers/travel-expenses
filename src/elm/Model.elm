@@ -46,7 +46,7 @@ type alias Error =
 
 
 type alias Model =
-    { amount : Float
+    { amount : Maybe Float
     , category : Maybe Category
     , categories : List Category
     , currency : Maybe Currency
@@ -159,7 +159,7 @@ initial flags page =
                 Nothing ->
                     []
     in
-        { amount = 0
+        { amount = Nothing
         , category = List.head categories
         , categories = categories
         , currency = currency
@@ -180,21 +180,15 @@ update msg model =
                 amount =
                     case String.toFloat value of
                         Ok result ->
-                            result
+                            Just result
 
                         Err _ ->
-                            0
+                            Nothing
             in
                 { model | amount = amount } ! []
 
         Submit ->
-            if model.amount <= 0 then
-                handleError
-                    model
-                    AmountError
-                    "Please enter the amount of money spent"
-            else
-                ( model, Task.perform AddExpense Date.now )
+            ( model, Task.perform AddExpense Date.now )
 
         AddExpense date ->
             addExpense model date
@@ -249,14 +243,13 @@ addExpense model date =
             (Expense
                 id
                 date
-                model.amount
             )
     in
-        case Maybe.map2 expense model.category model.currency of
+        case Maybe.map3 expense model.amount model.category model.currency of
             Just e ->
                 ( { model
                     | seed = seed
-                    , amount = 0
+                    , amount = Nothing
                     , error = Nothing
                     , expenses = e :: model.expenses
                   }
