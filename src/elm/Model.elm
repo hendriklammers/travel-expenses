@@ -259,12 +259,13 @@ addExpense model date =
             step Uuid.uuidGenerator model.seed
 
         expenses =
-            { category = model.category
-            , amount = model.amount
-            , currency = model.currency
-            , date = date
-            , id = id
-            }
+            (Expense
+                id
+                date
+                model.amount
+                model.category
+                model.currency
+            )
                 :: model.expenses
     in
         ( { model
