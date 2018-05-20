@@ -47,9 +47,9 @@ type alias Error =
 
 type alias Model =
     { amount : Float
-    , category : Category
+    , category : Maybe Category
     , categories : List Category
-    , currency : Currency
+    , currency : Maybe Currency
     , currencies : List Currency
     , seed : Seed
     , expenses : List Expense
@@ -114,10 +114,6 @@ currencies =
     ]
 
 
-
--- TODO: Remove hardcoded defaults for currency and category
-
-
 type alias Flags =
     { seed : Int
     , currency : Maybe String
@@ -129,28 +125,22 @@ initial : Flags -> Page -> Model
 initial flags page =
     let
         currency =
-            let
-                default =
-                    { code = "EUR"
-                    , name = "Euro"
-                    }
-            in
-                case flags.currency of
-                    Just json ->
-                        case Decode.decodeString decodeCurrency json of
-                            Ok result ->
-                                result
+            case flags.currency of
+                Just json ->
+                    case Decode.decodeString decodeCurrency json of
+                        Ok result ->
+                            Just result
 
-                            Err error ->
-                                -- TODO: Show message in UI
-                                let
-                                    log =
-                                        Debug.log "currency" error
-                                in
-                                    default
+                        Err error ->
+                            -- TODO: Show message in UI
+                            let
+                                log =
+                                    Debug.log "currency" error
+                            in
+                                List.head currencies
 
-                    Nothing ->
-                        default
+                Nothing ->
+                    List.head currencies
 
         expenses =
             case flags.expenses of
@@ -170,10 +160,7 @@ initial flags page =
                     []
     in
         { amount = 0
-        , category =
-            { id = "0"
-            , name = "Food & Drink"
-            }
+        , category = List.head categories
         , categories = categories
         , currency = currency
         , currencies = currencies
@@ -213,7 +200,7 @@ update msg model =
             addExpense model date
 
         SelectCategory category ->
-            { model | category = category } ! []
+            { model | category = Just category } ! []
 
         SelectCurrency selected ->
             case find (\{ code } -> selected == code) model.currencies of
@@ -225,7 +212,7 @@ update msg model =
                                 |> Encode.encode 0
                                 |> storeCurrency
                     in
-                        ( { model | currency = currency }, cmd )
+                        ( { model | currency = Just currency }, cmd )
 
                 Nothing ->
                     handleError
@@ -258,24 +245,26 @@ addExpense model date =
         ( id, seed ) =
             step Uuid.uuidGenerator model.seed
 
-        expenses =
+        expense =
             (Expense
                 id
                 date
                 model.amount
-                model.category
-                model.currency
             )
-                :: model.expenses
     in
-        ( { model
-            | seed = seed
-            , amount = 0
-            , error = Nothing
-            , expenses = expenses
-          }
-        , storeExpenses (encodeExpenses expenses)
-        )
+        case Maybe.map2 expense model.category model.currency of
+            Just e ->
+                ( { model
+                    | seed = seed
+                    , amount = 0
+                    , error = Nothing
+                    , expenses = e :: model.expenses
+                  }
+                , storeExpenses (encodeExpenses (e :: model.expenses))
+                )
+
+            Nothing ->
+                model ! []
 
 
 handleError : Model -> ErrorType -> String -> ( Model, Cmd Msg )

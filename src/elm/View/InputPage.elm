@@ -79,12 +79,17 @@ viewAmount model =
             ]
 
 
-viewCurrencyOption : Currency -> Currency -> Html Msg
+viewCurrencyOption : Maybe Currency -> Currency -> Html Msg
 viewCurrencyOption active { code, name } =
     option
-        [ H.value code
-        , H.selected (active.code == code)
-        ]
+        ([ (H.value code) ]
+            ++ case active of
+                Just c ->
+                    [ H.selected (c.code == code) ]
+
+                Nothing ->
+                    []
+        )
         [ text (code ++ " - " ++ name) ]
 
 
@@ -110,16 +115,22 @@ viewCurrency { currencies, currency } =
         ]
 
 
-viewCategory : Category -> Category -> Html Msg
+viewCategory : Maybe Category -> Category -> Html Msg
 viewCategory active category =
     label
         [ H.class "radio" ]
         [ input
-            [ H.type_ "radio"
-            , H.name "category"
-            , H.checked (active == category)
-            , onClick (SelectCategory category)
-            ]
+            ([ H.type_ "radio"
+             , H.name "category"
+             , onClick (SelectCategory category)
+             ]
+                ++ case active of
+                    Just c ->
+                        [ H.checked (c == category) ]
+
+                    Nothing ->
+                        []
+            )
             []
         , text category.name
         ]
