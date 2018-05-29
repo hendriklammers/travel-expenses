@@ -27,8 +27,10 @@ import Expense
         , decodeExpenses
         , decodeCurrency
         )
+import Exchange exposing (decodeExchange)
 import Json.Encode as Encode
 import Json.Decode as Decode
+import Http
 
 
 type MenuState
@@ -230,6 +232,37 @@ update msg model =
 
         LocationChange location ->
             { model | page = parseLocation location, menu = MenuClosed } ! []
+
+        FetchExchangeRates ->
+            ( model, fetchRates )
+
+        NewRates result ->
+            case result of
+                Ok exchange ->
+                    let
+                        log =
+                            Debug.log "result" exchange
+                    in
+                        model ! []
+
+                Err error ->
+                    let
+                        log =
+                            Debug.log "http" error
+                    in
+                        model ! []
+
+
+fetchRates : Cmd Msg
+fetchRates =
+    let
+        url =
+            "http://data.fixer.io/api/latest?access_key=22e3df96fafa251f746711e01eeee64a&format=1"
+
+        request =
+            Http.get url decodeExchange
+    in
+        Http.send NewRates request
 
 
 addExpense : Model -> Date.Date -> ( Model, Cmd Msg )
