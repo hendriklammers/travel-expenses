@@ -63,8 +63,6 @@ type alias Expense =
     , amount : Float
     , category : Category
     , currency : Currency
-
-    -- , location : Location
     }
 
 
