@@ -49,17 +49,6 @@ viewAmount model =
 
                 Nothing ->
                     ""
-
-        errorClass =
-            case model.error of
-                Just ( err, msg ) ->
-                    if err == AmountError then
-                        " is-danger"
-                    else
-                        ""
-
-                Nothing ->
-                    ""
     in
         div [ H.class "field" ]
             [ label
@@ -71,7 +60,7 @@ viewAmount model =
                     [ H.type_ "number"
                     , H.placeholder "0.00"
                     , H.id "amount-input"
-                    , H.class ("input amount-input" ++ errorClass)
+                    , H.class "input amount-input"
                     , H.step ".01"
                     , H.value value
                     , onInput UpdateAmount

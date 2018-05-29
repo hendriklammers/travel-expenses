@@ -37,8 +37,7 @@ type MenuState
 
 
 type ErrorType
-    = CurrencyError
-    | AmountError
+    = InputError
 
 
 type alias Error =
@@ -211,7 +210,7 @@ update msg model =
                 Nothing ->
                     handleError
                         model
-                        CurrencyError
+                        InputError
                         "Invalid currency selected"
 
         CloseError ->
@@ -238,14 +237,14 @@ addExpense model date =
     let
         ( id, seed ) =
             step Uuid.uuidGenerator model.seed
-
-        expense =
-            (Expense
-                id
-                date
-            )
     in
-        case Maybe.map3 expense model.amount model.category model.currency of
+        case
+            Maybe.map3
+                (Expense id date)
+                model.amount
+                model.category
+                model.currency
+        of
             Just e ->
                 ( { model
                     | seed = seed
@@ -257,7 +256,10 @@ addExpense model date =
                 )
 
             Nothing ->
-                model ! []
+                handleError
+                    model
+                    InputError
+                    "Invalid input"
 
 
 handleError : Model -> ErrorType -> String -> ( Model, Cmd Msg )
