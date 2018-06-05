@@ -133,9 +133,4 @@ view model =
         [ viewError model.error
         , viewNavbar model
         , viewPage model
-        , button
-            [ onClick FetchExchangeRates
-            , H.class "button is-dark is-small"
-            ]
-            [ text "Fetch rates" ]
         ]

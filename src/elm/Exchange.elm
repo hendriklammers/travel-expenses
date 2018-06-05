@@ -34,3 +34,7 @@ decodeExchange =
     Decode.map2 Exchange
         (Decode.field "timestamp" decodeDate)
         (Decode.field "rates" decodeRates)
+
+
+
+-- TODO: Add encoder

@@ -2,7 +2,7 @@ module Model
     exposing
         ( Model
         , Flags
-        , initial
+        , init
         , update
         , ErrorType(..)
         , Error
@@ -27,10 +27,11 @@ import Expense
         , decodeExpenses
         , decodeCurrency
         )
-import Exchange exposing (decodeExchange)
+import Exchange exposing (decodeExchange, Exchange)
 import Json.Encode as Encode
 import Json.Decode as Decode
 import Http
+import Navigation exposing (Location)
 
 
 type MenuState
@@ -40,6 +41,7 @@ type MenuState
 
 type ErrorType
     = InputError
+    | FetchError
 
 
 type alias Error =
@@ -57,6 +59,7 @@ type alias Model =
     , error : Maybe Error
     , page : Page
     , menu : MenuState
+    , exchange : Maybe Exchange
     }
 
 
@@ -122,6 +125,21 @@ type alias Flags =
     }
 
 
+init : Flags -> Location -> ( Model, Cmd Msg )
+init flags location =
+    let
+        page =
+            parseLocation location
+
+        cmd =
+            if page == OverviewPage then
+                fetchRates
+            else
+                Cmd.none
+    in
+        ( initial flags page, cmd )
+
+
 initial : Flags -> Page -> Model
 initial flags page =
     let
@@ -170,6 +188,7 @@ initial flags page =
         , error = Nothing
         , page = page
         , menu = MenuClosed
+        , exchange = Nothing
         }
 
 
@@ -231,7 +250,17 @@ update msg model =
                 { model | menu = state } ! []
 
         LocationChange location ->
-            { model | page = parseLocation location, menu = MenuClosed } ! []
+            let
+                page =
+                    parseLocation location
+
+                cmd =
+                    if page == OverviewPage then
+                        fetchRates
+                    else
+                        Cmd.none
+            in
+                ( { model | page = page, menu = MenuClosed }, cmd )
 
         FetchExchangeRates ->
             ( model, fetchRates )
@@ -239,25 +268,27 @@ update msg model =
         NewRates result ->
             case result of
                 Ok exchange ->
-                    let
-                        log =
-                            Debug.log "result" exchange
-                    in
-                        model ! []
+                    { model | exchange = Just (Debug.log "exchange" exchange) } ! []
 
                 Err error ->
                     let
                         log =
                             Debug.log "http" error
                     in
-                        model ! []
+                        handleError
+                            model
+                            FetchError
+                            "Unable to fetch the exchange rates from the fixer.io API"
 
 
 fetchRates : Cmd Msg
 fetchRates =
     let
+        key =
+            "22e3df96fafa251f746711e01eeee64a"
+
         url =
-            "http://data.fixer.io/api/latest?access_key=22e3df96fafa251f746711e01eeee64a&format=1"
+            "http://data.fixer.io/api/latest?access_key=" ++ key ++ "&format=1"
 
         request =
             Http.get url decodeExchange
