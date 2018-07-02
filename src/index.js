@@ -1,8 +1,8 @@
 import './scss/main.scss'
 import Elm from './elm/Main'
 
+// Flags should be either a value or null
 const flag = val => val || null
-
 // Used to generate uuid's inside the Elm program
 const container = document.querySelector('#main')
 const flags = {
