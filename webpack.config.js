@@ -1,6 +1,8 @@
 const path = require('path')
 const autoprefixer = require('autoprefixer')
 const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
+const webpack = require('webpack')
+require('dotenv').config()
 
 // TODO: Add production settings based on NODE_ENV
 module.exports = {
@@ -85,6 +87,16 @@ module.exports = {
       {
         reload: false
       }
-    )
-  ]
+    ),
+    new webpack.EnvironmentPlugin({
+      FIXER_API_KEY: null
+    })
+  ],
+  node: {
+    fs: 'empty'
+  }
+}
+
+if (process.env.NODE_ENV === 'production') {
+  //
 }

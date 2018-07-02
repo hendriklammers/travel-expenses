@@ -1,13 +1,16 @@
 import './scss/main.scss'
 import Elm from './elm/Main'
 
+const flag = val => val || null
+
 // Used to generate uuid's inside the Elm program
 const container = document.querySelector('#main')
 const flags = {
   seed: Math.floor(Math.random() * 0x0fffffff),
-  currency: localStorage.currency ? localStorage.currency : null,
-  expenses: localStorage.expenses ? localStorage.expenses : null,
-  exchange: localStorage.exchange ? localStorage.exchange : null
+  currency: flag(localStorage.currency),
+  expenses: flag(localStorage.expenses),
+  exchange: flag(localStorage.exchange),
+  fixer_api_key: flag(process.env.FIXER_API_KEY)
 }
 const app = Elm.Main.embed(container, flags)
 

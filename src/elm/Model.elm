@@ -48,6 +48,11 @@ type alias Error =
     ( ErrorType, String )
 
 
+type alias Vars =
+    { fixer_api_key : Maybe String
+    }
+
+
 type alias Model =
     { amount : Maybe Float
     , category : Maybe Category
@@ -60,6 +65,7 @@ type alias Model =
     , page : Page
     , menu : MenuState
     , exchange : Maybe Exchange
+    , vars : Vars
     }
 
 
@@ -122,6 +128,7 @@ type alias Flags =
     { seed : Int
     , currency : Maybe String
     , expenses : Maybe String
+    , fixer_api_key : Maybe String
     }
 
 
@@ -133,7 +140,7 @@ init flags location =
 
         cmd =
             if page == OverviewPage then
-                fetchRates
+                Task.perform FetchExchangeRates Date.now
             else
                 Cmd.none
     in
@@ -189,6 +196,9 @@ initial flags page =
         , page = page
         , menu = MenuClosed
         , exchange = Nothing
+        , vars =
+            Vars
+                flags.fixer_api_key
         }
 
 
@@ -256,14 +266,25 @@ update msg model =
 
                 cmd =
                     if page == OverviewPage then
-                        fetchRates
+                        {- Fetch exchange rates when going to overview page -}
+                        Task.perform FetchExchangeRates Date.now
                     else
                         Cmd.none
             in
                 ( { model | page = page, menu = MenuClosed }, cmd )
 
-        FetchExchangeRates ->
-            ( model, fetchRates )
+        FetchExchangeRates date ->
+            let
+                shouldFetch =
+                    True
+
+                cmd =
+                    Cmd.none
+
+                { fixer_api_key } =
+                    model.vars
+            in
+                ( model, fetchRates fixer_api_key )
 
         NewRates result ->
             case result of
@@ -281,14 +302,16 @@ update msg model =
                             "Unable to fetch the exchange rates from the fixer.io API"
 
 
-fetchRates : Cmd Msg
-fetchRates =
+fetchRates : Maybe String -> Cmd Msg
+fetchRates apiKey =
     let
-        key =
-            "22e3df96fafa251f746711e01eeee64a"
-
         url =
-            "http://data.fixer.io/api/latest?access_key=" ++ key ++ "&format=1"
+            case apiKey of
+                Just key ->
+                    "http://data.fixer.io/api/latest?access_key=" ++ key ++ "&format=1"
+
+                Nothing ->
+                    "http://localhost:4000/exchange"
 
         request =
             Http.get url decodeExchange
