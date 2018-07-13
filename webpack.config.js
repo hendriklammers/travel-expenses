@@ -72,7 +72,7 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: __dirname + '/public',
+    contentBase: path.resolve(__dirname, '/public'),
     inline: true,
     port: 8000
   },
