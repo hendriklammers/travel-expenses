@@ -137,14 +137,8 @@ init flags location =
     let
         page =
             parseLocation location
-
-        cmd =
-            if page == OverviewPage then
-                Task.perform FetchExchangeRates Date.now
-            else
-                Cmd.none
     in
-        ( initial flags page, cmd )
+        ( initial flags page, Cmd.none )
 
 
 initial : Flags -> Page -> Model
@@ -263,28 +257,8 @@ update msg model =
             let
                 page =
                     parseLocation location
-
-                cmd =
-                    if page == OverviewPage then
-                        {- Fetch exchange rates when going to overview page -}
-                        Task.perform FetchExchangeRates Date.now
-                    else
-                        Cmd.none
             in
-                ( { model | page = page, menu = MenuClosed }, cmd )
-
-        FetchExchangeRates date ->
-            let
-                shouldFetch =
-                    True
-
-                cmd =
-                    Cmd.none
-
-                { fixer_api_key } =
-                    model.vars
-            in
-                ( model, fetchRates fixer_api_key )
+                ( { model | page = page, menu = MenuClosed }, Cmd.none )
 
         NewRates result ->
             case result of

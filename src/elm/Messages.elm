@@ -16,5 +16,4 @@ type Msg
     | CloseError
     | ToggleMenu
     | LocationChange Location
-    | FetchExchangeRates
     | NewRates (Result Http.Error Exchange)
