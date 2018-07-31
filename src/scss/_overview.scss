@@ -1,0 +1,14 @@
+.loading-notification {
+  $size: 24;
+
+  &:after {
+    @include loader;
+    position: absolute;
+    top: calc(50% - #{$size / 2 + px});
+    right: 15px;
+    width: $size + px;
+    height: $size + px;
+    border-width: 3px;
+    border-color: transparent transparent rgba(0, 0, 0, 0.7) rgba(0, 0, 0, 0.7) !important;
+  }
+}
