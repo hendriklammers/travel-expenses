@@ -21,8 +21,7 @@ const common = {
   },
   plugins: [
     new HTMLWebpackPlugin({
-      template: 'src/index.html',
-      inject: 'body'
+      template: 'src/index.html'
     }),
     new Dotenv()
   ],
@@ -33,11 +32,15 @@ const common = {
   module: {
     rules: [
       {
+        enforce: 'pre',
         test: /\.js$/,
         exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader'
-        }
+        loader: 'eslint-loader'
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader'
       },
       {
         test: /\.scss$/,
