@@ -1,37 +1,36 @@
-module Model
-    exposing
-        ( Model
-        , Flags
-        , init
-        , update
-        , ErrorType(..)
-        , Error
-        , MenuState(..)
-        )
+module Model exposing
+    ( Error
+    , ErrorType(..)
+    , Flags
+    , MenuState(..)
+    , Model
+    , init
+    , update
+    )
 
-import Task
-import Date
-import Messages exposing (Msg(..))
-import Routing exposing (Page(..), parseLocation)
-import Random.Pcg exposing (Seed, initialSeed, step)
-import Ports exposing (storeCurrency, storeExpenses)
-import Uuid
-import List.Extra exposing (find)
+import Browser.Navigation as Nav
+import Exchange exposing (Exchange, decodeExchange)
 import Expense
     exposing
         ( Category
         , Currency
         , Expense
-        , encodeExpenses
-        , encodeCurrency
-        , decodeExpenses
         , decodeCurrency
+        , decodeExpenses
+        , encodeCurrency
+          -- , encodeExpenses
         )
-import Exchange exposing (decodeExchange, Exchange)
-import Json.Encode as Encode
-import Json.Decode as Decode
 import Http
-import Navigation exposing (Location)
+import Json.Decode as Decode
+import Json.Encode as Encode
+import List.Extra exposing (find)
+import Messages exposing (Msg(..))
+import Ports exposing (storeCurrency, storeExpenses)
+import Random exposing (Seed, initialSeed, step)
+import Task
+import Time
+import Url
+import Uuid
 
 
 type MenuState
@@ -62,7 +61,8 @@ type alias Model =
     , seed : Seed
     , expenses : List Expense
     , error : Maybe Error
-    , page : Page
+
+    -- , page : Page
     , menu : MenuState
     , exchange : Maybe Exchange
     , vars : Vars
@@ -132,17 +132,22 @@ type alias Flags =
     }
 
 
-init : Flags -> Location -> ( Model, Cmd Msg )
-init flags location =
-    let
-        page =
-            parseLocation location
-    in
-        ( initial flags page, Cmd.none )
+
+-- init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+-- init flags url key =
+--     ( Model key url, Cmd.none )
+-- init : flags -> Url -> Key -> ( model, Cmd msg )
+-- init : Flags -> Location -> ( Model, Cmd Msg )
+-- init flags location =
+--     let
+--         page =
+--             parseLocation location
+--     in
+--     ( initial flags page, Cmd.none )
 
 
-initial : Flags -> Page -> Model
-initial flags page =
+init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
+init flags url key =
     let
         currency =
             case flags.currency of
@@ -157,7 +162,7 @@ initial flags page =
                                 log =
                                     Debug.log "currency" error
                             in
-                                List.head currencies
+                            List.head currencies
 
                 Nothing ->
                     List.head currencies
@@ -174,51 +179,58 @@ initial flags page =
                                 log =
                                     Debug.log "expenses" error
                             in
-                                []
+                            []
 
                 Nothing ->
                     []
     in
-        { amount = Nothing
-        , category = List.head categories
-        , categories = categories
-        , currency = currency
-        , currencies = currencies
-        , seed = initialSeed flags.seed
-        , expenses = expenses
-        , error = Nothing
-        , page = page
-        , menu = MenuClosed
-        , exchange = Nothing
-        , vars =
+    ( { amount = Nothing
+      , category = List.head categories
+      , categories = categories
+      , currency = currency
+      , currencies = currencies
+      , seed = initialSeed flags.seed
+      , expenses = expenses
+      , error = Nothing
+
+      -- , page = page
+      , menu = MenuClosed
+      , exchange = Nothing
+      , vars =
             Vars
                 flags.fixer_api_key
-        }
+      }
+    , Cmd.none
+    )
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         UpdateAmount value ->
-            let
-                amount =
-                    case String.toFloat value of
-                        Ok result ->
-                            Just result
-
-                        Err _ ->
-                            Nothing
-            in
-                { model | amount = amount } ! []
+            --     let
+            --         amount =
+            --             case String.toFloat value of
+            --                 Ok result ->
+            --                     Just result
+            --
+            --                 Err _ ->
+            --                     Nothing
+            --     in
+            ( { model | amount = String.toFloat value }
+            , Cmd.none
+            )
 
         Submit ->
-            ( model, Task.perform AddExpense Date.now )
+            ( model, Task.perform AddExpense Time.now )
 
         AddExpense date ->
             addExpense model date
 
         SelectCategory category ->
-            { model | category = Just category } ! []
+            ( { model | category = Just category }
+            , Cmd.none
+            )
 
         SelectCurrency selected ->
             case find (\{ code } -> selected == code) model.currencies of
@@ -230,7 +242,7 @@ update msg model =
                                 |> Encode.encode 0
                                 |> storeCurrency
                     in
-                        ( { model | currency = Just currency }, cmd )
+                    ( { model | currency = Just currency }, cmd )
 
                 Nothing ->
                     handleError
@@ -239,7 +251,9 @@ update msg model =
                         "Invalid currency selected"
 
         CloseError ->
-            { model | error = Nothing } ! []
+            ( { model | error = Nothing }
+            , Cmd.none
+            )
 
         ToggleMenu ->
             let
@@ -251,29 +265,35 @@ update msg model =
                         MenuClosed ->
                             MenuOpen
             in
-                { model | menu = state } ! []
+            ( { model | menu = state }
+            , Cmd.none
+            )
 
-        LocationChange location ->
-            let
-                page =
-                    parseLocation location
-            in
-                ( { model | page = page, menu = MenuClosed }, Cmd.none )
-
+        -- LocationChange location ->
+        --     let
+        --         page =
+        --             parseLocation location
+        --     in
+        --     ( { model | page = page, menu = MenuClosed }, Cmd.none )
         NewRates result ->
             case result of
                 Ok exchange ->
-                    { model | exchange = Just (Debug.log "exchange" exchange) } ! []
+                    ( { model | exchange = Just (Debug.log "exchange" exchange) }
+                    , Cmd.none
+                    )
 
                 Err error ->
                     let
                         log =
                             Debug.log "http" error
                     in
-                        handleError
-                            model
-                            FetchError
-                            "Unable to fetch the exchange rates from the fixer.io API"
+                    handleError
+                        model
+                        FetchError
+                        "Unable to fetch the exchange rates from the fixer.io API"
+
+        _ ->
+            Debug.todo "Add LinkClicked and UrlChanged"
 
 
 fetchRates : Maybe String -> Cmd Msg
@@ -290,39 +310,45 @@ fetchRates apiKey =
         request =
             Http.get url decodeExchange
     in
-        Http.send NewRates request
+    Http.send NewRates request
 
 
-addExpense : Model -> Date.Date -> ( Model, Cmd Msg )
+addExpense : Model -> Time.Posix -> ( Model, Cmd Msg )
 addExpense model date =
     let
-        ( id, seed ) =
+        id =
+            "tempID"
+
+        ( _, seed ) =
             step Uuid.uuidGenerator model.seed
     in
-        case
-            Maybe.map3
-                (Expense id date)
-                model.amount
-                model.category
-                model.currency
-        of
-            Just e ->
-                ( { model
-                    | seed = seed
-                    , amount = Nothing
-                    , error = Nothing
-                    , expenses = e :: model.expenses
-                  }
-                , storeExpenses (encodeExpenses (e :: model.expenses))
-                )
+    case
+        Maybe.map3
+            (Expense id)
+            model.amount
+            model.category
+            model.currency
+    of
+        Just e ->
+            ( { model
+                | seed = seed
+                , amount = Nothing
+                , error = Nothing
+                , expenses = e :: model.expenses
+              }
+              -- , storeExpenses (encodeExpenses (e :: model.expenses))
+            , Cmd.none
+            )
 
-            Nothing ->
-                handleError
-                    model
-                    InputError
-                    "Invalid input"
+        Nothing ->
+            handleError
+                model
+                InputError
+                "Invalid input"
 
 
 handleError : Model -> ErrorType -> String -> ( Model, Cmd Msg )
 handleError model error message =
-    { model | error = Just ( error, message ) } ! []
+    ( { model | error = Just ( error, message ) }
+    , Cmd.none
+    )

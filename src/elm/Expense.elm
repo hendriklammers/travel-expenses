@@ -1,18 +1,17 @@
-module Expense
-    exposing
-        ( Category
-        , Currency
-        , Expense
-        , encodeExpenses
-        , encodeCurrency
-        , decodeExpenses
-        , decodeCurrency
-        )
+module Expense exposing
+    ( Category
+    , Currency
+    , Expense
+    , decodeCurrency
+    , decodeExpenses
+    ,  encodeCurrency
+       -- , encodeExpenses
 
-import Date exposing (Date)
-import Json.Encode as Encode
+    )
+
 import Json.Decode as Decode exposing (Decoder)
-import Uuid
+import Json.Encode as Encode
+import Time exposing (Posix)
 
 
 type alias Category =
@@ -58,8 +57,9 @@ decodeCurrency =
 
 
 type alias Expense =
-    { id : Uuid.Uuid
-    , date : Date
+    { id : String
+
+    -- , date : Posix
     , amount : Float
     , category : Category
     , currency : Currency
@@ -67,10 +67,11 @@ type alias Expense =
 
 
 encodeExpense : Expense -> Encode.Value
-encodeExpense { category, amount, currency, date, id } =
+encodeExpense { category, amount, currency, id } =
     Encode.object
-        [ ( "id", Uuid.encode id )
-        , ( "date", Encode.float (Date.toTime date) )
+        [ ( "id", Encode.string id )
+
+        -- , ( "date", Encode.float (Time.millisToPosix date) )
         , ( "amount", Encode.float amount )
         , ( "category", encodeCategory category )
         , ( "currency", encodeCurrency currency )
@@ -79,20 +80,23 @@ encodeExpense { category, amount, currency, date, id } =
 
 decodeExpense : Decoder Expense
 decodeExpense =
-    Decode.map5 Expense
-        (Decode.field "id" Uuid.decoder)
-        (Decode.field "date" decodeDate)
+    Decode.map4 Expense
+        (Decode.field "id" Decode.string)
+        -- (Decode.field "date" decodeDate)
         (Decode.field "amount" Decode.float)
         (Decode.field "category" decodeCategory)
         (Decode.field "currency" decodeCurrency)
 
 
-encodeExpenses : List Expense -> String
-encodeExpenses expenses =
-    expenses
-        |> List.map encodeExpense
-        |> Encode.list
-        |> Encode.encode 0
+
+-- encodeExpenses : List Expense -> String
+-- encodeExpenses expenses =
+--     expenses
+--         |> List.map encodeExpense
+--         |> Encode.list
+--         |> Encode.encode 0
+--
+--
 
 
 decodeExpenses : Decoder (List Expense)
@@ -100,11 +104,10 @@ decodeExpenses =
     Decode.list decodeExpense
 
 
-decodeDate : Decoder Date.Date
-decodeDate =
-    Decode.andThen dateFromFloat Decode.float
 
-
-dateFromFloat : Float -> Decoder Date.Date
-dateFromFloat date =
-    Decode.succeed (Date.fromTime date)
+-- decodeDate : Decoder Posix
+-- decodeDate =
+--     Decode.andThen dateFromFloat Decode.float
+-- dateFromFloat : Float -> Decoder Posix
+-- dateFromFloat date =
+--     Decode.succeed (Time.millisToPosix date)

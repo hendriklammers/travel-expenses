@@ -1,9 +1,8 @@
 import './scss/main.scss'
-import Elm from './elm/Main'
+import { Elm } from './elm/Main'
 
 // Flags should be either a value or null
 const flag = val => val || null
-const container = document.querySelector('#main')
 const flags = {
   seed: Math.floor(Math.random() * 0x0fffffff),
   currency: flag(localStorage.currency),
@@ -11,7 +10,7 @@ const flags = {
   exchange: flag(localStorage.exchange),
   fixer_api_key: flag(process.env.FIXER_API_KEY)
 }
-const app = Elm.Main.embed(container, flags)
+const app = Elm.Main.init({ flags })
 
 app.ports.storeCurrency.subscribe(currency => {
   localStorage.currency = currency

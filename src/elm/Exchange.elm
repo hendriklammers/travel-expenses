@@ -1,12 +1,12 @@
-module Exchange exposing (decodeExchange, Exchange)
+module Exchange exposing (Exchange, decodeExchange)
 
-import Date exposing (Date)
 import Json.Decode as Decode exposing (Decoder)
+import Time exposing (Posix)
 
 
 type alias Exchange =
-    { timestamp : Date
-    , rates : List Rate
+    -- { timestamp : Posix
+    { rates : List Rate
     }
 
 
@@ -14,14 +14,13 @@ type alias Rate =
     ( String, Float )
 
 
-decodeDate : Decoder Date.Date
-decodeDate =
-    Decode.andThen dateFromFloat Decode.float
 
-
-dateFromFloat : Float -> Decoder Date.Date
-dateFromFloat date =
-    Decode.succeed (Date.fromTime date)
+-- decodeDate : Decoder Posix
+-- decodeDate =
+--     Decode.andThen dateFromFloat Decode.float
+-- dateFromFloat : Float -> Decoder Posix
+-- dateFromFloat date =
+--     Decode.succeed (Time.millisToPosix date)
 
 
 decodeRates : Decoder (List Rate)
@@ -31,8 +30,8 @@ decodeRates =
 
 decodeExchange : Decoder Exchange
 decodeExchange =
-    Decode.map2 Exchange
-        (Decode.field "timestamp" decodeDate)
+    Decode.map Exchange
+        -- (Decode.field "timestamp" decodeDate)
         (Decode.field "rates" decodeRates)
 
 

@@ -1,17 +1,19 @@
-module Main exposing (..)
+module Main exposing (main)
 
-import Model exposing (Model, Flags)
-import Subscriptions exposing (subscriptions)
+import Browser exposing (Document)
 import Messages exposing (Msg(..))
+import Model exposing (Flags, Model)
+import Subscriptions exposing (subscriptions)
 import View.View exposing (view)
-import Navigation exposing (Location)
 
 
 main : Program Flags Model Msg
 main =
-    Navigation.programWithFlags LocationChange
+    Browser.application
         { init = Model.init
         , subscriptions = subscriptions
         , update = Model.update
         , view = view
+        , onUrlChange = UrlChanged
+        , onUrlRequest = LinkClicked
         }

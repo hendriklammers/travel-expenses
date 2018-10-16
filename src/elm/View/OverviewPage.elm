@@ -2,8 +2,8 @@ module View.OverviewPage exposing (view)
 
 import Html exposing (Html, section, text)
 import Html.Attributes as H
-import Model exposing (Model)
 import Messages exposing (Msg)
+import Model exposing (Model)
 
 
 view : Model -> Html Msg

@@ -7,17 +7,15 @@ const HTMLWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const Dotenv = require('dotenv-webpack')
+const env = process.env.NODE_ENV || 'development'
 
-const MODE =
-  process.env.npm_lifecycle_event === 'prod' ? 'production' : 'development'
-const filename = MODE === 'production' ? '[name]-[hash].js' : 'index.js'
+const filename = env === 'production' ? '[name]-[hash].js' : 'index.js'
 
 const common = {
-  mode: MODE,
   entry: './src/index.js',
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: filename
+    filename: env === 'production' ? '[name]-[hash].js' : 'index.js'
   },
   plugins: [
     new HTMLWebpackPlugin({
@@ -84,7 +82,8 @@ const common = {
   }
 }
 
-const development = {
+const dev = {
+  mode: 'development',
   plugins: [
     // Suggested for hot-loading
     new webpack.NamedModulesPlugin(),
@@ -98,7 +97,7 @@ const development = {
         exclude: [/elm-stuff/, /node_modules/],
         use: [
           {
-            loader: 'elm-hot-loader'
+            loader: 'elm-hot-webpack-loader'
           },
           {
             loader: 'elm-webpack-loader',
@@ -120,7 +119,8 @@ const development = {
   }
 }
 
-const production = {
+const prod = {
+  mode: 'production',
   plugins: [
     new CleanWebpackPlugin(['dist'], {
       root: __dirname,
@@ -172,5 +172,5 @@ const production = {
   }
 }
 
-console.log(`Building for ${MODE}..`)
-module.exports = merge(common, MODE === 'production' ? production : development)
+console.log(`Building for ${env}..`)
+module.exports = merge(common, env === 'production' ? prod : dev)

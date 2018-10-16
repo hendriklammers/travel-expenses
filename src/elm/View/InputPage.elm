@@ -1,25 +1,25 @@
 module View.InputPage exposing (view)
 
-import Model exposing (Model, ErrorType(..))
+import Expense exposing (Category, Currency)
 import Html
     exposing
         ( Html
         , a
-        , text
-        , div
-        , input
-        , section
-        , form
         , button
+        , div
         , fieldset
+        , form
+        , input
         , label
-        , select
         , option
+        , section
+        , select
+        , text
         )
-import Messages exposing (Msg(..))
 import Html.Attributes as H
 import Html.Events exposing (onClick, onInput, onSubmit)
-import Expense exposing (Category, Currency)
+import Messages exposing (Msg(..))
+import Model exposing (ErrorType(..), Model)
 
 
 view : Model -> Html Msg
@@ -44,42 +44,43 @@ viewAmount model =
     let
         value =
             case model.amount of
-                Just value ->
-                    toString value
+                Just amount ->
+                    String.fromFloat amount
 
                 Nothing ->
                     ""
     in
-        div [ H.class "field" ]
-            [ label
-                [ H.class "label" ]
-                [ text "Amount" ]
-            , div
-                [ H.class "control" ]
-                [ input
-                    [ H.type_ "number"
-                    , H.placeholder "0.00"
-                    , H.id "amount-input"
-                    , H.class "input amount-input"
-                    , H.step ".01"
-                    , H.value value
-                    , onInput UpdateAmount
-                    ]
-                    []
+    div [ H.class "field" ]
+        [ label
+            [ H.class "label" ]
+            [ text "Amount" ]
+        , div
+            [ H.class "control" ]
+            [ input
+                [ H.type_ "number"
+                , H.placeholder "0.00"
+                , H.id "amount-input"
+                , H.class "input amount-input"
+                , H.step ".01"
+                , H.value value
+                , onInput UpdateAmount
                 ]
+                []
             ]
+        ]
 
 
 viewCurrencyOption : Maybe Currency -> Currency -> Html Msg
 viewCurrencyOption active { code, name } =
     option
-        ([ (H.value code) ]
-            ++ case active of
-                Just c ->
-                    [ H.selected (c.code == code) ]
+        ([ H.value code ]
+            ++ (case active of
+                    Just c ->
+                        [ H.selected (c.code == code) ]
 
-                Nothing ->
-                    []
+                    Nothing ->
+                        []
+               )
         )
         [ text (code ++ " - " ++ name) ]
 
@@ -115,12 +116,13 @@ viewCategory active category =
              , H.name "category"
              , onClick (SelectCategory category)
              ]
-                ++ case active of
-                    Just c ->
-                        [ H.checked (c == category) ]
+                ++ (case active of
+                        Just c ->
+                            [ H.checked (c == category) ]
 
-                    Nothing ->
-                        []
+                        Nothing ->
+                            []
+                   )
             )
             []
         , text category.name

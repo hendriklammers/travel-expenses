@@ -1,24 +1,29 @@
 module View.View exposing (view)
 
+import Browser
 import Html
     exposing
         ( Html
         , a
         , button
-        , nav
         , div
         , h1
-        , text
+        , nav
         , span
+        , text
         )
 import Html.Attributes as H
 import Html.Attributes.Aria as Aria
 import Html.Events exposing (onClick)
-import Model exposing (Model, MenuState(..), Error)
-import Routing exposing (Page(..))
 import Messages exposing (Msg(..))
+import Model exposing (Error, MenuState(..), Model)
 import View.InputPage as InputPageView
 import View.OverviewPage as OverviewPageView
+
+
+type Page
+    = InputPage
+    | OverviewPage
 
 
 type alias MenuItem =
@@ -75,37 +80,43 @@ viewMenuItem active ( label, page ) =
         activeClass =
             if active == page then
                 " is-active"
+
             else
                 ""
 
         href =
-            ("/#" ++ String.toLower label)
+            "/#" ++ String.toLower label
     in
-        a
-            [ H.href href
-            , H.class ("navbar-item is-capitalized" ++ activeClass)
-            ]
-            [ text label ]
+    a
+        [ H.href href
+        , H.class ("navbar-item is-capitalized" ++ activeClass)
+        ]
+        [ text label ]
 
 
 viewMenu : Model -> Html Msg
-viewMenu { menu, page } =
+viewMenu { menu } =
+    let
+        active =
+            InputPage
+    in
     div
         [ H.class ("navbar-menu" ++ menuClass menu) ]
         [ div
             [ H.class "navbar-end" ]
-            (List.map (viewMenuItem page) menuItems)
+            (List.map (viewMenuItem active) menuItems)
         ]
 
 
-viewPage : Model -> Html Msg
-viewPage model =
-    case model.page of
-        InputPage ->
-            InputPageView.view model
 
-        OverviewPage ->
-            OverviewPageView.view model
+-- viewPage : Model -> Html Msg
+-- viewPage model =
+--     case model.page of
+--         InputPage ->
+--             InputPageView.view model
+--
+--         OverviewPage ->
+--             OverviewPageView.view model
 
 
 viewError : Maybe Error -> Html Msg
@@ -126,11 +137,17 @@ viewError error =
             text ""
 
 
-view : Model -> Html Msg
+view : Model -> Browser.Document Msg
 view model =
-    div
-        [ H.class "container-fluid" ]
-        [ viewError model.error
-        , viewNavbar model
-        , viewPage model
+    { title = "Travel Expenses"
+    , body =
+        [ div
+            [ H.class "container-fluid" ]
+            [ viewError model.error
+            , viewNavbar model
+            , InputPageView.view model
+
+            -- , viewPage model
+            ]
         ]
+    }

@@ -1,4 +1,4 @@
-port module Ports exposing (..)
+port module Ports exposing (storeCurrency, storeExchange, storeExpenses)
 
 
 port storeCurrency : String -> Cmd msg

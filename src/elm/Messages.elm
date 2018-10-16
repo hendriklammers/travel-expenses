@@ -1,10 +1,11 @@
 module Messages exposing (Msg(..))
 
-import Date exposing (Date)
-import Expense exposing (Category)
-import Navigation exposing (Location)
-import Http
+import Browser
 import Exchange exposing (Exchange)
+import Expense exposing (Category)
+import Http
+import Time exposing (Posix)
+import Url
 
 
 type Msg
@@ -12,8 +13,9 @@ type Msg
     | SelectCategory Category
     | SelectCurrency String
     | Submit
-    | AddExpense Date
+    | AddExpense Posix
     | CloseError
     | ToggleMenu
-    | LocationChange Location
     | NewRates (Result Http.Error Exchange)
+    | LinkClicked Browser.UrlRequest
+    | UrlChanged Url.Url
