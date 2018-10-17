@@ -19,6 +19,7 @@ import Messages exposing (Msg(..))
 import Model exposing (Error, MenuState(..), Model)
 import Route exposing (Route(..))
 import View.Input as InputView
+import View.Notfound as NotfoundView
 import View.Overview as OverviewView
 
 
@@ -117,7 +118,7 @@ viewPage model =
             OverviewView.view model
 
         NotFound ->
-            Debug.todo "add not found view"
+            NotfoundView.view model
 
 
 viewError : Maybe Error -> Html Msg

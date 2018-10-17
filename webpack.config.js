@@ -1,6 +1,7 @@
 const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
+const history = require('koa-connect-history-api-fallback')
 const autoprefixer = require('autoprefixer')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
@@ -8,8 +9,6 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const Dotenv = require('dotenv-webpack')
 const env = process.env.NODE_ENV || 'development'
-
-const filename = env === 'production' ? '[name]-[hash].js' : 'index.js'
 
 const common = {
   entry: './src/index.js',
@@ -114,8 +113,19 @@ const dev = {
     inline: true,
     stats: 'errors-only',
     content: path.join(__dirname, 'src/assets'),
-    historyApiFallback: true,
-    port: 3000
+    port: 3000,
+    add: app =>
+      app.use(
+        history({
+          verbose: true,
+          rewrites: [
+            {
+              from: /\/index.js$/,
+              to: () => '/index.js'
+            }
+          ]
+        })
+      )
   }
 }
 
