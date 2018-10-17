@@ -8,6 +8,7 @@ module Model exposing
     , update
     )
 
+import Browser
 import Browser.Navigation as Nav
 import Exchange exposing (Exchange, decodeExchange)
 import Expense
@@ -27,6 +28,7 @@ import List.Extra exposing (find)
 import Messages exposing (Msg(..))
 import Ports exposing (storeCurrency, storeExpenses)
 import Random exposing (Seed, initialSeed, step)
+import Route exposing (Route(..), toRoute)
 import Task
 import Time
 import Url
@@ -61,8 +63,9 @@ type alias Model =
     , seed : Seed
     , expenses : List Expense
     , error : Maybe Error
-
-    -- , page : Page
+    , key : Nav.Key
+    , url : Url.Url
+    , route : Route
     , menu : MenuState
     , exchange : Maybe Exchange
     , vars : Vars
@@ -132,20 +135,6 @@ type alias Flags =
     }
 
 
-
--- init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
--- init flags url key =
---     ( Model key url, Cmd.none )
--- init : flags -> Url -> Key -> ( model, Cmd msg )
--- init : Flags -> Location -> ( Model, Cmd Msg )
--- init flags location =
---     let
---         page =
---             parseLocation location
---     in
---     ( initial flags page, Cmd.none )
-
-
 init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
@@ -192,8 +181,9 @@ init flags url key =
       , seed = initialSeed flags.seed
       , expenses = expenses
       , error = Nothing
-
-      -- , page = page
+      , key = key
+      , url = url
+      , route = toRoute url
       , menu = MenuClosed
       , exchange = Nothing
       , vars =
@@ -292,8 +282,16 @@ update msg model =
                         FetchError
                         "Unable to fetch the exchange rates from the fixer.io API"
 
-        _ ->
-            Debug.todo "Add LinkClicked and UrlChanged"
+        LinkClicked urlRequest ->
+            case urlRequest of
+                Browser.Internal url ->
+                    ( model, Nav.pushUrl model.key (Url.toString url) )
+
+                Browser.External href ->
+                    ( model, Nav.load href )
+
+        UrlChanged url ->
+            ( { model | url = url, route = toRoute url }, Cmd.none )
 
 
 fetchRates : Maybe String -> Cmd Msg

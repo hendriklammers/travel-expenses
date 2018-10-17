@@ -17,17 +17,16 @@ import Html.Attributes.Aria as Aria
 import Html.Events exposing (onClick)
 import Messages exposing (Msg(..))
 import Model exposing (Error, MenuState(..), Model)
-import View.InputPage as InputPageView
-import View.OverviewPage as OverviewPageView
-
-
-type Page
-    = InputPage
-    | OverviewPage
+import Route exposing (Route(..))
+import View.Input as InputView
+import View.Overview as OverviewView
 
 
 type alias MenuItem =
-    ( String, Page )
+    { label : String
+    , path : String
+    , route : Route
+    }
 
 
 viewNavbar : Model -> Html Msg
@@ -69,23 +68,23 @@ menuClass state =
 
 menuItems : List MenuItem
 menuItems =
-    [ ( "Input", InputPage )
-    , ( "Overview", OverviewPage )
+    [ MenuItem "Input" "" Input
+    , MenuItem "Overview" "overview" Overview
     ]
 
 
-viewMenuItem : Page -> MenuItem -> Html Msg
-viewMenuItem active ( label, page ) =
+viewMenuItem : Route -> MenuItem -> Html Msg
+viewMenuItem active { label, route, path } =
     let
         activeClass =
-            if active == page then
+            if active == route then
                 " is-active"
 
             else
                 ""
 
         href =
-            "/#" ++ String.toLower label
+            "/" ++ path
     in
     a
         [ H.href href
@@ -95,10 +94,10 @@ viewMenuItem active ( label, page ) =
 
 
 viewMenu : Model -> Html Msg
-viewMenu { menu } =
+viewMenu { menu, route } =
     let
         active =
-            InputPage
+            route
     in
     div
         [ H.class ("navbar-menu" ++ menuClass menu) ]
@@ -108,15 +107,17 @@ viewMenu { menu } =
         ]
 
 
+viewPage : Model -> Html Msg
+viewPage model =
+    case model.route of
+        Input ->
+            InputView.view model
 
--- viewPage : Model -> Html Msg
--- viewPage model =
---     case model.page of
---         InputPage ->
---             InputPageView.view model
---
---         OverviewPage ->
---             OverviewPageView.view model
+        Overview ->
+            OverviewView.view model
+
+        NotFound ->
+            Debug.todo "add not found view"
 
 
 viewError : Maybe Error -> Html Msg
@@ -145,9 +146,7 @@ view model =
             [ H.class "container-fluid" ]
             [ viewError model.error
             , viewNavbar model
-            , InputPageView.view model
-
-            -- , viewPage model
+            , viewPage model
             ]
         ]
     }

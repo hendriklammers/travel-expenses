@@ -1,4 +1,4 @@
-module View.InputPage exposing (view)
+module View.Input exposing (view)
 
 import Expense exposing (Category, Currency)
 import Html

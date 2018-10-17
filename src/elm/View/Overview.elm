@@ -1,4 +1,4 @@
-module View.OverviewPage exposing (view)
+module View.Overview exposing (view)
 
 import Html exposing (Html, section, text)
 import Html.Attributes as H
