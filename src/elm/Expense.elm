@@ -4,9 +4,8 @@ module Expense exposing
     , Expense
     , decodeCurrency
     , decodeExpenses
-    ,  encodeCurrency
-       -- , encodeExpenses
-
+    , encodeCurrency
+    , encodeExpenses
     )
 
 import Json.Decode as Decode exposing (Decoder)
@@ -88,15 +87,12 @@ decodeExpense =
         (Decode.field "currency" decodeCurrency)
 
 
-
--- encodeExpenses : List Expense -> String
--- encodeExpenses expenses =
---     expenses
---         |> List.map encodeExpense
---         |> Encode.list
---         |> Encode.encode 0
---
---
+encodeExpenses : List Expense -> String
+encodeExpenses expenses =
+    expenses
+        -- |> List.map encodeExpense
+        |> Encode.list encodeExpense
+        |> Encode.encode 0
 
 
 decodeExpenses : Decoder (List Expense)

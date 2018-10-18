@@ -19,7 +19,7 @@ import Expense
         , decodeCurrency
         , decodeExpenses
         , encodeCurrency
-          -- , encodeExpenses
+        , encodeExpenses
         )
 import Http
 import Json.Decode as Decode
@@ -196,15 +196,6 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         UpdateAmount value ->
-            --     let
-            --         amount =
-            --             case String.toFloat value of
-            --                 Ok result ->
-            --                     Just result
-            --
-            --                 Err _ ->
-            --                     Nothing
-            --     in
             ( { model | amount = String.toFloat value }
             , Cmd.none
             )
@@ -283,7 +274,12 @@ update msg model =
                     ( model, Nav.load href )
 
         UrlChanged url ->
-            ( { model | route = toRoute url, menu = MenuClosed }, Cmd.none )
+            ( { model
+                | route = toRoute url
+                , menu = MenuClosed
+              }
+            , Cmd.none
+            )
 
 
 fetchRates : Maybe String -> Cmd Msg
@@ -326,8 +322,7 @@ addExpense model date =
                 , error = Nothing
                 , expenses = e :: model.expenses
               }
-              -- , storeExpenses (encodeExpenses (e :: model.expenses))
-            , Cmd.none
+            , storeExpenses (encodeExpenses (e :: model.expenses))
             )
 
         Nothing ->
