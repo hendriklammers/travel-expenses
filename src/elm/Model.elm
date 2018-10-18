@@ -64,7 +64,6 @@ type alias Model =
     , expenses : List Expense
     , error : Maybe Error
     , key : Nav.Key
-    , url : Url.Url
     , route : Route
     , menu : MenuState
     , exchange : Maybe Exchange
@@ -182,7 +181,6 @@ init flags url key =
       , expenses = expenses
       , error = Nothing
       , key = key
-      , url = url
       , route = toRoute url
       , menu = MenuClosed
       , exchange = Nothing
@@ -259,12 +257,6 @@ update msg model =
             , Cmd.none
             )
 
-        -- LocationChange location ->
-        --     let
-        --         page =
-        --             parseLocation location
-        --     in
-        --     ( { model | page = page, menu = MenuClosed }, Cmd.none )
         NewRates result ->
             case result of
                 Ok exchange ->
@@ -291,7 +283,7 @@ update msg model =
                     ( model, Nav.load href )
 
         UrlChanged url ->
-            ( { model | url = url, route = toRoute url }, Cmd.none )
+            ( { model | route = toRoute url, menu = MenuClosed }, Cmd.none )
 
 
 fetchRates : Maybe String -> Cmd Msg
