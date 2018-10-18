@@ -307,7 +307,7 @@ addExpense model date =
     in
     case
         Maybe.map3
-            (Expense id)
+            (Expense id date)
             model.amount
             model.category
             model.currency

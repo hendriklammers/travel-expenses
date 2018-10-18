@@ -58,8 +58,7 @@ decodeCurrency =
 
 type alias Expense =
     { id : Uuid.Uuid
-
-    -- , date : Posix
+    , date : Posix
     , amount : Float
     , category : Category
     , currency : Currency
@@ -67,25 +66,14 @@ type alias Expense =
 
 
 encodeExpense : Expense -> Encode.Value
-encodeExpense { category, amount, currency, id } =
+encodeExpense { category, amount, currency, id, date } =
     Encode.object
         [ ( "id", Uuid.encode id )
-
-        -- , ( "date", Encode.float (Time.millisToPosix date) )
+        , ( "date", Encode.int (Time.posixToMillis date) )
         , ( "amount", Encode.float amount )
         , ( "category", encodeCategory category )
         , ( "currency", encodeCurrency currency )
         ]
-
-
-decodeExpense : Decoder Expense
-decodeExpense =
-    Decode.map4 Expense
-        (Decode.field "id" Uuid.decoder)
-        -- (Decode.field "date" decodeDate)
-        (Decode.field "amount" Decode.float)
-        (Decode.field "category" decodeCategory)
-        (Decode.field "currency" decodeCurrency)
 
 
 encodeExpenses : List Expense -> String
@@ -95,15 +83,23 @@ encodeExpenses expenses =
         |> Encode.encode 0
 
 
+decodeExpense : Decoder Expense
+decodeExpense =
+    Decode.map5 Expense
+        (Decode.field "id" Uuid.decoder)
+        (Decode.field "date" decodeDate)
+        (Decode.field "amount" Decode.float)
+        (Decode.field "category" decodeCategory)
+        (Decode.field "currency" decodeCurrency)
+
+
 decodeExpenses : Decoder (List Expense)
 decodeExpenses =
     Decode.list decodeExpense
 
 
-
--- decodeDate : Decoder Posix
--- decodeDate =
---     Decode.andThen dateFromFloat Decode.float
--- dateFromFloat : Float -> Decoder Posix
--- dateFromFloat date =
---     Decode.succeed (Time.millisToPosix date)
+decodeDate : Decoder Posix
+decodeDate =
+    Decode.andThen
+        (\date -> Decode.succeed (Time.millisToPosix date))
+        Decode.int
