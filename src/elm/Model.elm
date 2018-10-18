@@ -302,10 +302,7 @@ fetchRates apiKey =
 addExpense : Model -> Time.Posix -> ( Model, Cmd Msg )
 addExpense model date =
     let
-        id =
-            "tempID"
-
-        ( _, seed ) =
+        ( id, seed ) =
             step Uuid.uuidGenerator model.seed
     in
     case

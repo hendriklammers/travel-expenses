@@ -11,6 +11,7 @@ module Expense exposing
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
 import Time exposing (Posix)
+import Uuid
 
 
 type alias Category =
@@ -56,7 +57,7 @@ decodeCurrency =
 
 
 type alias Expense =
-    { id : String
+    { id : Uuid.Uuid
 
     -- , date : Posix
     , amount : Float
@@ -68,7 +69,7 @@ type alias Expense =
 encodeExpense : Expense -> Encode.Value
 encodeExpense { category, amount, currency, id } =
     Encode.object
-        [ ( "id", Encode.string id )
+        [ ( "id", Uuid.encode id )
 
         -- , ( "date", Encode.float (Time.millisToPosix date) )
         , ( "amount", Encode.float amount )
@@ -80,7 +81,7 @@ encodeExpense { category, amount, currency, id } =
 decodeExpense : Decoder Expense
 decodeExpense =
     Decode.map4 Expense
-        (Decode.field "id" Decode.string)
+        (Decode.field "id" Uuid.decoder)
         -- (Decode.field "date" decodeDate)
         (Decode.field "amount" Decode.float)
         (Decode.field "category" decodeCategory)
@@ -90,7 +91,6 @@ decodeExpense =
 encodeExpenses : List Expense -> String
 encodeExpenses expenses =
     expenses
-        -- |> List.map encodeExpense
         |> Encode.list encodeExpense
         |> Encode.encode 0
 
