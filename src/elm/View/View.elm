@@ -30,6 +30,13 @@ type alias MenuItem =
     }
 
 
+menuItems : List MenuItem
+menuItems =
+    [ MenuItem "Input" "" Input
+    , MenuItem "Overview" "overview" Overview
+    ]
+
+
 viewNavbar : Model -> Html Msg
 viewNavbar model =
     nav
@@ -67,13 +74,6 @@ menuClass state =
             ""
 
 
-menuItems : List MenuItem
-menuItems =
-    [ MenuItem "Input" "" Input
-    , MenuItem "Overview" "overview" Overview
-    ]
-
-
 viewMenuItem : Route -> MenuItem -> Html Msg
 viewMenuItem active { label, route, path } =
     let
@@ -83,12 +83,9 @@ viewMenuItem active { label, route, path } =
 
             else
                 ""
-
-        href =
-            "/" ++ path
     in
     a
-        [ H.href href
+        [ H.href ("/" ++ path)
         , H.class ("navbar-item is-capitalized" ++ activeClass)
         ]
         [ text label ]
