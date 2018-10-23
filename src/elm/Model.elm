@@ -184,9 +184,7 @@ init flags url key =
       , route = toRoute url
       , menu = MenuClosed
       , exchange = Nothing
-      , vars =
-            Vars
-                flags.fixer_api_key
+      , vars = Vars flags.fixer_api_key
       }
     , Cmd.none
     )
