@@ -19,8 +19,8 @@ import Messages exposing (Msg)
 import Model exposing (Model)
 
 
-aggregateTotal : Expense -> Dict String Float -> Dict String Float
-aggregateTotal { currency, amount } acc =
+addAmount : Expense -> Dict String Float -> Dict String Float
+addAmount { currency, amount } acc =
     Dict.update
         currency.code
         (\value ->
@@ -37,7 +37,7 @@ aggregateTotal { currency, amount } acc =
 currencyTotals : List Expense -> List ( String, Float )
 currencyTotals expenses =
     expenses
-        |> List.foldl aggregateTotal Dict.empty
+        |> List.foldl addAmount Dict.empty
         |> Dict.toList
 
 
