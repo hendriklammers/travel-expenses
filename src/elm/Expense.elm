@@ -2,9 +2,14 @@ module Expense exposing
     ( Category
     , Currency
     , Expense
+    , decodeCategory
     , decodeCurrency
+    , decodeDate
+    , decodeExpense
     , decodeExpenses
+    , encodeCategory
     , encodeCurrency
+    , encodeExpense
     , encodeExpenses
     )
 
