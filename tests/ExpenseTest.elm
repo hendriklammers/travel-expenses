@@ -5,12 +5,10 @@ import Expense
     exposing
         ( Category
         , Currency
-        , decodeCategory
-        , decodeCurrency
-        , decodeExpense
+        , categoryDecoder
+        , currencyDecoder
         , encodeCategory
         , encodeCurrency
-        , encodeExpense
         )
 import Fuzz exposing (Fuzzer)
 import Json.Decode as Decode
@@ -48,7 +46,7 @@ testCurrency =
                         """
 
                     output =
-                        Decode.decodeString decodeCurrency input
+                        Decode.decodeString currencyDecoder input
                 in
                 Expect.equal output
                     (Ok (Currency "THB" "Thai Baht"))
@@ -56,7 +54,7 @@ testCurrency =
             \currency ->
                 currency
                     |> encodeCurrency
-                    |> Decode.decodeValue decodeCurrency
+                    |> Decode.decodeValue currencyDecoder
                     |> Expect.equal (Ok currency)
         ]
 
@@ -83,7 +81,7 @@ testCategory =
                         """
 
                     output =
-                        Decode.decodeString decodeCategory input
+                        Decode.decodeString categoryDecoder input
                 in
                 Expect.equal output
                     (Ok
@@ -96,7 +94,7 @@ testCategory =
             \category ->
                 category
                     |> encodeCategory
-                    |> Decode.decodeValue decodeCategory
+                    |> Decode.decodeValue categoryDecoder
                     |> Expect.equal (Ok category)
         ]
 
@@ -109,6 +107,6 @@ testCategory =
 --             \expense ->
 --                 expense
 --                     |> encodeExpense
---                     |> Decode.decodeValue decodeExpense
+--                     |> Decode.decodeValue expenseDecoder
 --                     |> Expect.equal (Ok expense)
 --         ]

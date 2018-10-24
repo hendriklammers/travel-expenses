@@ -16,10 +16,10 @@ import Expense
         ( Category
         , Currency
         , Expense
-        , decodeCurrency
-        , decodeExpenses
+        , currencyDecoder
         , encodeCurrency
         , encodeExpenses
+        , expensesDecoder
         )
 import Http
 import Json.Decode as Decode
@@ -140,7 +140,7 @@ init flags url key =
         currency =
             case flags.currency of
                 Just json ->
-                    case Decode.decodeString decodeCurrency json of
+                    case Decode.decodeString currencyDecoder json of
                         Ok result ->
                             Just result
 
@@ -158,7 +158,7 @@ init flags url key =
         expenses =
             case flags.expenses of
                 Just json ->
-                    case Decode.decodeString decodeExpenses json of
+                    case Decode.decodeString expensesDecoder json of
                         Ok result ->
                             result
 

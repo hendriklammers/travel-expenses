@@ -2,15 +2,15 @@ module Expense exposing
     ( Category
     , Currency
     , Expense
-    , decodeCategory
-    , decodeCurrency
-    , decodeDate
-    , decodeExpense
-    , decodeExpenses
+    , categoryDecoder
+    , currencyDecoder
+    , dateDecoder
     , encodeCategory
     , encodeCurrency
     , encodeExpense
     , encodeExpenses
+    , expenseDecoder
+    , expensesDecoder
     )
 
 import Json.Decode as Decode exposing (Decoder)
@@ -33,8 +33,8 @@ encodeCategory { id, name } =
         ]
 
 
-decodeCategory : Decoder Category
-decodeCategory =
+categoryDecoder : Decoder Category
+categoryDecoder =
     Decode.map2 Category
         (Decode.field "id" Decode.string)
         (Decode.field "name" Decode.string)
@@ -54,8 +54,8 @@ encodeCurrency { code, name } =
         ]
 
 
-decodeCurrency : Decoder Currency
-decodeCurrency =
+currencyDecoder : Decoder Currency
+currencyDecoder =
     Decode.map2 Currency
         (Decode.field "code" Decode.string)
         (Decode.field "name" Decode.string)
@@ -88,23 +88,23 @@ encodeExpenses expenses =
         |> Encode.encode 0
 
 
-decodeExpense : Decoder Expense
-decodeExpense =
+expenseDecoder : Decoder Expense
+expenseDecoder =
     Decode.map5 Expense
         (Decode.field "id" Uuid.decoder)
-        (Decode.field "date" decodeDate)
+        (Decode.field "date" dateDecoder)
         (Decode.field "amount" Decode.float)
-        (Decode.field "category" decodeCategory)
-        (Decode.field "currency" decodeCurrency)
+        (Decode.field "category" categoryDecoder)
+        (Decode.field "currency" currencyDecoder)
 
 
-decodeExpenses : Decoder (List Expense)
-decodeExpenses =
-    Decode.list decodeExpense
+expensesDecoder : Decoder (List Expense)
+expensesDecoder =
+    Decode.list expenseDecoder
 
 
-decodeDate : Decoder Posix
-decodeDate =
+dateDecoder : Decoder Posix
+dateDecoder =
     Decode.andThen
         (\date -> Decode.succeed (Time.millisToPosix date))
         Decode.int
