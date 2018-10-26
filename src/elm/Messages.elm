@@ -1,6 +1,7 @@
 module Messages exposing (Msg(..))
 
 import Browser
+import DatePicker
 import Exchange exposing (Exchange)
 import Expense exposing (Category)
 import Http
@@ -19,3 +20,5 @@ type Msg
     | NewRates (Result Http.Error Exchange)
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
+    | ToStartDatePicker DatePicker.Msg
+    | ToEndDatePicker DatePicker.Msg

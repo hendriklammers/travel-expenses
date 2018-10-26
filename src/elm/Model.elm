@@ -4,12 +4,16 @@ module Model exposing
     , Flags
     , MenuState(..)
     , Model
+    , endSettings
     , init
+    , startSettings
     , update
     )
 
 import Browser
 import Browser.Navigation as Nav
+import Date exposing (Date)
+import DatePicker exposing (DateEvent(..), defaultSettings)
 import Exchange exposing (Exchange, decodeExchange)
 import Expense
     exposing
@@ -68,6 +72,10 @@ type alias Model =
     , menu : MenuState
     , exchange : Maybe Exchange
     , vars : Vars
+    , startDate : Maybe Date
+    , endDate : Maybe Date
+    , startDatePicker : DatePicker.DatePicker
+    , endDatePicker : DatePicker.DatePicker
     }
 
 
@@ -136,6 +144,7 @@ type alias Flags =
 
 init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
+    -- TODO: Cleanup code duplication
     let
         currency =
             case flags.currency of
@@ -171,6 +180,12 @@ init flags url key =
 
                 Nothing ->
                     []
+
+        ( startDatePicker, startDatePickerFx ) =
+            DatePicker.init
+
+        ( endDatePicker, endDatePickerFx ) =
+            DatePicker.init
     in
     ( { amount = Nothing
       , category = List.head categories
@@ -185,8 +200,15 @@ init flags url key =
       , menu = MenuClosed
       , exchange = Nothing
       , vars = Vars flags.fixer_api_key
+      , startDate = Nothing
+      , startDatePicker = startDatePicker
+      , endDate = Nothing
+      , endDatePicker = endDatePicker
       }
-    , Cmd.none
+    , Cmd.batch
+        [ Cmd.map ToStartDatePicker startDatePickerFx
+        , Cmd.map ToEndDatePicker endDatePickerFx
+        ]
     )
 
 
@@ -278,6 +300,106 @@ update msg model =
               }
             , Cmd.none
             )
+
+        ToStartDatePicker subMsg ->
+            let
+                ( newDatePicker, dateEvent ) =
+                    DatePicker.update (startSettings model.endDate) subMsg model.startDatePicker
+
+                newDate =
+                    case dateEvent of
+                        Picked changedDate ->
+                            Just changedDate
+
+                        _ ->
+                            model.startDate
+            in
+            ( { model
+                | startDate = newDate
+                , startDatePicker = newDatePicker
+              }
+            , Cmd.none
+            )
+
+        ToEndDatePicker subMsg ->
+            let
+                ( newDatePicker, dateEvent ) =
+                    DatePicker.update (endSettings model.startDate) subMsg model.endDatePicker
+
+                newDate =
+                    case dateEvent of
+                        Picked changedDate ->
+                            Just changedDate
+
+                        _ ->
+                            model.endDate
+            in
+            ( { model
+                | endDate = newDate
+                , endDatePicker = newDatePicker
+              }
+            , Cmd.none
+            )
+
+
+
+-- Could be used to customize common settings for both date pickers. Like for
+-- example disabling weekends from them.
+
+
+commonSettings : DatePicker.Settings
+commonSettings =
+    defaultSettings
+
+
+
+-- Extend commonSettings with isDisabled function which would disable dates
+-- after already selected end date because range start should come before end.
+
+
+startSettings : Maybe Date -> DatePicker.Settings
+startSettings endDate =
+    let
+        isDisabled =
+            case endDate of
+                Nothing ->
+                    commonSettings.isDisabled
+
+                Just date ->
+                    \d ->
+                        Date.toRataDie d
+                            > Date.toRataDie date
+                            || commonSettings.isDisabled d
+    in
+    { commonSettings
+        | placeholder = "Pick a start date"
+        , isDisabled = isDisabled
+    }
+
+
+
+-- Extend commonSettings with isDisabled function which would disable dates
+-- before already selected start date because range end should come after start.
+
+
+endSettings : Maybe Date -> DatePicker.Settings
+endSettings startDate =
+    let
+        isDisabled =
+            case startDate of
+                Nothing ->
+                    commonSettings.isDisabled
+
+                Just date ->
+                    \d ->
+                        Date.toRataDie d
+                            < Date.toRataDie date
+                            || commonSettings.isDisabled d
+    in
+    { commonSettings
+        | placeholder = "Pick an end date"
+        , isDisabled = isDisabled
+    }
 
 
 fetchRates : Maybe String -> Cmd Msg

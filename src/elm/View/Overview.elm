@@ -1,10 +1,14 @@
 module View.Overview exposing (view)
 
+import Date exposing (Date)
+import DatePicker
 import Dict exposing (Dict)
 import Expense exposing (Expense)
 import Html
     exposing
         ( Html
+        , div
+        , h1
         , section
         , table
         , tbody
@@ -16,8 +20,8 @@ import Html
         , tr
         )
 import Html.Attributes as H
-import Messages exposing (Msg)
-import Model exposing (Model)
+import Messages exposing (Msg(..))
+import Model exposing (Model, endSettings, startSettings)
 
 
 addAmount : Expense -> Dict String Float -> Dict String Float
@@ -74,11 +78,44 @@ viewRow ( currency, amount ) =
         ]
 
 
+viewDatePicker : Model -> Html Msg
+viewDatePicker model =
+    div []
+        [ viewRange model.startDate model.endDate
+        , DatePicker.view model.startDate (startSettings model.endDate) model.startDatePicker
+            |> Html.map ToStartDatePicker
+        , DatePicker.view model.endDate (endSettings model.startDate) model.endDatePicker
+            |> Html.map ToEndDatePicker
+        ]
+
+
+viewRange : Maybe Date -> Maybe Date -> Html Msg
+viewRange start end =
+    case ( start, end ) of
+        ( Nothing, Nothing ) ->
+            h1 [] [ text "Pick dates" ]
+
+        ( Just s, Nothing ) ->
+            h1 [] [ text <| formatDate s ++ " – Pick end date" ]
+
+        ( Nothing, Just e ) ->
+            h1 [] [ text <| "Pick start date – " ++ formatDate e ]
+
+        ( Just s, Just e ) ->
+            h1 [] [ text <| formatDate s ++ " – " ++ formatDate e ]
+
+
+formatDate : Date -> String
+formatDate d =
+    Date.format "MMM dd, yyyy" d
+
+
 view : Model -> Html Msg
 view model =
     section
         [ H.class "section" ]
-        [ model.expenses
+        [ viewDatePicker model
+        , model.expenses
             |> currencyTotals
             |> viewTable
         ]
