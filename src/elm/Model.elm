@@ -18,8 +18,8 @@ import Expense
         , Expense
         , currencyDecoder
         , encodeCurrency
-        , encodeExpenses
-        , expensesDecoder
+        , encodeExpenseList
+        , expenseListDecoder
         )
 import Http
 import Json.Decode as Decode
@@ -158,7 +158,7 @@ init flags url key =
         expenses =
             case flags.expenses of
                 Just json ->
-                    case Decode.decodeString expensesDecoder json of
+                    case Decode.decodeString expenseListDecoder json of
                         Ok result ->
                             result
 
@@ -317,7 +317,7 @@ addExpense model date =
                 , error = Nothing
                 , expenses = e :: model.expenses
               }
-            , storeExpenses (encodeExpenses (e :: model.expenses))
+            , storeExpenses (encodeExpenseList (e :: model.expenses))
             )
 
         Nothing ->

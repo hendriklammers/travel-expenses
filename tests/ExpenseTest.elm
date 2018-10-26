@@ -5,14 +5,22 @@ import Expense
     exposing
         ( Category
         , Currency
+        , Expense
         , categoryDecoder
         , currencyDecoder
         , encodeCategory
         , encodeCurrency
+        , encodeExpense
+        , encodeExpenseList
+        , expenseDecoder
+        , expenseListDecoder
         )
 import Fuzz exposing (Fuzzer)
 import Json.Decode as Decode
+import Random exposing (step)
 import Test exposing (..)
+import Time exposing (Posix, millisToPosix)
+import Uuid
 
 
 suite : Test
@@ -20,7 +28,8 @@ suite =
     describe "Expense module"
         [ testCurrency
         , testCategory
-        , todo "Add tests for Expense decoder/encoder"
+        , testExpense
+        , testExpenseList
         ]
 
 
@@ -99,14 +108,63 @@ testCategory =
         ]
 
 
+dateFuzzer : Fuzzer Posix
+dateFuzzer =
+    Fuzz.constant
+        (millisToPosix 1540452294842)
 
--- testExpense : Test
--- testExpense =
---     describe "Expense"
---         [ fuzz expenseFuzzer "round trip" <|
---             \expense ->
---                 expense
---                     |> encodeExpense
---                     |> Decode.decodeValue expenseDecoder
---                     |> Expect.equal (Ok expense)
---         ]
+
+buildUuid : Int -> Uuid.Uuid
+buildUuid integer =
+    let
+        initialSeed =
+            Random.initialSeed integer
+
+        ( uuid, _ ) =
+            step Uuid.uuidGenerator initialSeed
+    in
+    uuid
+
+
+uuidFuzzer : Fuzzer Uuid.Uuid
+uuidFuzzer =
+    Fuzz.map buildUuid Fuzz.int
+
+
+expenseFuzzer : Fuzzer Expense
+expenseFuzzer =
+    Fuzz.map5 Expense
+        uuidFuzzer
+        dateFuzzer
+        Fuzz.float
+        categoryFuzzer
+        currencyFuzzer
+
+
+testExpense : Test
+testExpense =
+    describe "Expense"
+        [ fuzz expenseFuzzer "round trip" <|
+            \expense ->
+                expense
+                    |> encodeExpense
+                    |> Decode.decodeValue expenseDecoder
+                    |> Expect.equal (Ok expense)
+        ]
+
+
+expenseListFuzzer : Fuzzer (List Expense)
+expenseListFuzzer =
+    Fuzz.list expenseFuzzer
+
+
+testExpenseList : Test
+testExpenseList =
+    describe "List of Expenses"
+        [ fuzz expenseListFuzzer "round trip" <|
+            \expenses ->
+                expenses
+                    |> encodeExpenseList
+                    |> Decode.decodeString expenseListDecoder
+                    |> Expect.equal (Ok expenses)
+        ]
