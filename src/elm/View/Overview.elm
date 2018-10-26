@@ -10,6 +10,7 @@ import Html
         , tbody
         , td
         , text
+        , tfoot
         , th
         , thead
         , tr
@@ -49,18 +50,27 @@ viewTable data =
             [ tr []
                 [ th [] [ text "Currency" ]
                 , th [] [ text "Amount" ]
+                , th [] [ text "Converted" ]
                 ]
             ]
         , tbody []
-            (List.map
-                (\( currency, amount ) ->
-                    tr []
-                        [ td [] [ text currency ]
-                        , td [] [ text (String.fromFloat amount) ]
-                        ]
-                )
-                data
-            )
+            (List.map viewRow data)
+        , tfoot []
+            [ tr []
+                [ th [] [ text "Total" ]
+                , th [] []
+                , th [] [ text "todo" ]
+                ]
+            ]
+        ]
+
+
+viewRow : ( String, Float ) -> Html Msg
+viewRow ( currency, amount ) =
+    tr []
+        [ td [] [ text currency ]
+        , td [] [ text (String.fromFloat amount) ]
+        , td [] [ text "todo" ]
         ]
 
 
