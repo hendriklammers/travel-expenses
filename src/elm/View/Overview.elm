@@ -47,17 +47,16 @@ currencyTotals expenses =
         |> Dict.toList
 
 
-compareDate : Date -> Date -> Expense -> Bool
-compareDate start end { date } =
-    Date.isBetween start end (Date.fromPosix Time.utc date)
-
-
-filterDates : Maybe Date -> Maybe Date -> List Expense -> List Expense
-filterDates start end expenses =
-    case ( start, end ) of
+filterDates : ( Maybe Date, Maybe Date ) -> List Expense -> List Expense
+filterDates dateRange expenses =
+    -- Only filter when start and end date are given
+    case dateRange of
         ( Just startDate, Just endDate ) ->
             List.filter
-                (compareDate startDate endDate)
+                (.date
+                    >> Date.fromPosix Time.utc
+                    >> Date.isBetween startDate endDate
+                )
                 expenses
 
         _ ->
@@ -133,7 +132,7 @@ view model =
         [ H.class "section" ]
         [ viewDatePicker model
         , model.expenses
-            |> filterDates model.startDate model.endDate
+            |> filterDates ( model.startDate, model.endDate )
             |> currencyTotals
             |> viewTable
         ]
