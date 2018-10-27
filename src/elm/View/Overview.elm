@@ -9,6 +9,7 @@ import Html
         ( Html
         , div
         , h1
+        , p
         , section
         , table
         , tbody
@@ -49,25 +50,32 @@ currencyTotals expenses =
 
 viewTable : List ( String, Float ) -> Html Msg
 viewTable data =
-    table
-        [ H.class "table is-fullwidth" ]
-        [ thead []
-            [ tr []
-                [ th [] [ text "Currency" ]
-                , th [] [ text "Amount" ]
-                , th [] [ text "Converted" ]
+    case data of
+        [] ->
+            div [ H.class "notification" ]
+                [ p [] [ text "No expenses found" ]
                 ]
-            ]
-        , tbody []
-            (List.map viewRow data)
-        , tfoot []
-            [ tr []
-                [ th [] [ text "Total" ]
-                , th [] []
-                , th [] [ text "todo" ]
+
+        _ ->
+            table
+                [ H.class "table is-fullwidth" ]
+                [ thead []
+                    [ tr []
+                        [ th [] [ text "Currency" ]
+                        , th [] [ text "Amount" ]
+                        , th [] [ text "Converted" ]
+                        ]
+                    ]
+                , tbody []
+                    (List.map viewRow data)
+                , tfoot []
+                    [ tr []
+                        [ th [] [ text "Total" ]
+                        , th [] []
+                        , th [] [ text "todo" ]
+                        ]
+                    ]
                 ]
-            ]
-        ]
 
 
 viewRow : ( String, Float ) -> Html Msg
