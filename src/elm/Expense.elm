@@ -11,8 +11,10 @@ module Expense exposing
     , encodeExpenseList
     , expenseDecoder
     , expenseListDecoder
+    , filterDates
     )
 
+import Date exposing (Date)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
 import Time exposing (Posix)
@@ -108,3 +110,19 @@ dateDecoder =
     Decode.andThen
         (\date -> Decode.succeed (Time.millisToPosix date))
         Decode.int
+
+
+filterDates : ( Maybe Date, Maybe Date ) -> List Expense -> List Expense
+filterDates dateRange expenses =
+    -- Only filter when start and end date are given
+    case dateRange of
+        ( Just startDate, Just endDate ) ->
+            List.filter
+                (.date
+                    >> Date.fromPosix Time.utc
+                    >> Date.isBetween startDate endDate
+                )
+                expenses
+
+        _ ->
+            expenses

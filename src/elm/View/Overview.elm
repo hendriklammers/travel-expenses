@@ -3,7 +3,7 @@ module View.Overview exposing (view)
 import Date exposing (Date)
 import DatePicker
 import Dict exposing (Dict)
-import Expense exposing (Expense)
+import Expense exposing (Expense, filterDates)
 import Html
     exposing
         ( Html
@@ -45,22 +45,6 @@ currencyTotals expenses =
     expenses
         |> List.foldl addAmount Dict.empty
         |> Dict.toList
-
-
-filterDates : ( Maybe Date, Maybe Date ) -> List Expense -> List Expense
-filterDates dateRange expenses =
-    -- Only filter when start and end date are given
-    case dateRange of
-        ( Just startDate, Just endDate ) ->
-            List.filter
-                (.date
-                    >> Date.fromPosix Time.utc
-                    >> Date.isBetween startDate endDate
-                )
-                expenses
-
-        _ ->
-            expenses
 
 
 viewTable : List ( String, Float ) -> Html Msg

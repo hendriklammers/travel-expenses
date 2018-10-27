@@ -30,6 +30,7 @@ suite =
         , testCategory
         , testExpense
         , testExpenseList
+        , testDateFilter
         ]
 
 
@@ -42,7 +43,7 @@ currencyFuzzer =
 
 testCurrency : Test
 testCurrency =
-    describe "Currency"
+    describe "JSON encoding/decoding Currency"
         [ test "Decodes json string into Currency" <|
             \() ->
                 let
@@ -77,7 +78,7 @@ categoryFuzzer =
 
 testCategory : Test
 testCategory =
-    describe "Category"
+    describe "JSON encoding/decoding Category"
         [ test "Decodes json string into Category" <|
             \() ->
                 let
@@ -143,7 +144,7 @@ expenseFuzzer =
 
 testExpense : Test
 testExpense =
-    describe "Expense"
+    describe "JSON encoding/decoding Expense"
         [ fuzz expenseFuzzer "round trip" <|
             \expense ->
                 expense
@@ -160,11 +161,18 @@ expenseListFuzzer =
 
 testExpenseList : Test
 testExpenseList =
-    describe "List of Expenses"
+    describe "JSON encoding/decoding a list of Expenses"
         [ fuzz expenseListFuzzer "round trip" <|
             \expenses ->
                 expenses
                     |> encodeExpenseList
                     |> Decode.decodeString expenseListDecoder
                     |> Expect.equal (Ok expenses)
+        ]
+
+
+testDateFilter : Test
+testDateFilter =
+    describe "Filter expenses between date range"
+        [ todo "Date filter"
         ]
