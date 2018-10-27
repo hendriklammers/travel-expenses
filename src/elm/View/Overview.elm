@@ -22,6 +22,7 @@ import Html
 import Html.Attributes as H
 import Messages exposing (Msg(..))
 import Model exposing (Model, endSettings, startSettings)
+import Time
 
 
 addAmount : Expense -> Dict String Float -> Dict String Float
@@ -44,6 +45,23 @@ currencyTotals expenses =
     expenses
         |> List.foldl addAmount Dict.empty
         |> Dict.toList
+
+
+compareDate : Date -> Date -> Expense -> Bool
+compareDate start end { date } =
+    Date.isBetween start end (Date.fromPosix Time.utc date)
+
+
+filterDates : Maybe Date -> Maybe Date -> List Expense -> List Expense
+filterDates start end expenses =
+    case ( start, end ) of
+        ( Just startDate, Just endDate ) ->
+            List.filter
+                (compareDate startDate endDate)
+                expenses
+
+        _ ->
+            expenses
 
 
 viewTable : List ( String, Float ) -> Html Msg
@@ -81,8 +99,7 @@ viewRow ( currency, amount ) =
 viewDatePicker : Model -> Html Msg
 viewDatePicker model =
     div []
-        [ viewRange model.startDate model.endDate
-        , DatePicker.view model.startDate (startSettings model.endDate) model.startDatePicker
+        [ DatePicker.view model.startDate (startSettings model.endDate) model.startDatePicker
             |> Html.map ToStartDatePicker
         , DatePicker.view model.endDate (endSettings model.startDate) model.endDatePicker
             |> Html.map ToEndDatePicker
@@ -116,6 +133,7 @@ view model =
         [ H.class "section" ]
         [ viewDatePicker model
         , model.expenses
+            |> filterDates model.startDate model.endDate
             |> currencyTotals
             |> viewTable
         ]
