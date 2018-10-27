@@ -8,148 +8,152 @@ $datepicker-border-color: #CCC;
 $datepicker-row-border-color: #F2F2F2;
 
 .#{$datepicker-ns}container {
-    position: relative;
+  position: relative;
+}
+
+.#{$datepicker-ns}input {
+  @include input;
 }
 
 .#{$datepicker-ns}input:focus {
-    outline: 0;
+  outline: 0;
 }
 
 .#{$datepicker-ns}picker {
-    position: absolute;
-    border: 1px solid $datepicker-border-color;
-    z-index: 10;
-    background-color: white;
+  position: absolute;
+  border: 1px solid $datepicker-border-color;
+  z-index: 10;
+  background-color: white;
 }
 
 .#{$datepicker-ns}picker-header,
 .#{$datepicker-ns}weekdays {
-    background: $datepicker-hl;
+  background: $datepicker-hl;
 }
 
 .#{$datepicker-ns}picker-header {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .#{$datepicker-ns}prev-container,
 .#{$datepicker-ns}next-container {
-    flex: 0 1 auto;
-    cursor: pointer;
+  flex: 0 1 auto;
+  cursor: pointer;
 }
 
 .#{$datepicker-ns}month-container {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
 
-    padding: 0.5em;
+  padding: 0.5em;
 
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .#{$datepicker-ns}month,
 .#{$datepicker-ns}year {
-    flex: 1 1 auto;
+  flex: 1 1 auto;
 
-    cursor: default;
-    text-align: center;
+  cursor: default;
+  text-align: center;
 }
 
 .#{$datepicker-ns}year {
-    font-size: 0.6em;
-    font-weight: 700;
+  font-size: 0.6em;
+  font-weight: 700;
 }
 
 .#{$datepicker-ns}prev,
 .#{$datepicker-ns}next {
-    border: 6px solid transparent;
+  border: 6px solid transparent;
 
-    background-color: inherit;
-    display: block;
-    width: 0;
-    height: 0;
+  background-color: inherit;
+  display: block;
+  width: 0;
+  height: 0;
 
-    padding: 0 0.2em;
+  padding: 0 0.2em;
 }
 
 .#{$datepicker-ns}prev {
-    border-right-color: $datepicker-arrow;
+  border-right-color: $datepicker-arrow;
 
-    &:hover {
-        border-right-color: $datepicker-arrow-hover;
-    }
+  &:hover {
+    border-right-color: $datepicker-arrow-hover;
+  }
 }
 
 .#{$datepicker-ns}next {
-    border-left-color: $datepicker-arrow;
+  border-left-color: $datepicker-arrow;
 
-    &:hover {
-        border-left-color: $datepicker-arrow-hover;
-    }
+  &:hover {
+    border-left-color: $datepicker-arrow-hover;
+  }
 }
 
 .#{$datepicker-ns}table {
-    border-spacing: 0;
-    border-collapse: collapse;
+  border-spacing: 0;
+  border-collapse: collapse;
 
-    font-size: 1em;
+  font-size: 1em;
 
-    td {
-        width: 2em;
-        height: 2em;
+  td {
+    width: 2em;
+    height: 2em;
 
-        text-align: center;
-    }
+    text-align: center;
+  }
 }
 
 .#{$datepicker-ns}row {
-    border-top: 1px solid $datepicker-row-border-color;
+  border-top: 1px solid $datepicker-row-border-color;
 }
 
 .#{$datepicker-ns}dow {
-    border-bottom: 1px solid $datepicker-border-color;
+  border-bottom: 1px solid $datepicker-border-color;
 
-    cursor: default;
+  cursor: default;
 }
 
 .#{$datepicker-ns}day {
-    cursor: pointer;
+  cursor: pointer;
 
-    &:hover {
-        background: $datepicker-hl;
-    }
+  &:hover {
+    background: $datepicker-hl;
+  }
 }
 
 .#{$datepicker-ns}disabled {
-    cursor: default;
-    color: #DDD;
+  cursor: default;
+  color: #DDD;
 
-    &:hover {
-        background: inherit;
-    }
+  &:hover {
+    background: inherit;
+  }
 }
 
 .#{$datepicker-ns}picked {
-    color: $datepicker-picked-fg;
-    background: $datepicker-picked-bg;
+  color: $datepicker-picked-fg;
+  background: $datepicker-picked-bg;
 
-    &:hover {
-        background: $datepicker-picked-bg;
-    }
+  &:hover {
+    background: $datepicker-picked-bg;
+  }
 }
 
 .#{$datepicker-ns}today {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .#{$datepicker-ns}other-month {
-    color: #AAA;
+  color: #AAA;
 
-    &.#{$datepicker-ns}disabled {
-        color: #EEE;
-    }
+  &.#{$datepicker-ns}disabled {
+    color: #EEE;
+  }
 
-    &.#{$datepicker-ns}picked {
-        color: $datepicker-picked-fg;
-    }
+  &.#{$datepicker-ns}picked {
+    color: $datepicker-picked-fg;
+  }
 }
