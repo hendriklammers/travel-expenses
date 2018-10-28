@@ -372,7 +372,7 @@ startSettings endDate =
                             || commonSettings.isDisabled d
     in
     { commonSettings
-        | placeholder = "Pick a start date"
+        | placeholder = "Start date"
         , isDisabled = isDisabled
     }
 
@@ -397,7 +397,7 @@ endSettings startDate =
                             || commonSettings.isDisabled d
     in
     { commonSettings
-        | placeholder = "Pick an end date"
+        | placeholder = "End date"
         , isDisabled = isDisabled
     }
 
