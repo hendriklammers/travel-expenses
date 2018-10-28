@@ -11,6 +11,7 @@ import Html
         , h1
         , p
         , section
+        , span
         , table
         , tbody
         , td
@@ -89,10 +90,17 @@ viewRow ( currency, amount ) =
 
 viewDatePicker : Model -> Html Msg
 viewDatePicker model =
-    div []
-        [ DatePicker.view model.startDate (startSettings model.endDate) model.startDatePicker
+    div [ H.class "elm-datepicker" ]
+        [ DatePicker.view
+            model.startDate
+            (startSettings model.endDate)
+            model.startDatePicker
             |> Html.map ToStartDatePicker
-        , DatePicker.view model.endDate (endSettings model.startDate) model.endDatePicker
+        , span [ H.class "elm-datepicker--divider" ] [ text "-" ]
+        , DatePicker.view
+            model.endDate
+            (endSettings model.startDate)
+            model.endDatePicker
             |> Html.map ToEndDatePicker
         ]
 

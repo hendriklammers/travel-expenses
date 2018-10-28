@@ -7,12 +7,23 @@ $datepicker-picked-bg: darkblue;
 $datepicker-border-color: #CCC;
 $datepicker-row-border-color: #F2F2F2;
 
+.elm-datepicker {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1em;
+}
+
+.#{$datepicker-ns}divider {
+  margin: 0 10px;
+}
+
 .#{$datepicker-ns}container {
   position: relative;
 }
 
 .#{$datepicker-ns}input {
   @include input;
+  width: 100%;
 }
 
 .#{$datepicker-ns}input:focus {
