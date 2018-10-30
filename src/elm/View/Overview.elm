@@ -48,13 +48,13 @@ addAmount { currency, amount } acc =
 
 type Conversion
     = ConversionTotal Float
-    | Unavailable
+    | ExchangeUnavailable
 
 
 type alias Row =
     { currency : String
     , amount : Float
-    , conversion : Float
+    , conversion : Conversion
     }
 
 
@@ -73,15 +73,15 @@ conversionTotals exchange xs =
                 converted =
                     case exchange of
                         Nothing ->
-                            666
+                            ExchangeUnavailable
 
                         Just ex ->
                             case Dict.get currency ex.rates of
                                 Nothing ->
-                                    666
+                                    ExchangeUnavailable
 
                                 Just rate ->
-                                    amount / rate
+                                    ConversionTotal (amount / rate)
             in
             Row currency amount converted
         )
@@ -120,10 +120,19 @@ viewTable rows =
 
 viewRow : Row -> Html Msg
 viewRow { currency, amount, conversion } =
+    let
+        conversionString =
+            case conversion of
+                ExchangeUnavailable ->
+                    "Rates unavailable"
+
+                ConversionTotal total ->
+                    Round.round 2 total
+    in
     tr []
         [ td [] [ text currency ]
         , td [] [ text (Round.round 2 amount) ]
-        , td [] [ text (Round.round 2 conversion) ]
+        , td [] [ text conversionString ]
         ]
 
 
