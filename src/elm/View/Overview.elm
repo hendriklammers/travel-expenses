@@ -27,6 +27,7 @@ import Html.Attributes as H
 import Html.Events exposing (onClick)
 import Messages exposing (Msg(..))
 import Model exposing (Model, endSettings, startSettings)
+import Round
 import Time
 
 
@@ -46,7 +47,7 @@ addAmount { currency, amount } acc =
 
 
 type Conversion
-    = Converted Float
+    = ConversionTotal Float
     | Unavailable
 
 
@@ -121,8 +122,8 @@ viewRow : Row -> Html Msg
 viewRow { currency, amount, conversion } =
     tr []
         [ td [] [ text currency ]
-        , td [] [ text (String.fromFloat amount) ]
-        , td [] [ text (String.fromFloat conversion) ]
+        , td [] [ text (Round.round 2 amount) ]
+        , td [] [ text (Round.round 2 conversion) ]
         ]
 
 
