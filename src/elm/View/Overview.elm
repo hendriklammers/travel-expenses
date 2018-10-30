@@ -66,26 +66,19 @@ currencyTotals expenses =
 
 
 conversionTotals : Maybe Exchange -> List ( String, Float ) -> List Row
-conversionTotals exchange xs =
+conversionTotals exchange =
     List.map
         (\( currency, amount ) ->
             let
-                converted =
-                    case exchange of
-                        Nothing ->
-                            ExchangeUnavailable
-
-                        Just ex ->
-                            case Dict.get currency ex.rates of
-                                Nothing ->
-                                    ExchangeUnavailable
-
-                                Just rate ->
-                                    ConversionTotal (amount / rate)
+                conversion =
+                    exchange
+                        |> Maybe.map .rates
+                        |> Maybe.andThen (Dict.get currency)
+                        |> Maybe.map (\rate -> ConversionTotal (amount / rate))
+                        |> Maybe.withDefault ExchangeUnavailable
             in
-            Row currency amount converted
+            Row currency amount conversion
         )
-        xs
 
 
 viewTable : List Row -> Html Msg
@@ -103,7 +96,7 @@ viewTable rows =
                     [ tr []
                         [ th [] [ text "Currency" ]
                         , th [] [ text "Amount" ]
-                        , th [] [ text "Converted" ]
+                        , th [] [ text "Euro" ]
                         ]
                     ]
                 , tbody []
@@ -124,7 +117,7 @@ viewRow { currency, amount, conversion } =
         conversionString =
             case conversion of
                 ExchangeUnavailable ->
-                    "Rates unavailable"
+                    "-"
 
                 ConversionTotal total ->
                     Round.round 2 total
