@@ -3,10 +3,12 @@ module View.Overview exposing (view)
 import Date exposing (Date)
 import DatePicker
 import Dict exposing (Dict)
+import Exchange exposing (Exchange)
 import Expense exposing (Expense, filterDates)
 import Html
     exposing
         ( Html
+        , button
         , div
         , h1
         , p
@@ -22,6 +24,7 @@ import Html
         , tr
         )
 import Html.Attributes as H
+import Html.Events exposing (onClick)
 import Messages exposing (Msg(..))
 import Model exposing (Model, endSettings, startSettings)
 import Time
@@ -42,6 +45,18 @@ addAmount { currency, amount } acc =
         acc
 
 
+type Conversion
+    = Converted Float
+    | Unavailable
+
+
+type alias Row =
+    { currency : String
+    , amount : Float
+    , conversion : Float
+    }
+
+
 currencyTotals : List Expense -> List ( String, Float )
 currencyTotals expenses =
     expenses
@@ -49,9 +64,32 @@ currencyTotals expenses =
         |> Dict.toList
 
 
-viewTable : List ( String, Float ) -> Html Msg
-viewTable data =
-    case data of
+conversionTotals : Maybe Exchange -> List ( String, Float ) -> List Row
+conversionTotals exchange xs =
+    List.map
+        (\( currency, amount ) ->
+            let
+                converted =
+                    case exchange of
+                        Nothing ->
+                            666
+
+                        Just ex ->
+                            case Dict.get currency ex.rates of
+                                Nothing ->
+                                    666
+
+                                Just rate ->
+                                    amount / rate
+            in
+            Row currency amount converted
+        )
+        xs
+
+
+viewTable : List Row -> Html Msg
+viewTable rows =
+    case rows of
         [] ->
             div [ H.class "notification" ]
                 [ p [] [ text "No expenses found" ]
@@ -68,7 +106,7 @@ viewTable data =
                         ]
                     ]
                 , tbody []
-                    (List.map viewRow data)
+                    (List.map viewRow rows)
                 , tfoot []
                     [ tr []
                         [ th [] [ text "Total" ]
@@ -79,12 +117,12 @@ viewTable data =
                 ]
 
 
-viewRow : ( String, Float ) -> Html Msg
-viewRow ( currency, amount ) =
+viewRow : Row -> Html Msg
+viewRow { currency, amount, conversion } =
     tr []
         [ td [] [ text currency ]
         , td [] [ text (String.fromFloat amount) ]
-        , td [] [ text "todo" ]
+        , td [] [ text (String.fromFloat conversion) ]
         ]
 
 
@@ -131,8 +169,12 @@ view model =
     section
         [ H.class "section" ]
         [ viewDatePicker model
+        , button
+            [ H.class "button is-small", onClick LoadExchange ]
+            [ text "Load exchange rates" ]
         , model.expenses
             |> filterDates ( model.startDate, model.endDate )
             |> currencyTotals
+            |> conversionTotals model.exchange
             |> viewTable
         ]

@@ -341,6 +341,13 @@ update msg model =
             , Cmd.none
             )
 
+        LoadExchange ->
+            let
+                { fixer_api_key } =
+                    model.vars
+            in
+            ( model, fetchRates Nothing )
+
 
 
 -- Could be used to customize common settings for both date pickers. Like for

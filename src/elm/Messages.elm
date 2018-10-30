@@ -22,3 +22,4 @@ type Msg
     | UrlChanged Url.Url
     | ToStartDatePicker DatePicker.Msg
     | ToEndDatePicker DatePicker.Msg
+    | LoadExchange
