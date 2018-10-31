@@ -148,27 +148,6 @@ viewDatePicker model =
         ]
 
 
-viewRange : Maybe Date -> Maybe Date -> Html Msg
-viewRange start end =
-    case ( start, end ) of
-        ( Nothing, Nothing ) ->
-            h1 [] [ text "Pick dates" ]
-
-        ( Just s, Nothing ) ->
-            h1 [] [ text <| formatDate s ++ " – Pick end date" ]
-
-        ( Nothing, Just e ) ->
-            h1 [] [ text <| "Pick start date – " ++ formatDate e ]
-
-        ( Just s, Just e ) ->
-            h1 [] [ text <| formatDate s ++ " – " ++ formatDate e ]
-
-
-formatDate : Date -> String
-formatDate d =
-    Date.format "MMM dd, yyyy" d
-
-
 view : Model -> Html Msg
 view model =
     section
