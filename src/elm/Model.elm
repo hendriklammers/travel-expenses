@@ -346,7 +346,7 @@ update msg model =
                 { fixer_api_key } =
                     model.vars
             in
-            ( model, fetchRates Nothing )
+            ( model, fetchRates fixer_api_key )
 
 
 
