@@ -81,6 +81,31 @@ conversionTotals exchange =
         )
 
 
+sumConversion : Conversion -> Conversion -> Conversion
+sumConversion c1 c2 =
+    case c1 of
+        ExchangeUnavailable ->
+            ExchangeUnavailable
+
+        ConversionTotal value1 ->
+            case c2 of
+                ExchangeUnavailable ->
+                    ExchangeUnavailable
+
+                ConversionTotal value2 ->
+                    ConversionTotal (value1 + value2)
+
+
+conversionString : Conversion -> String
+conversionString conversion =
+    case conversion of
+        ExchangeUnavailable ->
+            "-"
+
+        ConversionTotal total ->
+            Round.round 2 total
+
+
 viewTable : List Row -> Html Msg
 viewTable rows =
     case rows of
@@ -90,6 +115,13 @@ viewTable rows =
                 ]
 
         _ ->
+            let
+                total =
+                    List.foldl
+                        (.conversion >> sumConversion)
+                        (ConversionTotal 0)
+                        rows
+            in
             table
                 [ H.class "table is-fullwidth" ]
                 [ thead []
@@ -105,7 +137,7 @@ viewTable rows =
                     [ tr []
                         [ th [] [ text "Total" ]
                         , th [] []
-                        , th [] [ text "todo" ]
+                        , th [] [ text (conversionString total) ]
                         ]
                     ]
                 ]
@@ -113,19 +145,10 @@ viewTable rows =
 
 viewRow : Row -> Html Msg
 viewRow { currency, amount, conversion } =
-    let
-        conversionString =
-            case conversion of
-                ExchangeUnavailable ->
-                    "-"
-
-                ConversionTotal total ->
-                    Round.round 2 total
-    in
     tr []
         [ td [] [ text currency ]
         , td [] [ text (Round.round 2 amount) ]
-        , td [] [ text conversionString ]
+        , td [] [ text (conversionString conversion) ]
         ]
 
 
