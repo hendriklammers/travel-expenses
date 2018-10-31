@@ -47,8 +47,8 @@ addAmount { currency, amount } acc =
 
 
 type Conversion
-    = ConversionTotal Float
-    | ExchangeUnavailable
+    = Conversion Float
+    | ConversionUnavailable
 
 
 type alias Row =
@@ -74,8 +74,8 @@ conversionTotals exchange =
                     exchange
                         |> Maybe.map .rates
                         |> Maybe.andThen (Dict.get currency)
-                        |> Maybe.map (\rate -> ConversionTotal (amount / rate))
-                        |> Maybe.withDefault ExchangeUnavailable
+                        |> Maybe.map (\rate -> Conversion (amount / rate))
+                        |> Maybe.withDefault ConversionUnavailable
             in
             Row currency amount conversion
         )
@@ -84,25 +84,25 @@ conversionTotals exchange =
 sumConversion : Conversion -> Conversion -> Conversion
 sumConversion c1 c2 =
     case c1 of
-        ExchangeUnavailable ->
-            ExchangeUnavailable
+        ConversionUnavailable ->
+            ConversionUnavailable
 
-        ConversionTotal value1 ->
+        Conversion value1 ->
             case c2 of
-                ExchangeUnavailable ->
-                    ExchangeUnavailable
+                ConversionUnavailable ->
+                    ConversionUnavailable
 
-                ConversionTotal value2 ->
-                    ConversionTotal (value1 + value2)
+                Conversion value2 ->
+                    Conversion (value1 + value2)
 
 
 conversionString : Conversion -> String
 conversionString conversion =
     case conversion of
-        ExchangeUnavailable ->
+        ConversionUnavailable ->
             "-"
 
-        ConversionTotal total ->
+        Conversion total ->
             Round.round 2 total
 
 
@@ -119,7 +119,7 @@ viewTable rows =
                 total =
                     List.foldl
                         (.conversion >> sumConversion)
-                        (ConversionTotal 0)
+                        (Conversion 0)
                         rows
             in
             table
