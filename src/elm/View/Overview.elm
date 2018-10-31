@@ -46,15 +46,10 @@ addAmount { currency, amount } acc =
         acc
 
 
-type Conversion
-    = Conversion Float
-    | ConversionUnavailable
-
-
 type alias Row =
     { currency : String
     , amount : Float
-    , conversion : Conversion
+    , conversion : Maybe Float
     }
 
 
@@ -74,36 +69,20 @@ conversionTotals exchange =
                     exchange
                         |> Maybe.map .rates
                         |> Maybe.andThen (Dict.get currency)
-                        |> Maybe.map (\rate -> Conversion (amount / rate))
-                        |> Maybe.withDefault ConversionUnavailable
+                        |> Maybe.andThen (\rate -> Just (amount / rate))
             in
             Row currency amount conversion
         )
 
 
-sumConversion : Conversion -> Conversion -> Conversion
-sumConversion c1 c2 =
-    case c1 of
-        ConversionUnavailable ->
-            ConversionUnavailable
-
-        Conversion value1 ->
-            case c2 of
-                ConversionUnavailable ->
-                    ConversionUnavailable
-
-                Conversion value2 ->
-                    Conversion (value1 + value2)
-
-
-conversionString : Conversion -> String
+conversionString : Maybe Float -> String
 conversionString conversion =
     case conversion of
-        ConversionUnavailable ->
+        Nothing ->
             "-"
 
-        Conversion total ->
-            Round.round 2 total
+        Just value ->
+            Round.round 2 value
 
 
 viewTable : List Row -> Html Msg
@@ -118,8 +97,8 @@ viewTable rows =
             let
                 total =
                     List.foldl
-                        (.conversion >> sumConversion)
-                        (Conversion 0)
+                        (.conversion >> Maybe.map2 (+))
+                        (Just 0)
                         rows
             in
             table
