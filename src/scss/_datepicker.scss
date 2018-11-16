@@ -15,7 +15,12 @@ $datepicker-row-border-color: $grey-lighter;
 }
 
 .#{$datepicker-ns}divider {
-  margin: 0 10px;
+  position: absolute;
+  top: 0;
+  left: calc(50% - 5px);
+  width: 10px;
+  text-align: center;
+  line-height: rem(36);
 }
 
 .#{$datepicker-ns}container {
