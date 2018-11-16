@@ -304,7 +304,10 @@ update msg model =
         ToStartDatePicker subMsg ->
             let
                 ( newDatePicker, dateEvent ) =
-                    DatePicker.update (startSettings model.endDate) subMsg model.startDatePicker
+                    DatePicker.update
+                        (startSettings model.endDate)
+                        subMsg
+                        model.startDatePicker
 
                 newDate =
                     case dateEvent of
@@ -324,7 +327,10 @@ update msg model =
         ToEndDatePicker subMsg ->
             let
                 ( newDatePicker, dateEvent ) =
-                    DatePicker.update (endSettings model.startDate) subMsg model.endDatePicker
+                    DatePicker.update
+                        (endSettings model.startDate)
+                        subMsg
+                        model.endDatePicker
 
                 newDate =
                     case dateEvent of
@@ -340,6 +346,9 @@ update msg model =
               }
             , Cmd.none
             )
+
+        ClearStartDate ->
+            ( { model | startDate = Nothing }, Cmd.none )
 
         LoadExchange ->
             let

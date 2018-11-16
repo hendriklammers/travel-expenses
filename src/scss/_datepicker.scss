@@ -1,16 +1,17 @@
 $datepicker-ns: elm-datepicker-- !default;
 $datepicker-hl: #F2F2F2;
-$datepicker-arrow: #AAA;
+$datepicker-arrow: $grey-light;
 $datepicker-arrow-hover: #BBB;
 $datepicker-picked-fg: white;
-$datepicker-picked-bg: darkblue;
-$datepicker-border-color: #CCC;
-$datepicker-row-border-color: #F2F2F2;
+$datepicker-picked-bg: $primary;
+$datepicker-border-color: $grey-light;
+$datepicker-row-border-color: $grey-lighter;
 
 .elm-datepicker {
-  display: flex;
-  justify-content: space-between;
+  position: relative;
   margin-bottom: 1em;
+  min-height: rem(36);
+  max-width: 480px;
 }
 
 .#{$datepicker-ns}divider {
@@ -18,12 +19,30 @@ $datepicker-row-border-color: #F2F2F2;
 }
 
 .#{$datepicker-ns}container {
-  position: relative;
+  position: absolute;
+  width: 100%;
+
+  &:first-child {
+    .#{$datepicker-ns}input {
+      left: 0;
+    }
+  }
+
+  &:last-child {
+    .#{$datepicker-ns}input {
+      right: 0;
+    }
+
+    .#{$datepicker-ns}picker {
+      right: 0;
+    }
+  }
 }
 
 .#{$datepicker-ns}input {
   @include input;
-  width: 100%;
+  position: absolute;
+  width: 45%;
 }
 
 .#{$datepicker-ns}input:focus {
@@ -32,9 +51,14 @@ $datepicker-row-border-color: #F2F2F2;
 
 .#{$datepicker-ns}picker {
   position: absolute;
+  top: rem(34);
+  width: 100%;
+  max-width: 400px;
   border: 1px solid $datepicker-border-color;
   z-index: 10;
   background-color: white;
+  border-radius: 0 0 $radius-small $radius-small;
+  box-shadow: 0 8px 16px rgba(10, 10, 10, 0.1);
 }
 
 .#{$datepicker-ns}picker-header,
@@ -70,21 +94,25 @@ $datepicker-row-border-color: #F2F2F2;
   text-align: center;
 }
 
+.#{$datepicker-ns}month {
+  font-weight: $weight-semibold;
+  font-size: $size-6;
+}
+
 .#{$datepicker-ns}year {
-  font-size: 0.6em;
-  font-weight: 700;
+  font-size: $size-6;
 }
 
 .#{$datepicker-ns}prev,
 .#{$datepicker-ns}next {
-  border: 6px solid transparent;
+  border: 8px solid transparent;
 
   background-color: inherit;
   display: block;
   width: 0;
   height: 0;
 
-  padding: 0 0.2em;
+  padding: 0 rem(4);
 }
 
 .#{$datepicker-ns}prev {
@@ -104,16 +132,16 @@ $datepicker-row-border-color: #F2F2F2;
 }
 
 .#{$datepicker-ns}table {
+  width: 100%;
   border-spacing: 0;
   border-collapse: collapse;
 
   font-size: 1em;
 
   td {
-    width: 2em;
-    height: 2em;
-
+    height: rem(48);
     text-align: center;
+    vertical-align: middle;
   }
 }
 
