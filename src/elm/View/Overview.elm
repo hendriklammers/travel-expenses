@@ -131,6 +131,20 @@ viewRow { currency, amount, conversion } =
         ]
 
 
+viewDelete : Messages.Msg -> String -> Maybe Date -> Html Msg
+viewDelete msg name date =
+    case date of
+        Just _ ->
+            button
+                [ H.class ("elm-datepicker--delete delete-" ++ name)
+                , onClick msg
+                ]
+                [ text "Delete" ]
+
+        Nothing ->
+            text ""
+
+
 viewDatePicker : Model -> Html Msg
 viewDatePicker model =
     div [ H.class "elm-datepicker" ]
@@ -139,17 +153,9 @@ viewDatePicker model =
             (startSettings model.endDate)
             model.startDatePicker
             |> Html.map ToStartDatePicker
-        , div
-            [ H.class "elm-datepicker--delete delete-start"
-            , onClick DeleteStartDate
-            ]
-            [ text "delete start date" ]
+        , viewDelete DeleteStartDate "start" model.startDate
         , div [ H.class "elm-datepicker--divider" ] [ text "-" ]
-        , div
-            [ H.class "elm-datepicker--delete delete-end"
-            , onClick DeleteEndDate
-            ]
-            [ text "delete end date" ]
+        , viewDelete DeleteEndDate "end" model.endDate
         , DatePicker.view
             model.endDate
             (endSettings model.startDate)
@@ -163,12 +169,12 @@ view model =
     section
         [ H.class "section" ]
         [ viewDatePicker model
-        , button
-            [ H.class "button is-small", onClick LoadExchange ]
-            [ text "Load exchange rates" ]
         , model.expenses
             |> filterDates ( model.startDate, model.endDate )
             |> currencyTotals
             |> conversionTotals model.exchange
             |> viewTable
+        , button
+            [ H.class "button is-small", onClick LoadExchange ]
+            [ text "Load exchange rates" ]
         ]
