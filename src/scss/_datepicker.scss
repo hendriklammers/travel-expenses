@@ -1,7 +1,7 @@
 $datepicker-ns: elm-datepicker-- !default;
 $datepicker-hl: #F2F2F2;
 $datepicker-arrow: $grey-light;
-$datepicker-arrow-hover: #BBB;
+$datepicker-arrow-hover: $grey-dark;
 $datepicker-picked-fg: white;
 $datepicker-picked-bg: $primary;
 $datepicker-border-color: $grey-light;
@@ -76,13 +76,13 @@ $datepicker-row-border-color: $grey-lighter;
 
 .#{$datepicker-ns}picker {
   position: absolute;
-  top: rem(34);
+  top: rem(40);
   width: 100%;
   max-width: 400px;
   border: 1px solid $datepicker-border-color;
   z-index: 10;
   background-color: white;
-  border-radius: 0 0 $radius-small $radius-small;
+  border-radius: $radius;
   box-shadow: 0 8px 16px rgba(10, 10, 10, 0.1);
 }
 
@@ -94,6 +94,7 @@ $datepicker-row-border-color: $grey-lighter;
 .#{$datepicker-ns}picker-header {
   display: flex;
   align-items: center;
+  border-radius: $radius $radius 0 0;
 }
 
 .#{$datepicker-ns}prev-container,
@@ -104,9 +105,7 @@ $datepicker-row-border-color: $grey-lighter;
 
 .#{$datepicker-ns}month-container {
   flex: 1 1 auto;
-
-  padding: 0.5em;
-
+  padding: rem(8) rem(10) 0 rem(10);
   display: flex;
   flex-direction: column;
 }
@@ -114,7 +113,6 @@ $datepicker-row-border-color: $grey-lighter;
 .#{$datepicker-ns}month,
 .#{$datepicker-ns}year {
   flex: 1 1 auto;
-
   cursor: default;
   text-align: center;
 }
@@ -126,18 +124,18 @@ $datepicker-row-border-color: $grey-lighter;
 
 .#{$datepicker-ns}year {
   font-size: $size-6;
+  color: $grey-light;
 }
 
 .#{$datepicker-ns}prev,
 .#{$datepicker-ns}next {
   border: 8px solid transparent;
-
   background-color: inherit;
   display: block;
   width: 0;
   height: 0;
-
   padding: 0 rem(4);
+  cursor: pointer;
 }
 
 .#{$datepicker-ns}prev {
@@ -167,6 +165,12 @@ $datepicker-row-border-color: $grey-lighter;
     height: rem(48);
     text-align: center;
     vertical-align: middle;
+  }
+}
+
+.#{$datepicker-ns}weekdays {
+  td {
+    height: rem(36);
   }
 }
 
