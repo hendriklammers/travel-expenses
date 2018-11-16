@@ -14,6 +14,21 @@ $datepicker-row-border-color: $grey-lighter;
   max-width: 480px;
 }
 
+.#{$datepicker-ns}delete {
+  @include delete;
+  position: absolute;
+  top: rem(8);
+  z-index: 11;
+
+  &.delete-start {
+    left: calc(45% - 28px);
+  }
+
+  &.delete-end {
+    right: 8px;
+  }
+}
+
 .#{$datepicker-ns}divider {
   position: absolute;
   top: 0;

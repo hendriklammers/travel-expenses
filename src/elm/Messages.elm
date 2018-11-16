@@ -23,3 +23,5 @@ type Msg
     | ToStartDatePicker DatePicker.Msg
     | ToEndDatePicker DatePicker.Msg
     | LoadExchange
+    | DeleteStartDate
+    | DeleteEndDate

@@ -347,8 +347,11 @@ update msg model =
             , Cmd.none
             )
 
-        ClearStartDate ->
+        DeleteStartDate ->
             ( { model | startDate = Nothing }, Cmd.none )
+
+        DeleteEndDate ->
+            ( { model | endDate = Nothing }, Cmd.none )
 
         LoadExchange ->
             let
