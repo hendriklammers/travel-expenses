@@ -1,7 +1,8 @@
-module Exchange exposing (Exchange, decodeExchange)
+module Exchange exposing (Exchange, decodeExchange, encodeExchange)
 
 import Dict exposing (Dict)
 import Json.Decode as Decode exposing (Decoder)
+import Json.Encode as Encode
 import Time exposing (Posix)
 
 
@@ -32,5 +33,17 @@ decodeExchange =
         (Decode.field "rates" <| Decode.dict Decode.float)
 
 
+encodeRates : Dict String Float -> Encode.Value
+encodeRates rates =
+    Dict.toList rates
+        |> List.map (\( key, val ) -> ( key, Encode.float val ))
+        |> Encode.object
 
--- TODO: Add encoder
+
+encodeExchange : Exchange -> String
+encodeExchange { timestamp, rates } =
+    Encode.object
+        [ ( "timestamp", Encode.int (Time.posixToMillis timestamp) )
+        , ( "rates", encodeRates rates )
+        ]
+        |> Encode.encode 0

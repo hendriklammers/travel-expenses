@@ -14,7 +14,7 @@ import Browser
 import Browser.Navigation as Nav
 import Date exposing (Date)
 import DatePicker exposing (DateEvent(..), defaultSettings)
-import Exchange exposing (Exchange, decodeExchange)
+import Exchange exposing (Exchange, decodeExchange, encodeExchange)
 import Expense
     exposing
         ( Category
@@ -30,7 +30,7 @@ import Json.Decode as Decode
 import Json.Encode as Encode
 import List.Extra exposing (find)
 import Messages exposing (Msg(..))
-import Ports exposing (storeCurrency, storeExpenses)
+import Ports exposing (storeCurrency, storeExchange, storeExpenses)
 import Random exposing (Seed, initialSeed, step)
 import Route exposing (Route(..), toRoute)
 import Task
@@ -271,8 +271,8 @@ update msg model =
         NewRates result ->
             case result of
                 Ok exchange ->
-                    ( { model | exchange = Just (Debug.log "exchange" exchange) }
-                    , Cmd.none
+                    ( { model | exchange = Just exchange }
+                    , storeExchange (encodeExchange exchange)
                     )
 
                 Err error ->
