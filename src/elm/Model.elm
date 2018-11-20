@@ -137,6 +137,7 @@ currencies =
 type alias Flags =
     { seed : Int
     , currency : Maybe String
+    , exchange : Maybe String
     , expenses : Maybe String
     , fixer_api_key : Maybe String
     }
@@ -181,6 +182,23 @@ init flags url key =
                 Nothing ->
                     []
 
+        exchange =
+            case flags.exchange of
+                Just json ->
+                    case Decode.decodeString decodeExchange json of
+                        Ok result ->
+                            Just result
+
+                        Err error ->
+                            let
+                                log =
+                                    Debug.log "exchange" error
+                            in
+                            Nothing
+
+                Nothing ->
+                    Nothing
+
         ( startDatePicker, startDatePickerFx ) =
             DatePicker.init
 
@@ -198,7 +216,7 @@ init flags url key =
       , key = key
       , route = toRoute url
       , menu = MenuClosed
-      , exchange = Nothing
+      , exchange = exchange
       , vars = Vars flags.fixer_api_key
       , startDate = Nothing
       , startDatePicker = startDatePicker
