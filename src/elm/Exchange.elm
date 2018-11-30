@@ -12,10 +12,6 @@ type alias Exchange =
     }
 
 
-type alias Rate =
-    ( String, Float )
-
-
 decodeDate : Decoder Posix
 decodeDate =
     Decode.andThen dateFromInt Decode.int

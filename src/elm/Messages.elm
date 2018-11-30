@@ -5,7 +5,7 @@ import DatePicker
 import Exchange exposing (Exchange)
 import Expense exposing (Category)
 import Http
-import Time exposing (Posix)
+import Time
 import Url
 
 
@@ -14,7 +14,7 @@ type Msg
     | SelectCategory Category
     | SelectCurrency String
     | Submit
-    | AddExpense Posix
+    | AddExpense Time.Posix
     | CloseError
     | ToggleMenu
     | NewRates (Result Http.Error Exchange)
@@ -25,3 +25,5 @@ type Msg
     | LoadExchange
     | DeleteStartDate
     | DeleteEndDate
+    | SetTimeZone Time.Zone
+    | SetTimestamp Time.Posix

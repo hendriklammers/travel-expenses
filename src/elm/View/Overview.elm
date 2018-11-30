@@ -13,6 +13,7 @@ import Html
         , h1
         , p
         , section
+        , small
         , span
         , table
         , tbody
@@ -28,7 +29,7 @@ import Html.Events exposing (onClick)
 import Messages exposing (Msg(..))
 import Model exposing (Model, endSettings, startSettings)
 import Round
-import Time
+import Time exposing (Month(..), toDay, toHour, toMinute, toMonth, toSecond, toYear, utc)
 
 
 addAmount : Expense -> Dict String Float -> Dict String Float
@@ -164,6 +165,78 @@ viewDatePicker model =
         ]
 
 
+toMonthString : Time.Month -> String
+toMonthString month =
+    case month of
+        Jan ->
+            "Jan"
+
+        Feb ->
+            "Feb"
+
+        Mar ->
+            "Mar"
+
+        Apr ->
+            "Apr"
+
+        May ->
+            "May"
+
+        Jun ->
+            "Jun"
+
+        Jul ->
+            "Jul"
+
+        Aug ->
+            "Aug"
+
+        Sep ->
+            "Sep"
+
+        Oct ->
+            "Oct"
+
+        Nov ->
+            "Nov"
+
+        Dec ->
+            "Dec"
+
+
+posixToDateString : Time.Zone -> Time.Posix -> String
+posixToDateString zone time =
+    String.fromInt (toDay zone time)
+        ++ " "
+        ++ toMonthString (toMonth zone time)
+        ++ " "
+        ++ String.fromInt (toYear zone time)
+        ++ " - "
+        ++ (toHour zone time
+                |> String.fromInt
+                |> String.padLeft 2 '0'
+           )
+        ++ ":"
+        ++ (toMinute zone time
+                |> String.fromInt
+                |> String.padLeft 2 '0'
+           )
+
+
+viewExchange : Model -> Html Msg
+viewExchange { exchange, timeZone } =
+    div []
+        [ case exchange of
+            Just { rates, timestamp } ->
+                small []
+                    [ text ("Last updated: " ++ posixToDateString timeZone timestamp) ]
+
+            Nothing ->
+                text "No conversion rates available"
+        ]
+
+
 view : Model -> Html Msg
 view model =
     section
@@ -174,6 +247,7 @@ view model =
             |> currencyTotals
             |> conversionTotals model.exchange
             |> viewTable
+        , viewExchange model
         , button
             [ H.class "button is-small", onClick LoadExchange ]
             [ text "Load exchange rates" ]

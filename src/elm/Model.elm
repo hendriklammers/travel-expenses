@@ -76,6 +76,7 @@ type alias Model =
     , endDate : Maybe Date
     , startDatePicker : DatePicker.DatePicker
     , endDatePicker : DatePicker.DatePicker
+    , timeZone : Time.Zone
     }
 
 
@@ -222,10 +223,12 @@ init flags url key =
       , startDatePicker = startDatePicker
       , endDate = Nothing
       , endDatePicker = endDatePicker
+      , timeZone = Time.utc
       }
     , Cmd.batch
         [ Cmd.map ToStartDatePicker startDatePickerFx
         , Cmd.map ToEndDatePicker endDatePickerFx
+        , Task.perform SetTimeZone Time.here
         ]
     )
 
@@ -290,7 +293,7 @@ update msg model =
             case result of
                 Ok exchange ->
                     ( { model | exchange = Just exchange }
-                    , storeExchange (encodeExchange exchange)
+                    , Task.perform SetTimestamp Time.now
                     )
 
                 Err error ->
@@ -377,6 +380,23 @@ update msg model =
                     model.vars
             in
             ( model, fetchRates fixer_api_key )
+
+        SetTimeZone zone ->
+            ( { model | timeZone = zone }, Cmd.none )
+
+        SetTimestamp time ->
+            case model.exchange of
+                Just exchange ->
+                    let
+                        updated =
+                            { exchange | timestamp = time }
+                    in
+                    ( { model | exchange = Just updated }
+                    , storeExchange (encodeExchange updated)
+                    )
+
+                Nothing ->
+                    ( model, Cmd.none )
 
 
 
