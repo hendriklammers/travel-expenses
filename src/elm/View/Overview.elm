@@ -29,7 +29,17 @@ import Html.Events exposing (onClick)
 import Messages exposing (Msg(..))
 import Model exposing (Model, endSettings, startSettings)
 import Round
-import Time exposing (Month(..), toDay, toHour, toMinute, toMonth, toSecond, toYear, utc)
+import Time
+    exposing
+        ( Month(..)
+        , toDay
+        , toHour
+        , toMinute
+        , toMonth
+        , toSecond
+        , toYear
+        , utc
+        )
 
 
 addAmount : Expense -> Dict String Float -> Dict String Float
