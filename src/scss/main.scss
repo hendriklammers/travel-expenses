@@ -7,6 +7,11 @@ $section-padding: 2rem 1rem;
 // Import all for now
 @import "~bulma/bulma";
 
+$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome";
+@import "~@fortawesome/fontawesome-free/scss/solid";
+@import "~@fortawesome/fontawesome-free/scss/regular";
+
 @import "functions";
 @import "settings";
 @import "base";

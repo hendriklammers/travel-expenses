@@ -77,6 +77,7 @@ type alias Model =
     , startDatePicker : DatePicker.DatePicker
     , endDatePicker : DatePicker.DatePicker
     , timeZone : Time.Zone
+    , fetchingExchange : Bool
     }
 
 
@@ -224,6 +225,7 @@ init flags url key =
       , endDate = Nothing
       , endDatePicker = endDatePicker
       , timeZone = Time.utc
+      , fetchingExchange = False
       }
     , Cmd.batch
         [ Cmd.map ToStartDatePicker startDatePickerFx
@@ -265,10 +267,15 @@ update msg model =
                     ( { model | currency = Just currency }, cmd )
 
                 Nothing ->
-                    handleError
-                        model
-                        InputError
-                        "Invalid currency selected"
+                    ( { model
+                        | error =
+                            Just
+                                ( InputError
+                                , "Invalid currency selected"
+                                )
+                      }
+                    , Cmd.none
+                    )
 
         CloseError ->
             ( { model | error = Nothing }
@@ -292,7 +299,10 @@ update msg model =
         NewRates result ->
             case result of
                 Ok exchange ->
-                    ( { model | exchange = Just exchange }
+                    ( { model
+                        | exchange = Just exchange
+                        , fetchingExchange = False
+                      }
                     , Task.perform SetTimestamp Time.now
                     )
 
@@ -301,10 +311,16 @@ update msg model =
                         log =
                             Debug.log "http" error
                     in
-                    handleError
-                        model
-                        FetchError
-                        "Unable to fetch the exchange rates from the fixer.io API"
+                    ( { model
+                        | fetchingExchange = False
+                        , error =
+                            Just
+                                ( FetchError
+                                , "Unable to fetch the exchange rates from the API"
+                                )
+                      }
+                    , Cmd.none
+                    )
 
         LinkClicked urlRequest ->
             case urlRequest of
@@ -379,7 +395,7 @@ update msg model =
                 { fixer_api_key } =
                     model.vars
             in
-            ( model, fetchRates fixer_api_key )
+            ( { model | fetchingExchange = True }, fetchRates fixer_api_key )
 
         SetTimeZone zone ->
             ( { model | timeZone = zone }, Cmd.none )
@@ -500,14 +516,6 @@ addExpense model date =
             )
 
         Nothing ->
-            handleError
-                model
-                InputError
-                "Invalid input"
-
-
-handleError : Model -> ErrorType -> String -> ( Model, Cmd Msg )
-handleError model error message =
-    ( { model | error = Just ( error, message ) }
-    , Cmd.none
-    )
+            ( { model | error = Just ( InputError, "Invalid input" ) }
+            , Cmd.none
+            )

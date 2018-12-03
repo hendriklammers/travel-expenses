@@ -11,6 +11,7 @@ import Html
         , button
         , div
         , h1
+        , i
         , p
         , section
         , small
@@ -235,16 +236,49 @@ posixToDateString zone time =
 
 
 viewExchange : Model -> Html Msg
-viewExchange { exchange, timeZone } =
-    div []
-        [ case exchange of
+viewExchange { exchange, timeZone, fetchingExchange } =
+    let
+        loadingClass =
+            case fetchingExchange of
+                True ->
+                    " is-loading"
+
+                False ->
+                    ""
+    in
+    div [ H.class "exchange" ]
+        (case exchange of
             Just { rates, timestamp } ->
-                small []
-                    [ text ("Last updated: " ++ posixToDateString timeZone timestamp) ]
+                [ small [ H.class ("exchange__text" ++ loadingClass) ]
+                    [ text
+                        ("Exchange rates: "
+                            ++ posixToDateString timeZone timestamp
+                        )
+                    ]
+                , button
+                    [ H.class "button is-small exchange__update"
+                    , onClick LoadExchange
+                    ]
+                    [ span
+                        [ H.class "icon is-small" ]
+                        [ i [ H.class "fas fa-sync" ] [] ]
+                    ]
+                ]
 
             Nothing ->
-                text "No conversion rates available"
-        ]
+                [ small [ H.class "exchange__text" ]
+                    [ text "No exchange rates available" ]
+                , button
+                    [ H.class ("button is-small exchange__update" ++ loadingClass)
+                    , onClick LoadExchange
+                    ]
+                    [ span
+                        [ H.class "icon is-small" ]
+                        [ i [ H.class "fas fa-arrow-down" ] [] ]
+                    , span [] [ text "Update" ]
+                    ]
+                ]
+        )
 
 
 view : Model -> Html Msg
@@ -258,7 +292,4 @@ view model =
             |> conversionTotals model.exchange
             |> viewTable
         , viewExchange model
-        , button
-            [ H.class "button is-small", onClick LoadExchange ]
-            [ text "Load exchange rates" ]
         ]

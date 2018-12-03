@@ -6,7 +6,7 @@
   "scripts": {
     "api": "json-server --watch ./data/exchange.json --port 4000",
     "build": "webpack",
-    "dev": "webpack-serve",
+    "dev": "webpack-serve --open",
     "prod": "NODE_ENV=production webpack",
     "start": "yarn run dev",
     "test": "elm-test"
@@ -34,6 +34,7 @@
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^4.0.0",
     "eslint-plugin-standard": "^4.0.0",
+    "file-loader": "^2.0.0",
     "html-webpack-plugin": "^3.2.0",
     "json-server": "^0.14.0",
     "koa-connect-history-api-fallback": "^0.3.1",
@@ -52,6 +53,7 @@
     "last 2 versions"
   ],
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.5.0",
     "bulma": "^0.6.2"
   }
 }
