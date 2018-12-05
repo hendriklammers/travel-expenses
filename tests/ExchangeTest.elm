@@ -1,7 +1,7 @@
 module ExchangeTest exposing (suite)
 
-import Dict
-import Exchange exposing (Exchange, decodeExchange)
+import Dict exposing (Dict)
+import Exchange exposing (Exchange, decodeExchange, encodeExchange)
 import Expect
 import Fuzz exposing (Fuzzer)
 import Json.Decode as Decode
@@ -30,9 +30,7 @@ testExchange =
                         "rates":{
                             "EUR":1,
                             "JPY":127.854134,
-                            "SGD":1.583124,
-                            "USD":1.157271,
-                            "VND":26540.852183
+                            "SGD":1.583124
                             }
                         }
                         """
@@ -44,13 +42,42 @@ testExchange =
                                 [ ( "EUR", 1 )
                                 , ( "JPY", 127.854134 )
                                 , ( "SGD", 1.583124 )
-                                , ( "USD", 1.157271 )
-                                , ( "VND", 26540.852183 )
                                 ]
                         }
                 in
                 Expect.equal
                     (Decode.decodeString decodeExchange input)
                     (Ok result)
-        , todo "Round trip decoding/encoding of Exchange type"
+        , fuzz exchangeFuzzer "round trip" <|
+            \exchange ->
+                exchange
+                    |> encodeExchange
+                    |> Decode.decodeString decodeExchange
+                    |> Expect.equal (Ok exchange)
         ]
+
+
+exchangeFuzzer : Fuzzer Exchange
+exchangeFuzzer =
+    Fuzz.map2 Exchange
+        dateFuzzer
+        ratesFuzzer
+
+
+rateFuzzer : Fuzzer ( String, Float )
+rateFuzzer =
+    Fuzz.map2 Tuple.pair
+        (Fuzz.constant "THB")
+        (Fuzz.floatRange 0 1000000)
+
+
+ratesFuzzer : Fuzzer (Dict String Float)
+ratesFuzzer =
+    Fuzz.map
+        Dict.fromList
+        (Fuzz.list rateFuzzer)
+
+
+dateFuzzer : Fuzzer Posix
+dateFuzzer =
+    Fuzz.map millisToPosix (Fuzz.intRange 0 1543984297000)
