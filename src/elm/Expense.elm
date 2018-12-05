@@ -3,14 +3,14 @@ module Expense exposing
     , Currency
     , Expense
     , categoryDecoder
+    , categoryEncoder
     , currencyDecoder
+    , currencyEncoder
     , dateDecoder
-    , encodeCategory
-    , encodeCurrency
-    , encodeExpense
-    , encodeExpenseList
     , expenseDecoder
+    , expenseEncoder
     , expenseListDecoder
+    , expenseListEncoder
     , filterDates
     )
 
@@ -27,8 +27,8 @@ type alias Category =
     }
 
 
-encodeCategory : Category -> Encode.Value
-encodeCategory { id, name } =
+categoryEncoder : Category -> Encode.Value
+categoryEncoder { id, name } =
     Encode.object
         [ ( "id", Encode.string id )
         , ( "name", Encode.string name )
@@ -48,8 +48,8 @@ type alias Currency =
     }
 
 
-encodeCurrency : Currency -> Encode.Value
-encodeCurrency { code, name } =
+currencyEncoder : Currency -> Encode.Value
+currencyEncoder { code, name } =
     Encode.object
         [ ( "code", Encode.string code )
         , ( "name", Encode.string name )
@@ -72,21 +72,21 @@ type alias Expense =
     }
 
 
-encodeExpense : Expense -> Encode.Value
-encodeExpense { category, amount, currency, id, date } =
+expenseEncoder : Expense -> Encode.Value
+expenseEncoder { category, amount, currency, id, date } =
     Encode.object
         [ ( "id", Uuid.encode id )
         , ( "date", Encode.int (Time.posixToMillis date) )
         , ( "amount", Encode.float amount )
-        , ( "category", encodeCategory category )
-        , ( "currency", encodeCurrency currency )
+        , ( "category", categoryEncoder category )
+        , ( "currency", currencyEncoder currency )
         ]
 
 
-encodeExpenseList : List Expense -> String
-encodeExpenseList expenses =
+expenseListEncoder : List Expense -> String
+expenseListEncoder expenses =
     expenses
-        |> Encode.list encodeExpense
+        |> Encode.list expenseEncoder
         |> Encode.encode 0
 
 

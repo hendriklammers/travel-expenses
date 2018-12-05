@@ -1,7 +1,7 @@
 module ExchangeTest exposing (suite)
 
 import Dict exposing (Dict)
-import Exchange exposing (Exchange, decodeExchange, encodeExchange)
+import Exchange exposing (Exchange, exchangeDecoder, exchangeEncoder)
 import Expect
 import Fuzz exposing (Fuzzer)
 import Json.Decode as Decode
@@ -46,13 +46,13 @@ testExchange =
                         }
                 in
                 Expect.equal
-                    (Decode.decodeString decodeExchange input)
+                    (Decode.decodeString exchangeDecoder input)
                     (Ok result)
         , fuzz exchangeFuzzer "round trip" <|
             \exchange ->
                 exchange
-                    |> encodeExchange
-                    |> Decode.decodeString decodeExchange
+                    |> exchangeEncoder
+                    |> Decode.decodeString exchangeDecoder
                     |> Expect.equal (Ok exchange)
         ]
 

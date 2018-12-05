@@ -14,16 +14,16 @@ import Browser
 import Browser.Navigation as Nav
 import Date exposing (Date)
 import DatePicker exposing (DateEvent(..), defaultSettings)
-import Exchange exposing (Exchange, decodeExchange, encodeExchange)
+import Exchange exposing (Exchange, exchangeDecoder, exchangeEncoder)
 import Expense
     exposing
         ( Category
         , Currency
         , Expense
         , currencyDecoder
-        , encodeCurrency
-        , encodeExpenseList
+        , currencyEncoder
         , expenseListDecoder
+        , expenseListEncoder
         )
 import Http
 import Json.Decode as Decode
@@ -187,7 +187,7 @@ init flags url key =
         exchange =
             case flags.exchange of
                 Just json ->
-                    case Decode.decodeString decodeExchange json of
+                    case Decode.decodeString exchangeDecoder json of
                         Ok result ->
                             Just result
 
@@ -260,7 +260,7 @@ update msg model =
                     let
                         cmd =
                             currency
-                                |> encodeCurrency
+                                |> currencyEncoder
                                 |> Encode.encode 0
                                 |> storeCurrency
                     in
@@ -408,7 +408,7 @@ update msg model =
                             { exchange | timestamp = time }
                     in
                     ( { model | exchange = Just updated }
-                    , storeExchange (encodeExchange updated)
+                    , storeExchange (exchangeEncoder updated)
                     )
 
                 Nothing ->
@@ -487,7 +487,7 @@ fetchRates apiKey =
                     "http://localhost:4000/exchange"
 
         request =
-            Http.get url decodeExchange
+            Http.get url exchangeDecoder
     in
     Http.send NewRates request
 
@@ -512,7 +512,7 @@ addExpense model date =
                 , error = Nothing
                 , expenses = e :: model.expenses
               }
-            , storeExpenses (encodeExpenseList (e :: model.expenses))
+            , storeExpenses (expenseListEncoder (e :: model.expenses))
             )
 
         Nothing ->

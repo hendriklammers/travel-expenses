@@ -7,13 +7,13 @@ import Expense
         , Currency
         , Expense
         , categoryDecoder
+        , categoryEncoder
         , currencyDecoder
-        , encodeCategory
-        , encodeCurrency
-        , encodeExpense
-        , encodeExpenseList
+        , currencyEncoder
         , expenseDecoder
+        , expenseEncoder
         , expenseListDecoder
+        , expenseListEncoder
         )
 import Fuzz exposing (Fuzzer)
 import Json.Decode as Decode
@@ -63,7 +63,7 @@ testCurrency =
         , fuzz currencyFuzzer "round trip" <|
             \currency ->
                 currency
-                    |> encodeCurrency
+                    |> currencyEncoder
                     |> Decode.decodeValue currencyDecoder
                     |> Expect.equal (Ok currency)
         ]
@@ -103,7 +103,7 @@ testCategory =
         , fuzz categoryFuzzer "round trip" <|
             \category ->
                 category
-                    |> encodeCategory
+                    |> categoryEncoder
                     |> Decode.decodeValue categoryDecoder
                     |> Expect.equal (Ok category)
         ]
@@ -147,7 +147,7 @@ testExpense =
         [ fuzz expenseFuzzer "round trip" <|
             \expense ->
                 expense
-                    |> encodeExpense
+                    |> expenseEncoder
                     |> Decode.decodeValue expenseDecoder
                     |> Expect.equal (Ok expense)
         ]
@@ -164,7 +164,7 @@ testExpenseList =
         [ fuzz expenseListFuzzer "round trip" <|
             \expenses ->
                 expenses
-                    |> encodeExpenseList
+                    |> expenseListEncoder
                     |> Decode.decodeString expenseListDecoder
                     |> Expect.equal (Ok expenses)
         ]
