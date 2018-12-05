@@ -1,5 +1,6 @@
 module ExpenseTest exposing (suite)
 
+import Date
 import Expect
 import Expense
     exposing
@@ -14,12 +15,13 @@ import Expense
         , expenseEncoder
         , expenseListDecoder
         , expenseListEncoder
+        , filterDates
         )
 import Fuzz exposing (Fuzzer)
 import Json.Decode as Decode
 import Random exposing (step)
 import Test exposing (..)
-import Time exposing (Posix, millisToPosix)
+import Time exposing (Month(..), Posix, millisToPosix)
 import Uuid
 
 
@@ -114,8 +116,8 @@ dateFuzzer =
     Fuzz.map millisToPosix (Fuzz.intRange 0 1543984297000)
 
 
-buildUuid : Int -> Uuid.Uuid
-buildUuid integer =
+generateUuid : Int -> Uuid.Uuid
+generateUuid integer =
     let
         initialSeed =
             Random.initialSeed integer
@@ -128,7 +130,7 @@ buildUuid integer =
 
 uuidFuzzer : Fuzzer Uuid.Uuid
 uuidFuzzer =
-    Fuzz.map buildUuid Fuzz.int
+    Fuzz.map generateUuid Fuzz.int
 
 
 expenseFuzzer : Fuzzer Expense
@@ -162,16 +164,120 @@ testExpenseList : Test
 testExpenseList =
     describe "JSON encoding/decoding a list of Expenses"
         [ fuzz expenseListFuzzer "round trip" <|
-            \expenses ->
-                expenses
+            \list ->
+                list
                     |> expenseListEncoder
                     |> Decode.decodeString expenseListDecoder
-                    |> Expect.equal (Ok expenses)
+                    |> Expect.equal (Ok list)
         ]
 
 
 testDateFilter : Test
 testDateFilter =
     describe "Filter expenses between date range"
-        [ todo "Expenses with date outside of range should be filtered out"
+        [ test "No filtering when no dates are supplied" <|
+            \_ ->
+                Expect.equal
+                    (filterDates ( Nothing, Nothing ) expenses)
+                    expenses
+        , test "No filtering when only start date is supplied" <|
+            \_ ->
+                Expect.equal
+                    (filterDates
+                        ( Just (Date.fromCalendarDate 2018 Nov 28)
+                        , Nothing
+                        )
+                        expenses
+                    )
+                    expenses
+        , test "No filtering when only end date is supplied" <|
+            \_ ->
+                Expect.equal
+                    (filterDates
+                        ( Nothing
+                        , Just (Date.fromCalendarDate 2018 Nov 28)
+                        )
+                        expenses
+                    )
+                    expenses
+        , test "Filter out dates before start date" <|
+            \_ ->
+                Expect.equal
+                    (filterDates
+                        ( Just (Date.fromCalendarDate 2018 Nov 28)
+                        , Just (Date.fromCalendarDate 2018 Dec 5)
+                        )
+                        expenses
+                    )
+                    [ { id = generateUuid 3
+                      , date = millisToPosix 1543932000000
+                      , amount = 15
+                      , category =
+                            Category
+                                "5772822A-42B4-4605-A5C3-0504498C3432"
+                                "Food & Drink"
+                      , currency = Currency "MYR" "Malaysian Ringgit"
+                      }
+                    , { id = generateUuid 3
+                      , date = millisToPosix 1543683600000
+                      , amount = 12
+                      , category =
+                            Category
+                                "5772822A-42B4-4605-A5C3-0504498C3432"
+                                "Food & Drink"
+                      , currency = Currency "MYR" "Malaysian Ringgit"
+                      }
+                    ]
+        , test "Filter out dates after end date" <|
+            \_ ->
+                Expect.equal
+                    (filterDates
+                        ( Just (Date.fromCalendarDate 2018 Nov 1)
+                        , Just (Date.fromCalendarDate 2018 Nov 28)
+                        )
+                        expenses
+                    )
+                    [ { id = generateUuid 3
+                      , date = millisToPosix 1543208400000
+                      , amount = 27
+                      , category =
+                            Category
+                                "5772822A-42B4-4605-A5C3-0504498C3432"
+                                "Food & Drink"
+                      , currency = Currency "MYR" "Malaysian Ringgit"
+                      }
+                    ]
+        , todo "Add fuzz test for dates filter"
         ]
+
+
+expenses : List Expense
+expenses =
+    [ { id = generateUuid 3
+      , date = millisToPosix 1543932000000
+      , amount = 15
+      , category =
+            Category
+                "5772822A-42B4-4605-A5C3-0504498C3432"
+                "Food & Drink"
+      , currency = Currency "MYR" "Malaysian Ringgit"
+      }
+    , { id = generateUuid 3
+      , date = millisToPosix 1543683600000
+      , amount = 12
+      , category =
+            Category
+                "5772822A-42B4-4605-A5C3-0504498C3432"
+                "Food & Drink"
+      , currency = Currency "MYR" "Malaysian Ringgit"
+      }
+    , { id = generateUuid 3
+      , date = millisToPosix 1543208400000
+      , amount = 27
+      , category =
+            Category
+                "5772822A-42B4-4605-A5C3-0504498C3432"
+                "Food & Drink"
+      , currency = Currency "MYR" "Malaysian Ringgit"
+      }
+    ]
