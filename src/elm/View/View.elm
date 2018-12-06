@@ -49,7 +49,9 @@ viewNavbar model =
             [ H.class "navbar-brand" ]
             [ h1
                 [ H.class "navbar-item is-capitalized" ]
-                [ text "Travel expenses" ]
+                [ a [ H.href "/", H.class "has-text-grey-lighter" ]
+                    [ text "Travel expenses" ]
+                ]
             , viewBurger model
             ]
         , viewMenu model
