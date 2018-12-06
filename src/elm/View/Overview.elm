@@ -97,8 +97,15 @@ conversionString conversion =
             Round.round 2 value
 
 
-viewTable : List Row -> Html Msg
-viewTable rows =
+viewTable : Model -> Html Msg
+viewTable model =
+    let
+        rows =
+            model.expenses
+                |> filterDates ( model.startDate, model.endDate )
+                |> currencyTotals
+                |> conversionTotals model.exchange
+    in
     case rows of
         [] ->
             div [ H.class "notification" ]
@@ -114,7 +121,7 @@ viewTable rows =
                         rows
             in
             table
-                [ H.class "table is-fullwidth" ]
+                [ H.class "table is-fullwidth is-hoverable" ]
                 [ thead []
                     [ tr []
                         [ th [] [ text "Currency" ]
@@ -281,15 +288,25 @@ viewExchange { exchange, timeZone, fetchingExchange } =
         )
 
 
+viewCurrencyOverview : Model -> Currency -> Html Msg
+viewCurrencyOverview model { name } =
+    text name
+
+
 view : Model -> Maybe Currency -> Html Msg
 view model currency =
+    let
+        viewData =
+            case currency of
+                Just c ->
+                    viewCurrencyOverview model c
+
+                Nothing ->
+                    viewTable model
+    in
     section
         [ H.class "section overview" ]
         [ viewDatePicker model
-        , model.expenses
-            |> filterDates ( model.startDate, model.endDate )
-            |> currencyTotals
-            |> conversionTotals model.exchange
-            |> viewTable
+        , viewData
         , viewExchange model
         ]
