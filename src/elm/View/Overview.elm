@@ -136,7 +136,7 @@ viewTable rows =
 
 viewRow : Row -> Html Msg
 viewRow { currency, amount, conversion } =
-    tr [ onClick (RowClick (String.toLower currency)) ]
+    tr [ onClick (RowClick (String.toLower currency)), H.class "row" ]
         [ td [] [ text currency ]
         , td [] [ text (Round.round 2 amount) ]
         , td [] [ text (conversionString conversion) ]
