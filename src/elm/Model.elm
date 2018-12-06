@@ -36,6 +36,7 @@ import Route exposing (Route(..), toRoute)
 import Task
 import Time
 import Url
+import Url.Builder as Builder
 import Uuid
 
 
@@ -414,20 +415,12 @@ update msg model =
                 Nothing ->
                     ( model, Cmd.none )
 
-
-
--- Could be used to customize common settings for both date pickers. Like for
--- example disabling weekends from them.
-
-
-commonSettings : DatePicker.Settings
-commonSettings =
-    defaultSettings
-
-
-
--- Extend commonSettings with isDisabled function which would disable dates
--- after already selected end date because range start should come before end.
+        RowClick currency ->
+            ( model
+            , Nav.pushUrl
+                model.key
+                (Builder.absolute [ "overview", currency ] [])
+            )
 
 
 startSettings : Maybe Date -> DatePicker.Settings
@@ -436,23 +429,18 @@ startSettings endDate =
         isDisabled =
             case endDate of
                 Nothing ->
-                    commonSettings.isDisabled
+                    defaultSettings.isDisabled
 
                 Just date ->
                     \d ->
                         Date.toRataDie d
                             > Date.toRataDie date
-                            || commonSettings.isDisabled d
+                            || defaultSettings.isDisabled d
     in
-    { commonSettings
+    { defaultSettings
         | placeholder = "Start date"
         , isDisabled = isDisabled
     }
-
-
-
--- Extend commonSettings with isDisabled function which would disable dates
--- before already selected start date because range end should come after start.
 
 
 endSettings : Maybe Date -> DatePicker.Settings
@@ -461,15 +449,15 @@ endSettings startDate =
         isDisabled =
             case startDate of
                 Nothing ->
-                    commonSettings.isDisabled
+                    defaultSettings.isDisabled
 
                 Just date ->
                     \d ->
                         Date.toRataDie d
                             < Date.toRataDie date
-                            || commonSettings.isDisabled d
+                            || defaultSettings.isDisabled d
     in
-    { commonSettings
+    { defaultSettings
         | placeholder = "End date"
         , isDisabled = isDisabled
     }

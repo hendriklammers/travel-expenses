@@ -4,7 +4,7 @@ import Date exposing (Date)
 import DatePicker
 import Dict exposing (Dict)
 import Exchange exposing (Exchange)
-import Expense exposing (Expense, filterDates)
+import Expense exposing (Currency, Expense, filterDates)
 import Html
     exposing
         ( Html
@@ -136,7 +136,7 @@ viewTable rows =
 
 viewRow : Row -> Html Msg
 viewRow { currency, amount, conversion } =
-    tr []
+    tr [ onClick (RowClick (String.toLower currency)) ]
         [ td [] [ text currency ]
         , td [] [ text (Round.round 2 amount) ]
         , td [] [ text (conversionString conversion) ]
@@ -281,10 +281,10 @@ viewExchange { exchange, timeZone, fetchingExchange } =
         )
 
 
-view : Model -> Html Msg
-view model =
+view : Model -> Maybe Currency -> Html Msg
+view model currency =
     section
-        [ H.class "section" ]
+        [ H.class "section overview" ]
         [ viewDatePicker model
         , model.expenses
             |> filterDates ( model.startDate, model.endDate )

@@ -1,6 +1,7 @@
 module View.View exposing (view)
 
 import Browser
+import Expense exposing (Currency)
 import Html
     exposing
         ( Html
@@ -105,6 +106,20 @@ viewMenu { menu, route } =
         ]
 
 
+findCurrency : String -> List Currency -> Maybe Currency
+findCurrency code list =
+    case list of
+        [] ->
+            Nothing
+
+        x :: xs ->
+            if String.toLower code == String.toLower x.code then
+                Just x
+
+            else
+                findCurrency code xs
+
+
 viewPage : Model -> Html Msg
 viewPage model =
     case model.route of
@@ -112,7 +127,15 @@ viewPage model =
             InputView.view model
 
         Overview ->
-            OverviewView.view model
+            OverviewView.view model Nothing
+
+        CurrencyOverview code ->
+            case findCurrency code model.currencies of
+                Just currency ->
+                    OverviewView.view model (Just currency)
+
+                Nothing ->
+                    NotfoundView.view model
 
         NotFound ->
             NotfoundView.view model

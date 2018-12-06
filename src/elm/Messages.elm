@@ -27,3 +27,4 @@ type Msg
     | DeleteEndDate
     | SetTimeZone Time.Zone
     | SetTimestamp Time.Posix
+    | RowClick String

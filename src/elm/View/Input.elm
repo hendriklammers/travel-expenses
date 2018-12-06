@@ -19,7 +19,7 @@ import Html
 import Html.Attributes as H
 import Html.Events exposing (onClick, onInput, onSubmit)
 import Messages exposing (Msg(..))
-import Model exposing (ErrorType(..), Model)
+import Model exposing (Model)
 
 
 view : Model -> Html Msg

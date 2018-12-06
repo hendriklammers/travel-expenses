@@ -1,12 +1,13 @@
 module Route exposing (Route(..), toRoute)
 
 import Url
-import Url.Parser as Parser
+import Url.Parser as Parser exposing ((</>))
 
 
 type Route
     = Input
     | Overview
+    | CurrencyOverview String
     | NotFound
 
 
@@ -15,6 +16,7 @@ routeParser =
     Parser.oneOf
         [ Parser.map Input Parser.top
         , Parser.map Overview (Parser.s "overview")
+        , Parser.map CurrencyOverview (Parser.s "overview" </> Parser.string)
         ]
 
 
