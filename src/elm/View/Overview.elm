@@ -41,6 +41,7 @@ import Time
         , toYear
         , utc
         )
+import View.CurrencyOverview as CurrencyOverview
 
 
 addAmount : Expense -> Dict String Float -> Dict String Float
@@ -288,25 +289,22 @@ viewExchange { exchange, timeZone, fetchingExchange } =
         )
 
 
-viewCurrencyOverview : Model -> Currency -> Html Msg
-viewCurrencyOverview model { name } =
-    text name
-
-
 view : Model -> Maybe Currency -> Html Msg
 view model currency =
     let
         viewData =
             case currency of
                 Just c ->
-                    viewCurrencyOverview model c
+                    CurrencyOverview.view model c
 
                 Nothing ->
-                    viewTable model
+                    div []
+                        [ viewTable model
+                        , viewExchange model
+                        ]
     in
     section
         [ H.class "section overview" ]
         [ viewDatePicker model
         , viewData
-        , viewExchange model
         ]
