@@ -18,7 +18,7 @@ import Html.Attributes.Aria as Aria
 import Html.Events exposing (onClick)
 import Messages exposing (Msg(..))
 import Model exposing (Error, MenuState(..), Model)
-import Route exposing (Route(..))
+import Route exposing (Route(..), routeToString)
 import View.Input as InputView
 import View.Notfound as NotfoundView
 import View.Overview as OverviewView
@@ -33,8 +33,8 @@ type alias MenuItem =
 
 menuItems : List MenuItem
 menuItems =
-    [ MenuItem "Input" "" Input
-    , MenuItem "Overview" "overview" Overview
+    [ MenuItem (routeToString Input) "" Input
+    , MenuItem (routeToString Overview) "overview" Overview
     ]
 
 
@@ -48,10 +48,8 @@ viewNavbar model =
         [ div
             [ H.class "navbar-brand" ]
             [ h1
-                [ H.class "navbar-item is-capitalized" ]
-                [ a [ H.href "/", H.class "has-text-grey-lighter" ]
-                    [ text "Travel expenses" ]
-                ]
+                [ H.class "navbar-item" ]
+                [ text (routeToString model.route) ]
             , viewBurger model
             ]
         , viewMenu model

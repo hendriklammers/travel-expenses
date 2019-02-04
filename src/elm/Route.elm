@@ -1,4 +1,4 @@
-module Route exposing (Route(..), toRoute)
+module Route exposing (Route(..), routeToString, toRoute)
 
 import Url
 import Url.Parser as Parser exposing ((</>))
@@ -9,6 +9,22 @@ type Route
     | Overview
     | CurrencyOverview String
     | NotFound
+
+
+routeToString : Route -> String
+routeToString route =
+    case route of
+        Input ->
+            "Input"
+
+        Overview ->
+            "Overview"
+
+        CurrencyOverview cur ->
+            "Overview " ++ String.toUpper cur
+
+        NotFound ->
+            "Page not found"
 
 
 routeParser : Parser.Parser (Route -> a) a
