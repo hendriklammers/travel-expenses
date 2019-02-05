@@ -20,8 +20,7 @@ import Html
         , tr
         )
 import Html.Attributes as H
-import Messages exposing (Msg(..))
-import Model exposing (Model)
+import Model exposing (Model, Msg(..))
 import Round
 
 

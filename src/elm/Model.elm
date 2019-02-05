@@ -1,9 +1,12 @@
 module Model exposing
-    ( Error
+    ( ColumnSort
+    , Error
     , ErrorType(..)
     , Flags
     , MenuState(..)
     , Model
+    , Msg(..)
+    , Sort(..)
     , endSettings
     , init
     , startSettings
@@ -14,6 +17,7 @@ import Browser
 import Browser.Navigation as Nav
 import Date exposing (Date)
 import DatePicker exposing (DateEvent(..), defaultSettings)
+import Dict
 import Exchange exposing (Exchange, exchangeDecoder, exchangeEncoder)
 import Expense
     exposing
@@ -29,7 +33,6 @@ import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
 import List.Extra exposing (find)
-import Messages exposing (Msg(..))
 import Ports exposing (storeCurrency, storeExchange, storeExpenses)
 import Random exposing (Seed, initialSeed, step)
 import Route exposing (Route(..), toRoute)
@@ -38,25 +41,6 @@ import Time
 import Url
 import Url.Builder as Builder
 import Uuid
-
-
-type MenuState
-    = MenuOpen
-    | MenuClosed
-
-
-type ErrorType
-    = InputError
-    | FetchError
-
-
-type alias Error =
-    ( ErrorType, String )
-
-
-type alias Vars =
-    { fixer_api_key : Maybe String
-    }
 
 
 type alias Model =
@@ -79,6 +63,66 @@ type alias Model =
     , endDatePicker : DatePicker.DatePicker
     , timeZone : Time.Zone
     , fetchingExchange : Bool
+    , sort : ColumnSort
+    }
+
+
+type Msg
+    = UpdateAmount String
+    | SelectCategory Category
+    | SelectCurrency String
+    | Submit
+    | AddExpense Time.Posix
+    | CloseError
+    | ToggleMenu
+    | NewRates (Result Http.Error Exchange)
+    | LinkClicked Browser.UrlRequest
+    | UrlChanged Url.Url
+    | ToStartDatePicker DatePicker.Msg
+    | ToEndDatePicker DatePicker.Msg
+    | LoadExchange
+    | DeleteStartDate
+    | DeleteEndDate
+    | SetTimeZone Time.Zone
+    | SetTimestamp Time.Posix
+    | RowClick String
+    | SortColumn String
+
+
+type MenuState
+    = MenuOpen
+    | MenuClosed
+
+
+type ErrorType
+    = InputError
+    | FetchError
+
+
+type Sort
+    = ASC
+    | DESC
+
+
+type alias ColumnSort =
+    Maybe ( String, Sort )
+
+
+type alias Error =
+    ( ErrorType, String )
+
+
+type alias Vars =
+    { fixer_api_key : Maybe String
+    }
+
+
+type alias Flags =
+    { seed : Int
+    , currency : Maybe String
+    , exchange : Maybe String
+    , expenses : Maybe String
+    , fixer_api_key : Maybe String
     }
 
 
@@ -135,15 +179,6 @@ currencies =
       , name = "Indonesian Rupiah"
       }
     ]
-
-
-type alias Flags =
-    { seed : Int
-    , currency : Maybe String
-    , exchange : Maybe String
-    , expenses : Maybe String
-    , fixer_api_key : Maybe String
-    }
 
 
 init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
@@ -227,6 +262,7 @@ init flags url key =
       , endDatePicker = endDatePicker
       , timeZone = Time.utc
       , fetchingExchange = False
+      , sort = Nothing
       }
     , Cmd.batch
         [ Cmd.map ToStartDatePicker startDatePickerFx
@@ -421,6 +457,28 @@ update msg model =
                 model.key
                 (Builder.absolute [ "overview", currency ] [])
             )
+
+        SortColumn name ->
+            ( { model | sort = updateSort name model.sort }, Cmd.none )
+
+
+updateSort : String -> ColumnSort -> ColumnSort
+updateSort name current =
+    case current of
+        Nothing ->
+            Just ( name, DESC )
+
+        Just ( currentName, sort ) ->
+            if name == currentName then
+                case sort of
+                    DESC ->
+                        Just ( name, ASC )
+
+                    ASC ->
+                        Nothing
+
+            else
+                Just ( name, DESC )
 
 
 startSettings : Maybe Date -> DatePicker.Settings

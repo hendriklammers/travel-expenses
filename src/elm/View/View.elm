@@ -16,8 +16,7 @@ import Html
 import Html.Attributes as H
 import Html.Attributes.Aria as Aria
 import Html.Events exposing (onClick)
-import Messages exposing (Msg(..))
-import Model exposing (Error, MenuState(..), Model)
+import Model exposing (Error, MenuState(..), Model, Msg(..))
 import Route exposing (Route(..), routeToString)
 import View.Input as InputView
 import View.Notfound as NotfoundView

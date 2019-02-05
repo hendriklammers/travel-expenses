@@ -1,10 +1,13 @@
 module Main exposing (main)
 
 import Browser exposing (Document)
-import Messages exposing (Msg(..))
-import Model exposing (Flags, Model)
-import Subscriptions exposing (subscriptions)
+import Model exposing (Flags, Model, Msg(..))
 import View.View exposing (view)
+
+
+subscriptions : Model -> Sub Msg
+subscriptions =
+    always Sub.none
 
 
 main : Program Flags Model Msg
