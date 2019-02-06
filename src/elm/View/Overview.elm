@@ -35,10 +35,10 @@ import Html.Attributes as H
 import Html.Events exposing (onClick)
 import Model
     exposing
-        ( ColumnSort
-        , Model
+        ( Model
         , Msg(..)
         , Sort(..)
+        , TableSort
         , endSettings
         , startSettings
         )
@@ -118,7 +118,7 @@ sortByConversion rows =
         rows
 
 
-sortRows : ColumnSort -> List Row -> List Row
+sortRows : TableSort -> List Row -> List Row
 sortRows sort rows =
     case sort of
         Nothing ->
@@ -178,7 +178,7 @@ viewTable model =
                 |> filterDates ( model.startDate, model.endDate )
                 |> currencyTotals
                 |> conversionTotals model.exchange
-                |> sortRows model.sort
+                |> sortRows model.overviewTableSort
     in
     case rows of
         [] ->
@@ -199,15 +199,15 @@ viewTable model =
                 [ thead []
                     [ tr []
                         [ th []
-                            [ span [ onClick (SortColumn "currency") ]
+                            [ span [ onClick (SortOverviewTable "currency") ]
                                 [ text "Currency" ]
                             ]
                         , th []
-                            [ span [ onClick (SortColumn "amount") ]
+                            [ span [ onClick (SortOverviewTable "amount") ]
                                 [ text "Amount" ]
                             ]
                         , th []
-                            [ span [ onClick (SortColumn "conversion") ]
+                            [ span [ onClick (SortOverviewTable "conversion") ]
                                 [ text "Euro" ]
                             ]
                         ]

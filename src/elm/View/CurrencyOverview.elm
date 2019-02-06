@@ -10,6 +10,7 @@ import Html
         , div
         , h2
         , p
+        , span
         , table
         , tbody
         , td
@@ -20,7 +21,8 @@ import Html
         , tr
         )
 import Html.Attributes as H
-import Model exposing (Model, Msg(..))
+import Html.Events exposing (onClick)
+import Model exposing (Model, Msg(..), Sort(..), TableSort)
 import Round
 
 
@@ -39,7 +41,11 @@ addAmount { category, amount } acc =
         acc
 
 
-viewTable : List ( String, Float ) -> Html Msg
+type alias Row =
+    ( String, Float )
+
+
+viewTable : List Row -> Html Msg
 viewTable rows =
     case rows of
         [] ->
@@ -49,11 +55,17 @@ viewTable rows =
 
         _ ->
             table
-                [ H.class "table is-fullwidth is-hoverable" ]
+                [ H.class "table is-fullwidth" ]
                 [ thead []
                     [ tr []
-                        [ th [] [ text "Category" ]
-                        , th [] [ text "Amount" ]
+                        [ th []
+                            [ span [ onClick (SortCurrencyTable "category") ]
+                                [ text "Category" ]
+                            ]
+                        , th []
+                            [ span [ onClick (SortCurrencyTable "amount") ]
+                                [ text "Amount" ]
+                            ]
                         ]
                     ]
                 , tbody []
@@ -61,7 +73,7 @@ viewTable rows =
                 ]
 
 
-viewRow : ( String, Float ) -> Html Msg
+viewRow : Row -> Html Msg
 viewRow ( category, amount ) =
     tr [ H.class "row" ]
         [ td [] [ text category ]
@@ -69,18 +81,49 @@ viewRow ( category, amount ) =
         ]
 
 
-groupByCategory : List Expense -> List ( String, Float )
+groupByCategory : List Expense -> List Row
 groupByCategory expenses =
     expenses
         |> List.foldl addAmount Dict.empty
         |> Dict.toList
-        |> List.sortBy Tuple.second
-        |> List.reverse
 
 
 
 -- total =
 --     List.foldl (\{ amount } acc -> acc + amount) 0 filtered
+
+
+sortRows : TableSort -> List Row -> List Row
+sortRows sort rows =
+    case sort of
+        Nothing ->
+            rows
+
+        Just ( column, sortType ) ->
+            let
+                sortList =
+                    if column == "category" then
+                        List.sortBy Tuple.first
+
+                    else if column == "amount" then
+                        List.sortBy Tuple.second
+
+                    else
+                        identity
+            in
+            rows
+                |> sortList
+                |> orderList sortType
+
+
+orderList : Sort -> List a -> List a
+orderList sort =
+    case sort of
+        ASC ->
+            List.reverse
+
+        _ ->
+            identity
 
 
 view : Model -> Currency -> Html Msg
@@ -93,5 +136,6 @@ view model currency =
             |> filterDates ( model.startDate, model.endDate )
             |> List.filter (\e -> e.currency == currency)
             |> groupByCategory
+            |> sortRows model.currencyTableSort
             |> viewTable
         ]

@@ -1,12 +1,12 @@
 module Model exposing
-    ( ColumnSort
-    , Error
+    ( Error
     , ErrorType(..)
     , Flags
     , MenuState(..)
     , Model
     , Msg(..)
     , Sort(..)
+    , TableSort
     , endSettings
     , init
     , startSettings
@@ -63,7 +63,8 @@ type alias Model =
     , endDatePicker : DatePicker.DatePicker
     , timeZone : Time.Zone
     , fetchingExchange : Bool
-    , sort : ColumnSort
+    , overviewTableSort : TableSort
+    , currencyTableSort : TableSort
     }
 
 
@@ -86,7 +87,8 @@ type Msg
     | SetTimeZone Time.Zone
     | SetTimestamp Time.Posix
     | RowClick String
-    | SortColumn String
+    | SortOverviewTable String
+    | SortCurrencyTable String
 
 
 type MenuState
@@ -104,7 +106,7 @@ type Sort
     | DESC
 
 
-type alias ColumnSort =
+type alias TableSort =
     Maybe ( String, Sort )
 
 
@@ -262,7 +264,8 @@ init flags url key =
       , endDatePicker = endDatePicker
       , timeZone = Time.utc
       , fetchingExchange = False
-      , sort = Nothing
+      , overviewTableSort = Nothing
+      , currencyTableSort = Nothing
       }
     , Cmd.batch
         [ Cmd.map ToStartDatePicker startDatePickerFx
@@ -458,12 +461,25 @@ update msg model =
                 (Builder.absolute [ "overview", currency ] [])
             )
 
-        SortColumn name ->
-            ( { model | sort = updateSort name model.sort }, Cmd.none )
+        SortOverviewTable column ->
+            ( { model
+                | overviewTableSort =
+                    updateTableSort column model.overviewTableSort
+              }
+            , Cmd.none
+            )
+
+        SortCurrencyTable column ->
+            ( { model
+                | currencyTableSort =
+                    updateTableSort column model.currencyTableSort
+              }
+            , Cmd.none
+            )
 
 
-updateSort : String -> ColumnSort -> ColumnSort
-updateSort name current =
+updateTableSort : String -> TableSort -> TableSort
+updateTableSort name current =
     case current of
         Nothing ->
             Just ( name, DESC )
