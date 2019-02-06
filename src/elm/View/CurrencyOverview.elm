@@ -45,8 +45,27 @@ type alias Row =
     ( String, Float )
 
 
-viewTable : List Row -> Html Msg
-viewTable rows =
+addSortClass : String -> TableSort -> String
+addSortClass column sort =
+    case sort of
+        Nothing ->
+            ""
+
+        Just ( columnName, sortType ) ->
+            if columnName == column then
+                case sortType of
+                    ASC ->
+                        "sort--asc"
+
+                    DESC ->
+                        "sort--desc"
+
+            else
+                ""
+
+
+viewTable : TableSort -> List Row -> Html Msg
+viewTable sort rows =
     case rows of
         [] ->
             div [ H.class "notification" ]
@@ -58,11 +77,17 @@ viewTable rows =
                 [ H.class "table is-fullwidth" ]
                 [ thead []
                     [ tr []
-                        [ th []
+                        [ th
+                            [ H.class
+                                (addSortClass "category" sort)
+                            ]
                             [ span [ onClick (SortCurrencyTable "category") ]
                                 [ text "Category" ]
                             ]
-                        , th []
+                        , th
+                            [ H.class
+                                (addSortClass "amount" sort)
+                            ]
                             [ span [ onClick (SortCurrencyTable "amount") ]
                                 [ text "Amount" ]
                             ]
@@ -119,7 +144,7 @@ sortRows sort rows =
 orderList : Sort -> List a -> List a
 orderList sort =
     case sort of
-        ASC ->
+        DESC ->
             List.reverse
 
         _ ->
@@ -137,5 +162,5 @@ view model currency =
             |> List.filter (\e -> e.currency == currency)
             |> groupByCategory
             |> sortRows model.currencyTableSort
-            |> viewTable
+            |> viewTable model.currencyTableSort
         ]

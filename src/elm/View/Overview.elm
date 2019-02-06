@@ -147,7 +147,7 @@ sortRows sort rows =
 orderList : Sort -> List a -> List a
 orderList sort =
     case sort of
-        ASC ->
+        DESC ->
             List.reverse
 
         _ ->
@@ -198,15 +198,24 @@ viewTable model =
                 [ H.class "table is-fullwidth is-hoverable" ]
                 [ thead []
                     [ tr []
-                        [ th []
+                        [ th
+                            [ H.class
+                                (addSortClass "currency" model.overviewTableSort)
+                            ]
                             [ span [ onClick (SortOverviewTable "currency") ]
                                 [ text "Currency" ]
                             ]
-                        , th []
+                        , th
+                            [ H.class
+                                (addSortClass "amount" model.overviewTableSort)
+                            ]
                             [ span [ onClick (SortOverviewTable "amount") ]
                                 [ text "Amount" ]
                             ]
-                        , th []
+                        , th
+                            [ H.class
+                                (addSortClass "conversion" model.overviewTableSort)
+                            ]
                             [ span [ onClick (SortOverviewTable "conversion") ]
                                 [ text "Euro" ]
                             ]
@@ -222,6 +231,25 @@ viewTable model =
                         ]
                     ]
                 ]
+
+
+addSortClass : String -> TableSort -> String
+addSortClass column sort =
+    case sort of
+        Nothing ->
+            ""
+
+        Just ( columnName, sortType ) ->
+            if columnName == column then
+                case sortType of
+                    ASC ->
+                        "sort--asc"
+
+                    DESC ->
+                        "sort--desc"
+
+            else
+                ""
 
 
 viewRow : Row -> Html Msg
