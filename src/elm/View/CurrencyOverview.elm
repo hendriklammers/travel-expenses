@@ -7,6 +7,8 @@ import Expense exposing (Currency, Expense, filterDates)
 import Html
     exposing
         ( Html
+        , article
+        , button
         , div
         , h2
         , header
@@ -76,7 +78,7 @@ viewTable sort rows =
 
         _ ->
             table
-                [ H.class "table is-fullwidth" ]
+                [ H.class "table is-fullwidth is-marginless" ]
                 [ thead []
                     [ tr []
                         [ th
@@ -160,17 +162,29 @@ view model currency =
             List.foldl (\{ amount } acc -> acc + amount) 0 filtered
     in
     section [ H.class "currency-overview" ]
-        [ header [ H.class "header" ]
-            [ h2 [ H.class "title is-size-5 is-marginless" ]
-                [ text currency.name ]
-            , div [ H.class "total" ]
-                -- [ span [ H.class "total__label" ] [ text "Total spent:" ]
-                [ span [ H.class "total__value is-size-3" ]
-                    [ text (Round.round 2 total) ]
+        [ div [ H.class "message is-marginless" ]
+            [ header [ H.class "message-header header is-marginless" ]
+                [ span []
+                    [ text currency.name ]
+                , button
+                    [ H.class "delete is-medium"
+                    , onClick CloseCurrencyOverview
+                    ]
+                    [ text "Close" ]
+                ]
+            , div [ H.class "message-body is-radiusless" ]
+                [ div [ H.class "total" ]
+                    [ span
+                        [ H.class "total__value is-size-3" ]
+                        [ text (Round.round 2 total) ]
+                    , span
+                        [ H.class "total__label" ]
+                        [ text (currency.code ++ " in total") ]
+                    ]
+                , filtered
+                    |> groupByCategory
+                    |> sortRows model.currencyTableSort
+                    |> viewTable model.currencyTableSort
                 ]
             ]
-        , filtered
-            |> groupByCategory
-            |> sortRows model.currencyTableSort
-            |> viewTable model.currencyTableSort
         ]

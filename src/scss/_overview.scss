@@ -1,10 +1,6 @@
 .overview {
-  .table {
-    margin-bottom: 1rem;
-
-    &.is-hoverable .row {
-      cursor: pointer;
-    }
+  .is-hoverable .row {
+    cursor: pointer;
   }
 }
 
@@ -16,13 +12,15 @@
 
 .currency-overview {
   .header {
-    margin-bottom: 0.5rem;
+    padding: 0.75rem 1rem;
   }
 
   .total {
+    margin-bottom: 0.5rem;
+
     &__label {
       display: inline-block;
-      margin-right: 0.5em;
+      margin-left: 0.5em;
       vertical-align: super;
     }
 

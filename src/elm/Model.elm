@@ -89,6 +89,7 @@ type Msg
     | RowClick String
     | SortOverviewTable String
     | SortCurrencyTable String
+    | CloseCurrencyOverview
 
 
 type MenuState
@@ -476,6 +477,9 @@ update msg model =
               }
             , Cmd.none
             )
+
+        CloseCurrencyOverview ->
+            ( model, Nav.pushUrl model.key "/overview" )
 
 
 updateTableSort : String -> TableSort -> TableSort
