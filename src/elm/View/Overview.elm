@@ -1,4 +1,9 @@
-module View.Overview exposing (view)
+module View.Overview exposing
+    ( Row
+    , sortByConversion
+    , sortRows
+    , view
+    )
 
 import Date exposing (Date)
 import DatePicker
@@ -8,6 +13,7 @@ import Expense exposing (Currency, Expense, filterDates)
 import Html
     exposing
         ( Html
+        , a
         , button
         , div
         , h1
@@ -27,8 +33,15 @@ import Html
         )
 import Html.Attributes as H
 import Html.Events exposing (onClick)
-import Messages exposing (Msg(..))
-import Model exposing (Model, endSettings, startSettings)
+import Model
+    exposing
+        ( ColumnSort
+        , Model
+        , Msg(..)
+        , Sort(..)
+        , endSettings
+        , startSettings
+        )
 import Round
 import Time
     exposing
@@ -98,6 +111,65 @@ conversionString conversion =
             Round.round 2 value
 
 
+sortByConversion : List Row -> List Row
+sortByConversion rows =
+    List.sortWith
+        (\a b -> compareMaybe a.conversion b.conversion)
+        rows
+
+
+sortRows : ColumnSort -> List Row -> List Row
+sortRows sort rows =
+    case sort of
+        Nothing ->
+            rows
+
+        Just ( column, sortType ) ->
+            let
+                sortList =
+                    if column == "currency" then
+                        List.sortBy .currency
+
+                    else if column == "amount" then
+                        List.sortBy .amount
+
+                    else if column == "conversion" then
+                        sortByConversion
+
+                    else
+                        identity
+            in
+            rows
+                |> sortList
+                |> orderList sortType
+
+
+orderList : Sort -> List a -> List a
+orderList sort =
+    case sort of
+        ASC ->
+            List.reverse
+
+        _ ->
+            identity
+
+
+compareMaybe : Maybe comparable -> Maybe comparable -> Order
+compareMaybe m1 m2 =
+    case ( m1, m2 ) of
+        ( Nothing, Nothing ) ->
+            EQ
+
+        ( Just _, Nothing ) ->
+            LT
+
+        ( Nothing, Just _ ) ->
+            GT
+
+        ( Just n1, Just n2 ) ->
+            compare n1 n2
+
+
 viewTable : Model -> Html Msg
 viewTable model =
     let
@@ -106,6 +178,7 @@ viewTable model =
                 |> filterDates ( model.startDate, model.endDate )
                 |> currencyTotals
                 |> conversionTotals model.exchange
+                |> sortRows model.sort
     in
     case rows of
         [] ->
@@ -125,9 +198,18 @@ viewTable model =
                 [ H.class "table is-fullwidth is-hoverable" ]
                 [ thead []
                     [ tr []
-                        [ th [] [ text "Currency" ]
-                        , th [] [ text "Amount" ]
-                        , th [] [ text "Euro" ]
+                        [ th []
+                            [ span [ onClick (SortColumn "currency") ]
+                                [ text "Currency" ]
+                            ]
+                        , th []
+                            [ span [ onClick (SortColumn "amount") ]
+                                [ text "Amount" ]
+                            ]
+                        , th []
+                            [ span [ onClick (SortColumn "conversion") ]
+                                [ text "Euro" ]
+                            ]
                         ]
                     ]
                 , tbody []
@@ -151,7 +233,7 @@ viewRow { currency, amount, conversion } =
         ]
 
 
-viewDelete : Messages.Msg -> String -> Maybe Date -> Html Msg
+viewDelete : Msg -> String -> Maybe Date -> Html Msg
 viewDelete msg name date =
     case date of
         Just _ ->
@@ -287,6 +369,10 @@ viewExchange { exchange, timeZone, fetchingExchange } =
                     ]
                 ]
         )
+
+
+
+-- TODO: Store selected currency on model?
 
 
 view : Model -> Maybe Currency -> Html Msg
