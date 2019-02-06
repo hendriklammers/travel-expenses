@@ -9,7 +9,9 @@ import Html
         ( Html
         , div
         , h2
+        , header
         , p
+        , section
         , span
         , table
         , tbody
@@ -113,11 +115,6 @@ groupByCategory expenses =
         |> Dict.toList
 
 
-
--- total =
---     List.foldl (\{ amount } acc -> acc + amount) 0 filtered
-
-
 sortRows : TableSort -> List Row -> List Row
 sortRows sort rows =
     case sort of
@@ -153,13 +150,26 @@ orderList sort =
 
 view : Model -> Currency -> Html Msg
 view model currency =
-    div []
-        [ h2 [ H.class "title is-5" ]
-            [ text currency.name ]
-        , model.expenses
-            -- TODO: Combine date and category filter
-            |> filterDates ( model.startDate, model.endDate )
-            |> List.filter (\e -> e.currency == currency)
+    let
+        filtered =
+            model.expenses
+                |> filterDates ( model.startDate, model.endDate )
+                |> List.filter (\e -> e.currency == currency)
+
+        total =
+            List.foldl (\{ amount } acc -> acc + amount) 0 filtered
+    in
+    section [ H.class "currency-overview" ]
+        [ header [ H.class "header" ]
+            [ h2 [ H.class "title is-size-5 is-marginless" ]
+                [ text currency.name ]
+            , div [ H.class "total" ]
+                -- [ span [ H.class "total__label" ] [ text "Total spent:" ]
+                [ span [ H.class "total__value is-size-3" ]
+                    [ text (Round.round 2 total) ]
+                ]
+            ]
+        , filtered
             |> groupByCategory
             |> sortRows model.currencyTableSort
             |> viewTable model.currencyTableSort

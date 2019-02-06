@@ -13,3 +13,21 @@
     margin-left: 10px;
   }
 }
+
+.currency-overview {
+  .header {
+    margin-bottom: 0.5rem;
+  }
+
+  .total {
+    &__label {
+      display: inline-block;
+      margin-right: 0.5em;
+      vertical-align: super;
+    }
+
+    &__value {
+      display: inline-block;
+    }
+  }
+}
