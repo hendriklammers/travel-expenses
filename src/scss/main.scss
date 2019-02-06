@@ -2,11 +2,11 @@
 // @import "~bulma/sass/grid/columns";
 // @import "~bulma/sass/elements/button.sass";
 
-$section-padding: 2rem 1rem;
-
 @import "settings";
 // Import all for now
 @import "~bulma/bulma";
+
+@import "~currency-flags/dist/currency-flags.css";
 
 $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";

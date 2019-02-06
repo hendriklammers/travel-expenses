@@ -72,9 +72,7 @@ viewTable : TableSort -> List Row -> Html Msg
 viewTable sort rows =
     case rows of
         [] ->
-            div [ H.class "notification" ]
-                [ p [] [ text "No expenses found" ]
-                ]
+            p [] [ text "No expenses found for this currency." ]
 
         _ ->
             table
@@ -164,7 +162,14 @@ view model currency =
     section [ H.class "currency-overview" ]
         [ div [ H.class "message is-marginless" ]
             [ header [ H.class "message-header header is-marginless" ]
-                [ span []
+                [ div
+                    [ H.class
+                        ("currency-flag currency-flag-lg currency-flag-"
+                            ++ String.toLower currency.code
+                        )
+                    ]
+                    []
+                , span []
                     [ text currency.name ]
                 , button
                     [ H.class "delete is-medium"

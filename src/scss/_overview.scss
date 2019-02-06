@@ -15,17 +15,26 @@
     padding: 0.75rem 1rem;
   }
 
+  .currency-flag {
+    margin-right: 0.5em;
+  }
+
+  .delete {
+    margin-left: auto;
+  }
+
   .total {
     margin-bottom: 0.5rem;
 
     &__label {
       display: inline-block;
       margin-left: 0.5em;
-      vertical-align: super;
+      vertical-align: baseline;
     }
 
     &__value {
       display: inline-block;
+      font-weight: 600;
     }
   }
 }
