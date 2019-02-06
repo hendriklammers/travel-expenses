@@ -21,7 +21,8 @@ routeToString route =
             "Overview"
 
         CurrencyOverview cur ->
-            "Overview " ++ String.toUpper cur
+            -- "Overview" ++ String.toUpper cur
+            "Overview"
 
         NotFound ->
             "Page not found"
