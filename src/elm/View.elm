@@ -20,7 +20,7 @@ import Input
 import Model exposing (Error, MenuState(..), Model, Msg(..))
 import Notfound
 import Overview
-import Route exposing (Route(..), routeToString)
+import Route exposing (Route(..), routeToClass, routeToString)
 import Settings
 
 
@@ -168,7 +168,7 @@ view model =
     { title = "Travel Expenses"
     , body =
         [ div
-            [ H.class "container-fluid" ]
+            [ H.class ("container-fluid " ++ routeToClass model.route) ]
             [ viewError model.error
             , viewNavbar model
             , viewPage model

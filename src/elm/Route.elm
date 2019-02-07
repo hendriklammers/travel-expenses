@@ -1,4 +1,4 @@
-module Route exposing (Route(..), routeToString, toRoute)
+module Route exposing (Route(..), routeToClass, routeToString, toRoute)
 
 import Url
 import Url.Parser as Parser exposing ((</>))
@@ -29,7 +29,16 @@ routeToString route =
             "Settings"
 
         NotFound ->
-            "Page not found"
+            "Not found"
+
+
+routeToClass : Route -> String
+routeToClass route =
+    route
+        |> routeToString
+        |> String.toLower
+        |> String.replace " " ""
+        |> (++) "route-"
 
 
 routeParser : Parser.Parser (Route -> a) a
