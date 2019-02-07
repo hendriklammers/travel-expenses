@@ -29,6 +29,7 @@ import Expense
         , expenseListDecoder
         , expenseListEncoder
         )
+import File.Download as Download
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -90,6 +91,7 @@ type Msg
     | SortOverviewTable String
     | SortCurrencyTable String
     | CloseCurrencyOverview
+    | ExportData
 
 
 type MenuState
@@ -480,6 +482,16 @@ update msg model =
 
         CloseCurrencyOverview ->
             ( model, Nav.pushUrl model.key "/overview" )
+
+        ExportData ->
+            let
+                download =
+                    Download.string
+                        "expenses.json"
+                        "application/json"
+                        (expenseListEncoder model.expenses)
+            in
+            ( model, download )
 
 
 updateTableSort : String -> TableSort -> TableSort
