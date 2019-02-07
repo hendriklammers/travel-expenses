@@ -195,7 +195,7 @@ viewTable model =
                         rows
             in
             table
-                [ H.class "table is-fullwidth is-hoverable" ]
+                [ H.class "table overview-table is-fullwidth is-hoverable" ]
                 [ thead []
                     [ tr []
                         [ th
@@ -255,7 +255,16 @@ addSortClass column sort =
 viewRow : Row -> Html Msg
 viewRow { currency, amount, conversion } =
     tr [ onClick (RowClick (String.toLower currency)), H.class "row" ]
-        [ td [] [ text currency ]
+        [ td []
+            [ div
+                [ H.class
+                    ("currency-flag currency-flag-sm currency-flag-"
+                        ++ String.toLower currency
+                    )
+                ]
+                []
+            , text currency
+            ]
         , td [] [ text (Round.round 2 amount) ]
         , td [] [ text (conversionString conversion) ]
         ]

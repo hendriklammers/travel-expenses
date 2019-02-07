@@ -1,6 +1,10 @@
-.overview {
-  .is-hoverable .row {
+.overview-table {
+  .row {
     cursor: pointer;
+  }
+
+  .currency-flag {
+    margin-right: 0.5em;
   }
 }
 
