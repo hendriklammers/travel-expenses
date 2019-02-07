@@ -30,6 +30,8 @@ import Expense
         , expenseListDecoder
         , expenseListEncoder
         )
+import File exposing (File)
+import File.Select as Select
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -92,6 +94,10 @@ type Msg
     | SortCurrencyTable String
     | CloseCurrencyOverview
     | ExportData
+    | ImportData
+    | FileSelected File
+    | FileLoaded String
+    | ClearData
 
 
 type MenuState
@@ -485,6 +491,29 @@ update msg model =
 
         ExportData ->
             ( model, downloadExpenses model.expenses )
+
+        ImportData ->
+            -- TODO: Show confirmation warning
+            -- TODO: Add option to append to current data
+            ( model, Select.file [ "application/json" ] FileSelected )
+
+        FileSelected file ->
+            ( model, Task.perform FileLoaded (File.toString file) )
+
+        FileLoaded string ->
+            let
+                expenses =
+                    Result.withDefault
+                        []
+                        (Decode.decodeString expenseListDecoder string)
+            in
+            ( { model | expenses = expenses }
+            , storeExpenses (expenseListEncoder 0 expenses)
+            )
+
+        ClearData ->
+            -- TODO: Show confirmation warning
+            ( { model | expenses = [] }, storeExpenses "" )
 
 
 updateTableSort : String -> TableSort -> TableSort

@@ -1,6 +1,16 @@
 module Settings exposing (view)
 
-import Html exposing (Html, button, i, section, span, text)
+import Html
+    exposing
+        ( Html
+        , button
+        , div
+        , h2
+        , i
+        , section
+        , span
+        , text
+        )
 import Html.Attributes as H
 import Html.Events exposing (onClick)
 import Model exposing (Model, Msg(..))
@@ -10,11 +20,29 @@ view : Model -> Html Msg
 view model =
     section
         [ H.class "section" ]
-        [ button
-            [ H.class "button", onClick ExportData ]
-            [ span
-                [ H.class "icon" ]
-                [ i [ H.class "fas fa-file-export" ] [] ]
-            , span [] [ text "Export data" ]
+        [ h2 [ H.class "title is-6" ]
+            [ text "Manage application data" ]
+        , div [ H.class "buttons" ]
+            [ button
+                [ H.class "button is-fullwidth", onClick ExportData ]
+                [ span
+                    [ H.class "icon" ]
+                    [ i [ H.class "fas fa-download" ] [] ]
+                , span [] [ text "Export data" ]
+                ]
+            , button
+                [ H.class "button is-fullwidth", onClick ImportData ]
+                [ span
+                    [ H.class "icon" ]
+                    [ i [ H.class "fas fa-file-upload" ] [] ]
+                , span [] [ text "Import data" ]
+                ]
+            , button
+                [ H.class "button is-fullwidth", onClick ClearData ]
+                [ span
+                    [ H.class "icon" ]
+                    [ i [ H.class "fas fa-trash" ] [] ]
+                , span [] [ text "Clear all data" ]
+                ]
             ]
         ]
