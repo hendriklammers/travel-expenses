@@ -7,6 +7,7 @@ module Expense exposing
     , currencyDecoder
     , currencyEncoder
     , dateDecoder
+    , downloadExpenses
     , expenseDecoder
     , expenseEncoder
     , expenseListDecoder
@@ -15,6 +16,7 @@ module Expense exposing
     )
 
 import Date exposing (Date)
+import File.Download as Download
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
 import Time exposing (Posix)
@@ -126,3 +128,11 @@ filterDates dateRange expenses =
 
         _ ->
             expenses
+
+
+downloadExpenses : List Expense -> Cmd msg
+downloadExpenses expenses =
+    Download.string
+        "expenses.json"
+        "application/json"
+        (expenseListEncoder 2 expenses)

@@ -26,10 +26,10 @@ import Expense
         , Expense
         , currencyDecoder
         , currencyEncoder
+        , downloadExpenses
         , expenseListDecoder
         , expenseListEncoder
         )
-import File.Download as Download
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
@@ -484,14 +484,7 @@ update msg model =
             ( model, Nav.pushUrl model.key "/overview" )
 
         ExportData ->
-            let
-                download =
-                    Download.string
-                        "expenses.json"
-                        "application/json"
-                        (expenseListEncoder 2 model.expenses)
-            in
-            ( model, download )
+            ( model, downloadExpenses model.expenses )
 
 
 updateTableSort : String -> TableSort -> TableSort
@@ -559,7 +552,9 @@ fetchRates apiKey =
         url =
             case apiKey of
                 Just key ->
-                    "http://data.fixer.io/api/latest?access_key=" ++ key ++ "&format=1"
+                    "http://data.fixer.io/api/latest?access_key="
+                        ++ key
+                        ++ "&format=1"
 
                 Nothing ->
                     "http://localhost:4000/exchange"
