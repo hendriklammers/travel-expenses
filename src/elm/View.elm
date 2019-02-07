@@ -1,4 +1,4 @@
-module View.View exposing (view)
+module View exposing (view)
 
 import Browser
 import Expense exposing (Currency)
@@ -16,11 +16,11 @@ import Html
 import Html.Attributes as H
 import Html.Attributes.Aria as Aria
 import Html.Events exposing (onClick)
+import Input
 import Model exposing (Error, MenuState(..), Model, Msg(..))
+import Notfound
+import Overview
 import Route exposing (Route(..), routeToString)
-import View.Input as InputView
-import View.Notfound as NotfoundView
-import View.Overview as OverviewView
 
 
 type alias MenuItem =
@@ -123,21 +123,21 @@ viewPage : Model -> Html Msg
 viewPage model =
     case model.route of
         Input ->
-            InputView.view model
+            Input.view model
 
         Overview ->
-            OverviewView.view model Nothing
+            Overview.view model Nothing
 
         CurrencyOverview code ->
             case findCurrency code model.currencies of
                 Just currency ->
-                    OverviewView.view model (Just currency)
+                    Overview.view model (Just currency)
 
                 Nothing ->
-                    NotfoundView.view model
+                    Notfound.view model
 
         NotFound ->
-            NotfoundView.view model
+            Notfound.view model
 
 
 viewError : Maybe Error -> Html Msg

@@ -1,4 +1,4 @@
-module View.CurrencyOverview exposing (view)
+module CurrencyOverview exposing (view)
 
 import Date exposing (Date)
 import DatePicker

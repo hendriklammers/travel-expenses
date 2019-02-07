@@ -1,4 +1,4 @@
-module View.Notfound exposing (view)
+module Notfound exposing (view)
 
 import Html exposing (Html, h1, p, section, text)
 import Html.Attributes as H

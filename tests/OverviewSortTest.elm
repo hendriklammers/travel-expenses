@@ -2,8 +2,8 @@ module OverviewSortTest exposing (suite)
 
 import Expect
 import Model exposing (Sort(..))
+import Overview exposing (Row, sortByConversion, sortRows)
 import Test exposing (..)
-import View.Overview exposing (Row, sortByConversion, sortRows)
 
 
 suite : Test

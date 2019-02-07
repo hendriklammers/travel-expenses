@@ -1,10 +1,11 @@
-module View.Overview exposing
+module Overview exposing
     ( Row
     , sortByConversion
     , sortRows
     , view
     )
 
+import CurrencyOverview as CurrencyOverview
 import Date exposing (Date)
 import DatePicker
 import Dict exposing (Dict)
@@ -54,7 +55,6 @@ import Time
         , toYear
         , utc
         )
-import View.CurrencyOverview as CurrencyOverview
 
 
 addAmount : Expense -> Dict String Float -> Dict String Float

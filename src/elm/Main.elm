@@ -2,7 +2,7 @@ module Main exposing (main)
 
 import Browser exposing (Document)
 import Model exposing (Flags, Model, Msg(..))
-import View.View exposing (view)
+import View exposing (view)
 
 
 subscriptions : Model -> Sub Msg
