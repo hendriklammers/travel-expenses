@@ -83,11 +83,11 @@ expenseEncoder { category, amount, currency, id, date } =
         ]
 
 
-expenseListEncoder : List Expense -> String
-expenseListEncoder expenses =
+expenseListEncoder : Int -> List Expense -> String
+expenseListEncoder indentation expenses =
     expenses
         |> Encode.list expenseEncoder
-        |> Encode.encode 0
+        |> Encode.encode indentation
 
 
 expenseDecoder : Decoder Expense

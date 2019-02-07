@@ -166,7 +166,7 @@ testExpenseList =
         [ fuzz expenseListFuzzer "round trip" <|
             \list ->
                 list
-                    |> expenseListEncoder
+                    |> expenseListEncoder 0
                     |> Decode.decodeString expenseListDecoder
                     |> Expect.equal (Ok list)
         ]

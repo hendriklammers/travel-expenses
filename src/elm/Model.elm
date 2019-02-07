@@ -489,7 +489,7 @@ update msg model =
                     Download.string
                         "expenses.json"
                         "application/json"
-                        (expenseListEncoder model.expenses)
+                        (expenseListEncoder 2 model.expenses)
             in
             ( model, download )
 
@@ -590,7 +590,7 @@ addExpense model date =
                 , error = Nothing
                 , expenses = e :: model.expenses
               }
-            , storeExpenses (expenseListEncoder (e :: model.expenses))
+            , storeExpenses (expenseListEncoder 0 (e :: model.expenses))
             )
 
         Nothing ->
