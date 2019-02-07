@@ -21,6 +21,7 @@ import Model exposing (Error, MenuState(..), Model, Msg(..))
 import Notfound
 import Overview
 import Route exposing (Route(..), routeToString)
+import Settings
 
 
 type alias MenuItem =
@@ -34,6 +35,7 @@ menuItems : List MenuItem
 menuItems =
     [ MenuItem (routeToString Input) "" Input
     , MenuItem (routeToString Overview) "overview" Overview
+    , MenuItem (routeToString Settings) "settings" Settings
     ]
 
 
@@ -135,6 +137,9 @@ viewPage model =
 
                 Nothing ->
                     Notfound.view model
+
+        Settings ->
+            Settings.view model
 
         NotFound ->
             Notfound.view model

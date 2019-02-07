@@ -8,6 +8,7 @@ type Route
     = Input
     | Overview
     | CurrencyOverview String
+    | Settings
     | NotFound
 
 
@@ -24,6 +25,9 @@ routeToString route =
             -- "Overview" ++ String.toUpper cur
             "Overview"
 
+        Settings ->
+            "Settings"
+
         NotFound ->
             "Page not found"
 
@@ -34,6 +38,7 @@ routeParser =
         [ Parser.map Input Parser.top
         , Parser.map Overview (Parser.s "overview")
         , Parser.map CurrencyOverview (Parser.s "overview" </> Parser.string)
+        , Parser.map Settings (Parser.s "settings")
         ]
 
 
