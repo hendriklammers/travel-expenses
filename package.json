@@ -56,7 +56,7 @@
   ],
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.5.0",
-    "bulma": "^0.6.2",
+    "bulma": "^0.7.2",
     "currency-flags": "^1.8.0"
   }
 }
