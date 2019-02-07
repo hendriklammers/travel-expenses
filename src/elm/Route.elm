@@ -46,7 +46,7 @@ routeIcon route =
             "edit"
 
         Settings ->
-            "cog"
+            "wrench"
 
         Overview ->
             "chart-bar"
