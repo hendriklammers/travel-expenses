@@ -160,7 +160,7 @@ view model currency =
             List.foldl (\{ amount } acc -> acc + amount) 0 filtered
     in
     section [ H.class "currency-overview" ]
-        [ div [ H.class "message is-marginless" ]
+        [ div [ H.class "message is-info is-marginless" ]
             [ header [ H.class "message-header header is-marginless" ]
                 [ div
                     [ H.class
