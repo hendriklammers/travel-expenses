@@ -1,4 +1,11 @@
-module Route exposing (Route(..), routeToClass, routeToString, toRoute)
+module Route exposing
+    ( Route(..)
+    , routeIcon
+    , routeParser
+    , routeToClass
+    , routeToString
+    , toRoute
+    )
 
 import Url
 import Url.Parser as Parser exposing ((</>))
@@ -30,6 +37,25 @@ routeToString route =
 
         NotFound ->
             "Not found"
+
+
+routeIcon : Route -> String
+routeIcon route =
+    case route of
+        Input ->
+            "edit"
+
+        Settings ->
+            "cog"
+
+        Overview ->
+            "chart-bar"
+
+        CurrencyOverview _ ->
+            "chart-bar"
+
+        NotFound ->
+            "exclamation-triangle"
 
 
 routeToClass : Route -> String

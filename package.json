@@ -6,7 +6,7 @@
   "scripts": {
     "api": "json-server --watch ./data/exchange.json --port 4000",
     "build": "webpack",
-    "dev": "webpack-serve --open",
+    "dev": "webpack-serve",
     "prod": "NODE_ENV=production webpack",
     "start": "yarn run dev",
     "test": "elm-test",

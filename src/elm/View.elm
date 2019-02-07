@@ -9,6 +9,7 @@ import Html
         , button
         , div
         , h1
+        , i
         , nav
         , span
         , text
@@ -20,7 +21,13 @@ import Input
 import Model exposing (Error, MenuState(..), Model, Msg(..))
 import Notfound
 import Overview
-import Route exposing (Route(..), routeToClass, routeToString)
+import Route
+    exposing
+        ( Route(..)
+        , routeIcon
+        , routeToClass
+        , routeToString
+        )
 import Settings
 
 
@@ -50,10 +57,20 @@ viewNavbar model =
             [ H.class "navbar-brand" ]
             [ h1
                 [ H.class "navbar-item" ]
-                [ text (routeToString model.route) ]
+                [ navbarIcon model.route
+                , text (routeToString model.route)
+                ]
             , viewBurger model
             ]
         , viewMenu model
+        ]
+
+
+navbarIcon : Route -> Html Msg
+navbarIcon route =
+    span
+        [ H.class "icon" ]
+        [ i [ H.class ("fas fa-" ++ routeIcon route) ] []
         ]
 
 
