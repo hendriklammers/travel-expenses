@@ -13,7 +13,17 @@ import Html
         )
 import Html.Attributes as H
 import Html.Events exposing (onClick)
-import Model exposing (Model, Msg(..))
+import Model exposing (Modal, Model, Msg(..))
+
+
+deleteModal : Msg
+deleteModal =
+    ShowModal
+        { action = DeleteData
+        , color = "is-danger"
+        , label = "Delete"
+        , message = "Are you sure you want to delete all data?"
+        }
 
 
 view : Model -> Html Msg
@@ -38,11 +48,11 @@ view model =
                 , span [] [ text "Import data" ]
                 ]
             , button
-                [ H.class "button is-fullwidth", onClick ClearData ]
+                [ H.class "button is-fullwidth", onClick deleteModal ]
                 [ span
                     [ H.class "icon" ]
                     [ i [ H.class "fas fa-trash" ] [] ]
-                , span [] [ text "Clear all data" ]
+                , span [] [ text "Delete data" ]
                 ]
             ]
         ]

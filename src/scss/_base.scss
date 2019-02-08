@@ -4,8 +4,18 @@
   }
 }
 
-.buttons {
-  .button {
-    margin-right: 0 !important;
+.modal {
+  display: flex;
+
+  .message {
+    margin: 0 1rem;
+  }
+
+  .buttons {
+    margin-top: 1.5rem;
+
+    .button {
+      flex: 1;
+    }
   }
 }

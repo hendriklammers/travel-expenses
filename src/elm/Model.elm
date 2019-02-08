@@ -3,6 +3,7 @@ module Model exposing
     , ErrorType(..)
     , Flags
     , MenuState(..)
+    , Modal
     , Model
     , Msg(..)
     , Sort(..)
@@ -36,7 +37,7 @@ import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
 import List.Extra exposing (find)
-import Ports exposing (storeCurrency, storeExchange, storeExpenses)
+import Ports
 import Random exposing (Seed, initialSeed, step)
 import Route exposing (Route(..), toRoute)
 import Task
@@ -68,6 +69,7 @@ type alias Model =
     , fetchingExchange : Bool
     , overviewTableSort : TableSort
     , currencyTableSort : TableSort
+    , modal : Maybe Modal
     }
 
 
@@ -97,7 +99,9 @@ type Msg
     | ImportData
     | FileSelected File
     | FileLoaded String
-    | ClearData
+    | DeleteData
+    | ShowModal Modal
+    | CloseModal
 
 
 type MenuState
@@ -117,6 +121,14 @@ type Sort
 
 type alias TableSort =
     Maybe ( String, Sort )
+
+
+type alias Modal =
+    { action : Msg
+    , color : String
+    , label : String
+    , message : String
+    }
 
 
 type alias Error =
@@ -275,6 +287,7 @@ init flags url key =
       , fetchingExchange = False
       , overviewTableSort = Nothing
       , currencyTableSort = Nothing
+      , modal = Nothing
       }
     , Cmd.batch
         [ Cmd.map ToStartDatePicker startDatePickerFx
@@ -311,7 +324,7 @@ update msg model =
                             currency
                                 |> currencyEncoder
                                 |> Encode.encode 0
-                                |> storeCurrency
+                                |> Ports.storeCurrency
                     in
                     ( { model | currency = Just currency }, cmd )
 
@@ -457,7 +470,7 @@ update msg model =
                             { exchange | timestamp = time }
                     in
                     ( { model | exchange = Just updated }
-                    , storeExchange (exchangeEncoder updated)
+                    , Ports.storeExchange (exchangeEncoder updated)
                     )
 
                 Nothing ->
@@ -508,12 +521,17 @@ update msg model =
                         (Decode.decodeString expenseListDecoder string)
             in
             ( { model | expenses = expenses }
-            , storeExpenses (expenseListEncoder 0 expenses)
+            , Ports.storeExpenses (expenseListEncoder 0 expenses)
             )
 
-        ClearData ->
-            -- TODO: Show confirmation warning
-            ( { model | expenses = [] }, storeExpenses "" )
+        DeleteData ->
+            ( { model | expenses = [], modal = Nothing }, Ports.storeExpenses "" )
+
+        ShowModal modal ->
+            ( { model | modal = Just modal }, Cmd.none )
+
+        CloseModal ->
+            ( { model | modal = Nothing }, Cmd.none )
 
 
 updateTableSort : String -> TableSort -> TableSort
@@ -614,7 +632,7 @@ addExpense model date =
                 , error = Nothing
                 , expenses = e :: model.expenses
               }
-            , storeExpenses (expenseListEncoder 0 (e :: model.expenses))
+            , Ports.storeExpenses (expenseListEncoder 0 (e :: model.expenses))
             )
 
         Nothing ->

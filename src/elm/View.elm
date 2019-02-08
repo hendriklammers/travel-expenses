@@ -6,11 +6,16 @@ import Html
     exposing
         ( Html
         , a
+        , article
         , button
         , div
+        , footer
         , h1
+        , header
         , i
         , nav
+        , p
+        , section
         , span
         , text
         )
@@ -18,7 +23,14 @@ import Html.Attributes as H
 import Html.Attributes.Aria as Aria
 import Html.Events exposing (onClick)
 import Input
-import Model exposing (Error, MenuState(..), Model, Msg(..))
+import Model
+    exposing
+        ( Error
+        , MenuState(..)
+        , Modal
+        , Model
+        , Msg(..)
+        )
 import Notfound
 import Overview
 import Route
@@ -58,7 +70,8 @@ viewNavbar model =
             [ h1
                 [ H.class "navbar-item" ]
                 [ navbarIcon model.route
-                , text (routeToString model.route)
+                , span []
+                    [ text (routeToString model.route) ]
                 ]
             , viewBurger model
             ]
@@ -180,11 +193,82 @@ viewError error =
             text ""
 
 
+viewMessage : Html Msg
+viewMessage =
+    article [ H.class "message is-danger" ]
+        [ div [ H.class "message-header" ]
+            [ span []
+                [ text "Delete data" ]
+            , button [ H.class "delete" ]
+                [ text "Close" ]
+            ]
+        , div [ H.class "message-body has-text-grey-dark has-background-white" ]
+            [ p []
+                [ text "Are you sure you want to delete all data?" ]
+            , div [ H.class "buttons" ]
+                [ button
+                    [ H.class "button" ]
+                    [ text "Cancel" ]
+                , button
+                    [ H.class "button is-danger" ]
+                    [ text "Delete" ]
+                ]
+            ]
+        ]
+
+
+viewModal : Maybe Modal -> Html Msg
+viewModal modal =
+    case modal of
+        Nothing ->
+            text ""
+
+        Just { action, color, label, message } ->
+            div
+                [ H.class "modal" ]
+                [ div
+                    [ H.class "modal-background"
+                    , onClick CloseModal
+                    ]
+                    []
+                , div [ H.class "modal-content" ]
+                    [ article [ H.class ("message " ++ color) ]
+                        [ div [ H.class "message-header" ]
+                            [ span []
+                                [ text "Confirmation" ]
+                            , button
+                                [ H.class "delete"
+                                , onClick CloseModal
+                                ]
+                                [ text "Close" ]
+                            ]
+                        , div [ H.class "message-body has-text-grey-dark has-background-white" ]
+                            [ p []
+                                [ text message ]
+                            , div [ H.class "buttons" ]
+                                [ button
+                                    [ H.class "button"
+                                    , onClick CloseModal
+                                    ]
+                                    [ text "Cancel" ]
+                                , button
+                                    [ H.class ("button " ++ color)
+                                    , onClick action
+                                    ]
+                                    [ text label ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+
+
 view : Model -> Browser.Document Msg
 view model =
     { title = "Travel Expenses"
     , body =
-        [ div
+        [ viewModal model.modal
+        , div
             [ H.class ("container-fluid " ++ routeToClass model.route) ]
             [ viewError model.error
             , viewNavbar model
