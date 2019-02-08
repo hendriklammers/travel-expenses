@@ -206,60 +206,7 @@ currencies =
 
 init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
-    -- TODO: Cleanup code duplication
     let
-        currency =
-            case flags.currency of
-                Just json ->
-                    case Decode.decodeString currencyDecoder json of
-                        Ok result ->
-                            Just result
-
-                        Err error ->
-                            -- TODO: Show message in UI
-                            let
-                                log =
-                                    Debug.log "currency" error
-                            in
-                            List.head currencies
-
-                Nothing ->
-                    List.head currencies
-
-        expenses =
-            case flags.expenses of
-                Just json ->
-                    case Decode.decodeString expenseListDecoder json of
-                        Ok result ->
-                            result
-
-                        Err error ->
-                            let
-                                log =
-                                    Debug.log "expenses" error
-                            in
-                            []
-
-                Nothing ->
-                    []
-
-        exchange =
-            case flags.exchange of
-                Just json ->
-                    case Decode.decodeString exchangeDecoder json of
-                        Ok result ->
-                            Just result
-
-                        Err error ->
-                            let
-                                log =
-                                    Debug.log "exchange" error
-                            in
-                            Nothing
-
-                Nothing ->
-                    Nothing
-
         ( startDatePicker, startDatePickerFx ) =
             DatePicker.init
 
@@ -269,15 +216,17 @@ init flags url key =
     ( { amount = Nothing
       , category = List.head categories
       , categories = categories
-      , currency = currency
+      , currency = jsonFlag currencyDecoder flags.currency
       , currencies = currencies
       , seed = initialSeed flags.seed
-      , expenses = expenses
+      , expenses =
+            Maybe.withDefault []
+                (jsonFlag expenseListDecoder flags.expenses)
       , error = Nothing
       , key = key
       , route = toRoute url
       , menu = MenuClosed
-      , exchange = exchange
+      , exchange = jsonFlag exchangeDecoder flags.exchange
       , startDate = Nothing
       , startDatePicker = startDatePicker
       , endDate = Nothing
@@ -294,6 +243,13 @@ init flags url key =
         , Task.perform SetTimeZone Time.here
         ]
     )
+
+
+jsonFlag : Decode.Decoder a -> Maybe String -> Maybe a
+jsonFlag decoder flag =
+    Maybe.andThen
+        (Decode.decodeString decoder >> Result.toMaybe)
+        flag
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
