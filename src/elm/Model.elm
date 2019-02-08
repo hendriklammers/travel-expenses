@@ -18,8 +18,14 @@ import Browser
 import Browser.Navigation as Nav
 import Date exposing (Date)
 import DatePicker exposing (DateEvent(..), defaultSettings)
-import Dict
-import Exchange exposing (Exchange, exchangeDecoder, exchangeEncoder)
+import Dict exposing (Dict)
+import Exchange
+    exposing
+        ( Exchange
+        , exchangeDecoder
+        , exchangeEncoder
+        , ratesDecoder
+        )
 import Expense
     exposing
         ( Category
@@ -60,7 +66,6 @@ type alias Model =
     , route : Route
     , menu : MenuState
     , exchange : Maybe Exchange
-    , vars : Vars
     , startDate : Maybe Date
     , endDate : Maybe Date
     , startDatePicker : DatePicker.DatePicker
@@ -81,7 +86,7 @@ type Msg
     | AddExpense Time.Posix
     | CloseError
     | ToggleMenu
-    | NewRates (Result Http.Error Exchange)
+    | NewRates (Result Http.Error (Dict String Float))
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
     | ToStartDatePicker DatePicker.Msg
@@ -90,7 +95,7 @@ type Msg
     | DeleteStartDate
     | DeleteEndDate
     | SetTimeZone Time.Zone
-    | SetTimestamp Time.Posix
+    | SetTimestamp (Dict String Float) Time.Posix
     | RowClick String
     | SortOverviewTable String
     | SortCurrencyTable String
@@ -136,17 +141,11 @@ type alias Error =
     ( ErrorType, String )
 
 
-type alias Vars =
-    { fixer_api_key : Maybe String
-    }
-
-
 type alias Flags =
     { seed : Int
     , currency : Maybe String
     , exchange : Maybe String
     , expenses : Maybe String
-    , fixer_api_key : Maybe String
     }
 
 
@@ -279,7 +278,6 @@ init flags url key =
       , route = toRoute url
       , menu = MenuClosed
       , exchange = exchange
-      , vars = Vars flags.fixer_api_key
       , startDate = Nothing
       , startDatePicker = startDatePicker
       , endDate = Nothing
@@ -361,12 +359,9 @@ update msg model =
 
         NewRates result ->
             case result of
-                Ok exchange ->
-                    ( { model
-                        | exchange = Just exchange
-                        , fetchingExchange = False
-                      }
-                    , Task.perform SetTimestamp Time.now
+                Ok rates ->
+                    ( { model | fetchingExchange = False }
+                    , Task.perform (SetTimestamp rates) Time.now
                     )
 
                 Err error ->
@@ -454,28 +449,19 @@ update msg model =
             ( { model | endDate = Nothing }, Cmd.none )
 
         LoadExchange ->
-            let
-                { fixer_api_key } =
-                    model.vars
-            in
-            ( { model | fetchingExchange = True }, fetchRates fixer_api_key )
+            ( { model | fetchingExchange = True }, fetchRates )
 
         SetTimeZone zone ->
             ( { model | timeZone = zone }, Cmd.none )
 
-        SetTimestamp time ->
-            case model.exchange of
-                Just exchange ->
-                    let
-                        updated =
-                            { exchange | timestamp = time }
-                    in
-                    ( { model | exchange = Just updated }
-                    , Ports.storeExchange (exchangeEncoder updated)
-                    )
-
-                Nothing ->
-                    ( model, Cmd.none )
+        SetTimestamp rates time ->
+            let
+                exchange =
+                    Exchange time rates
+            in
+            ( { model | exchange = Just exchange }
+            , Ports.storeExchange (exchangeEncoder exchange)
+            )
 
         RowClick currency ->
             ( model
@@ -603,23 +589,13 @@ endSettings startDate =
     }
 
 
-fetchRates : Maybe String -> Cmd Msg
-fetchRates apiKey =
+fetchRates : Cmd Msg
+fetchRates =
     let
         url =
-            case apiKey of
-                Just key ->
-                    "http://data.fixer.io/api/latest?access_key="
-                        ++ key
-                        ++ "&format=1"
-
-                Nothing ->
-                    "http://localhost:4000/exchange"
-
-        request =
-            Http.get url exchangeDecoder
+            "https://api.exchangeratesapi.io/latest?base=EUR"
     in
-    Http.send NewRates request
+    Http.send NewRates (Http.get url ratesDecoder)
 
 
 addExpense : Model -> Time.Posix -> ( Model, Cmd Msg )

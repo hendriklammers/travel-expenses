@@ -2,6 +2,7 @@ module Exchange exposing
     ( Exchange
     , exchangeDecoder
     , exchangeEncoder
+    , ratesDecoder
     )
 
 import Dict exposing (Dict)
@@ -24,6 +25,11 @@ decodeDate =
 dateFromInt : Int -> Decoder Posix
 dateFromInt date =
     Decode.succeed (Time.millisToPosix date)
+
+
+ratesDecoder : Decoder (Dict String Float)
+ratesDecoder =
+    Decode.field "rates" <| Decode.dict Decode.float
 
 
 exchangeDecoder : Decoder Exchange

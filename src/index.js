@@ -7,8 +7,7 @@ const flags = {
   seed: Math.floor(Math.random() * 0x0fffffff),
   currency: flag(localStorage.currency),
   expenses: flag(localStorage.expenses),
-  exchange: flag(localStorage.exchange),
-  fixer_api_key: flag(process.env.FIXER_API_KEY)
+  exchange: flag(localStorage.exchange)
 }
 const app = Elm.Main.init({ flags })
 

@@ -401,7 +401,7 @@ viewExchange { exchange, timeZone, fetchingExchange } =
                     ]
                     [ span
                         [ H.class "icon is-small" ]
-                        [ i [ H.class "fas fa-arrow-down" ] [] ]
+                        [ i [ H.class "fas fa-sync" ] [] ]
                     , span [] [ text "Update" ]
                     ]
                 ]
