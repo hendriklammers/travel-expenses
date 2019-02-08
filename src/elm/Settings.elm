@@ -16,8 +16,8 @@ import Html.Events exposing (onClick)
 import Model exposing (Modal, Model, Msg(..))
 
 
-deleteModal : Msg
-deleteModal =
+showDeleteModal : Msg
+showDeleteModal =
     ShowModal
         { action = DeleteData
         , color = "is-danger"
@@ -48,7 +48,7 @@ view model =
                 , span [] [ text "Import data" ]
                 ]
             , button
-                [ H.class "button is-fullwidth", onClick deleteModal ]
+                [ H.class "button is-fullwidth", onClick showDeleteModal ]
                 [ span
                     [ H.class "icon" ]
                     [ i [ H.class "fas fa-trash" ] [] ]

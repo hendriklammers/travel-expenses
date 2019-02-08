@@ -102,6 +102,7 @@ type Msg
     | DeleteData
     | ShowModal Modal
     | CloseModal
+    | OverwriteExpenses (List Expense)
 
 
 type MenuState
@@ -506,7 +507,6 @@ update msg model =
             ( model, downloadExpenses model.expenses )
 
         ImportData ->
-            -- TODO: Show confirmation warning
             -- TODO: Add option to append to current data
             ( model, Select.file [ "application/json" ] FileSelected )
 
@@ -519,8 +519,18 @@ update msg model =
                     Result.withDefault
                         []
                         (Decode.decodeString expenseListDecoder string)
+
+                modal =
+                    { action = OverwriteExpenses expenses
+                    , color = "is-warning"
+                    , label = "Import"
+                    , message = "This will overwrite all existing data. Are you sure?"
+                    }
             in
-            ( { model | expenses = expenses }
+            ( { model | modal = Just modal }, Cmd.none )
+
+        OverwriteExpenses expenses ->
+            ( { model | expenses = expenses, modal = Nothing }
             , Ports.storeExpenses (expenseListEncoder 0 expenses)
             )
 
