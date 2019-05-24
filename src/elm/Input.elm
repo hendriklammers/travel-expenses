@@ -83,7 +83,7 @@ viewCurrencyOption active { code, name } =
 
 
 viewCurrency : Model -> Html Msg
-viewCurrency { currencies, currency } =
+viewCurrency { activeCurrencies, currency } =
     div
         [ H.class "field" ]
         [ label
@@ -97,7 +97,7 @@ viewCurrency { currencies, currency } =
                     [ onInput SelectCurrency ]
                     (List.map
                         (viewCurrencyOption currency)
-                        currencies
+                        activeCurrencies
                     )
                 ]
             ]

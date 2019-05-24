@@ -158,7 +158,7 @@ viewPage model =
             Overview.view model Nothing
 
         CurrencyOverview code ->
-            case findCurrency code model.currencies of
+            case findCurrency code model.activeCurrencies of
                 Just currency ->
                     Overview.view model (Just currency)
 
