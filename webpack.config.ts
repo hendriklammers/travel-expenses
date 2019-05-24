@@ -1,18 +1,21 @@
-const path = require('path')
-const webpack = require('webpack')
-const merge = require('webpack-merge')
-const autoprefixer = require('autoprefixer')
-const HTMLWebpackPlugin = require('html-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const Dotenv = require('dotenv-webpack')
-const env = process.env.NODE_ENV || 'development'
+import webpack from 'webpack'
+import path from 'path'
+import merge from 'webpack-merge'
+import autoprefixer from 'autoprefixer'
+import HTMLWebpackPlugin from 'html-webpack-plugin'
+import CleanWebpackPlugin from 'clean-webpack-plugin'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import Dotenv from 'dotenv-webpack'
 
-const common = {
+const mode =
+  process.env.npm_lifecycle_event === 'build' ? 'production' : 'development'
+
+const common: webpack.Configuration = {
+  mode,
   entry: './src/index.ts',
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: env === 'production' ? '[name]-[hash].js' : 'index.js',
+    filename: mode === 'production' ? '[name]-[hash].js' : 'index.js',
   },
   plugins: [
     new HTMLWebpackPlugin({
@@ -63,8 +66,7 @@ const common = {
   },
 }
 
-const development = {
-  mode: 'development',
+const development: webpack.Configuration = {
   plugins: [
     // Suggested for hot-loading
     new webpack.NamedModulesPlugin(),
@@ -100,8 +102,7 @@ const development = {
   watch: true,
 }
 
-const production = {
-  mode: 'production',
+const production: webpack.Configuration = {
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
@@ -143,4 +144,4 @@ const production = {
   },
 }
 
-module.exports = merge(common, env === 'production' ? production : development)
+export default merge(common, mode === 'production' ? production : development)
