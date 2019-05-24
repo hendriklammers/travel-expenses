@@ -93,35 +93,33 @@ const dev = {
       }
     ]
   },
-  serve: {
-    inline: true,
-    stats: 'errors-only',
-    content: path.join(__dirname, 'src/assets'),
+  devServer: {
+    // inline: true,
+    // stats: 'errors-only',
+    // content: path.join(__dirname, 'src/assets'),
     port: 3000,
-    add: app =>
-      app.use(
-        history({
-          verbose: true,
-          rewrites: [
-            {
-              from: /\/index.js$/,
-              to: () => '/index.js'
-            }
-          ]
-        })
-      )
-  }
+    historyApiFallback: true,
+    // add: app =>
+    //   app.use(
+    //     history({
+    //       verbose: true,
+    //       rewrites: [
+    //         {
+    //           from: /\/index.js$/,
+    //           to: () => '/index.js'
+    //         }
+    //       ]
+    //     })
+    //   ),
+    // compress: true,
+  },
+  watch: true,
 }
 
 const prod = {
   mode: 'production',
   plugins: [
-    new CleanWebpackPlugin(['dist'], {
-      root: __dirname,
-      exclude: [],
-      verbose: true,
-      dry: false
-    }),
+    new CleanWebpackPlugin(),
     new CopyWebpackPlugin([
       {
         from: 'src/assets'
