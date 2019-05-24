@@ -9,27 +9,27 @@ const Dotenv = require('dotenv-webpack')
 const env = process.env.NODE_ENV || 'development'
 
 const common = {
-  entry: './src/index.js',
+  entry: './src/index.ts',
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: env === 'production' ? '[name]-[hash].js' : 'index.js'
+    filename: env === 'production' ? '[name]-[hash].js' : 'index.js',
   },
   plugins: [
     new HTMLWebpackPlugin({
-      template: 'src/index.html'
+      template: 'src/index.html',
     }),
-    new Dotenv()
+    new Dotenv(),
   ],
   resolve: {
     modules: [path.join(__dirname, 'src'), 'node_modules'],
-    extensions: ['.js', '.elm', '.scss', '.png']
+    extensions: ['.js', '.jsx', '.ts', '.tsx', '.elm', '.png'],
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.tsx?$/,
+        loader: 'ts-loader',
         exclude: /node_modules/,
-        loader: 'babel-loader'
       },
       {
         test: /\.scss$/,
@@ -40,27 +40,27 @@ const common = {
           {
             loader: 'postcss-loader',
             options: {
-              plugins: () => [autoprefixer]
-            }
+              plugins: () => [autoprefixer],
+            },
           },
-          'sass-loader'
-        ]
+          'sass-loader',
+        ],
       },
       {
         test: /\.css$/,
         exclude: [/elm-stuff/, /node_modules/],
-        loaders: ['style-loader', 'css-loader']
+        loaders: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file-loader'
+        loader: 'file-loader',
       },
       {
         test: /\.(jpe?g|png|gif|svg)$/i,
-        loader: 'file-loader'
-      }
-    ]
-  }
+        loader: 'file-loader',
+      },
+    ],
+  },
 }
 
 const development = {
@@ -69,7 +69,7 @@ const development = {
     // Suggested for hot-loading
     new webpack.NamedModulesPlugin(),
     // Prevents compilation errors causing the hot loader to lose state
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.NoEmitOnErrorsPlugin(),
   ],
   module: {
     rules: [
@@ -78,24 +78,24 @@ const development = {
         exclude: [/elm-stuff/, /node_modules/],
         use: [
           {
-            loader: 'elm-hot-webpack-loader'
+            loader: 'elm-hot-webpack-loader',
           },
           {
             loader: 'elm-webpack-loader',
             options: {
               debug: true,
-              forceWatch: true
-            }
-          }
-        ]
-      }
-    ]
+              forceWatch: true,
+            },
+          },
+        ],
+      },
+    ],
   },
   devServer: {
     stats: 'errors-only',
     port: 3000,
     historyApiFallback: true,
-    hot: true
+    hot: true,
   },
   watch: true,
 }
@@ -105,8 +105,8 @@ const production = {
   plugins: [
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
-      filename: '[name]-[hash].css'
-    })
+      filename: '[name]-[hash].css',
+    }),
   ],
   module: {
     rules: [
@@ -115,14 +115,14 @@ const production = {
         exclude: [/elm-stuff/, /node_modules/],
         use: [
           {
-            loader: 'elm-webpack-loader'
-          }
-        ]
+            loader: 'elm-webpack-loader',
+          },
+        ],
       },
       {
         test: /\.css$/,
         exclude: [/elm-stuff/, /node_modules/],
-        loaders: [MiniCssExtractPlugin.loader, 'css-loader']
+        loaders: [MiniCssExtractPlugin.loader, 'css-loader'],
       },
       {
         test: /\.scss$/,
@@ -133,14 +133,14 @@ const production = {
           {
             loader: 'postcss-loader',
             options: {
-              plugins: () => [autoprefixer]
-            }
+              plugins: () => [autoprefixer],
+            },
           },
-          'sass-loader'
-        ]
-      }
-    ]
-  }
+          'sass-loader',
+        ],
+      },
+    ],
+  },
 }
 
 module.exports = merge(common, env === 'production' ? production : development)

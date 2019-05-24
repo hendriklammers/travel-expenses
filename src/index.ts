@@ -1,13 +1,15 @@
 import './scss/main.scss'
 import { Elm } from './elm/Main'
 
-// Flags should be either a value or null
-const flag = val => val || null
+// Flags should be either a string value or null
+const flag = (val: string | undefined) =>
+  typeof val === 'undefined' ? null : val
+
 const flags = {
   seed: Math.floor(Math.random() * 0x0fffffff),
   currency: flag(localStorage.currency),
   expenses: flag(localStorage.expenses),
-  exchange: flag(localStorage.exchange)
+  exchange: flag(localStorage.exchange),
 }
 const app = Elm.Main.init({ flags })
 
