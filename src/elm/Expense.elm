@@ -6,6 +6,7 @@ module Expense exposing
     , categoryEncoder
     , currencyDecoder
     , currencyEncoder
+    , currencyListDecoder
     , dateDecoder
     , downloadExpenses
     , expenseDecoder
@@ -63,6 +64,11 @@ currencyDecoder =
     Decode.map2 Currency
         (Decode.field "code" Decode.string)
         (Decode.field "name" Decode.string)
+
+
+currencyListDecoder : Decoder (List Currency)
+currencyListDecoder =
+    Decode.list currencyDecoder
 
 
 type alias Expense =

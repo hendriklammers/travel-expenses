@@ -33,6 +33,7 @@ import Expense
         , Expense
         , currencyDecoder
         , currencyEncoder
+        , currencyListDecoder
         , downloadExpenses
         , expenseListDecoder
         , expenseListEncoder
@@ -86,7 +87,7 @@ type Msg
     | AddExpense Time.Posix
     | CloseError
     | ToggleMenu
-    | NewRates (Result Http.Error (Dict String Float))
+    | ReceiveExchangeRates (Result Http.Error (Dict String Float))
     | LinkClicked Browser.UrlRequest
     | UrlChanged Url.Url
     | ToStartDatePicker DatePicker.Msg
@@ -96,6 +97,7 @@ type Msg
     | DeleteEndDate
     | SetTimeZone Time.Zone
     | SetTimestamp (Dict String Float) Time.Posix
+    | ReceiveCurrencies (Result Http.Error (List Currency))
     | RowClick String
     | SortOverviewTable String
     | SortCurrencyTable String
@@ -241,6 +243,10 @@ init flags url key =
         [ Cmd.map ToStartDatePicker startDatePickerFx
         , Cmd.map ToEndDatePicker endDatePickerFx
         , Task.perform SetTimeZone Time.here
+        , Http.get
+            { url = "/currencies.json"
+            , expect = Http.expectJson ReceiveCurrencies currencyListDecoder
+            }
         ]
     )
 
@@ -313,7 +319,23 @@ update msg model =
             , Cmd.none
             )
 
-        NewRates result ->
+        ReceiveCurrencies result ->
+            case result of
+                Ok currencies ->
+                    ( { model | activeCurrencies = currencies }, Cmd.none )
+
+                Err _ ->
+                    ( { model
+                        | error =
+                            Just
+                                ( FetchError
+                                , "Unable to fetch the currency list from the server"
+                                )
+                      }
+                    , Cmd.none
+                    )
+
+        ReceiveExchangeRates result ->
             case result of
                 Ok rates ->
                     ( { model | fetchingExchange = False }
@@ -543,11 +565,10 @@ endSettings startDate =
 
 fetchRates : Cmd Msg
 fetchRates =
-    let
-        url =
-            "https://api.exchangeratesapi.io/latest?base=EUR"
-    in
-    Http.send NewRates (Http.get url ratesDecoder)
+    Http.get
+        { url = "https://api.exchangeratesapi.io/latest?base=EUR"
+        , expect = Http.expectJson ReceiveExchangeRates ratesDecoder
+        }
 
 
 addExpense : Model -> Time.Posix -> ( Model, Cmd Msg )
