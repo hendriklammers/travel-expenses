@@ -13,7 +13,7 @@ import Html
         )
 import Html.Attributes as H
 import Html.Events exposing (onClick)
-import Model exposing (Modal, Model, Msg(..))
+import Model exposing (Model, Msg(..))
 
 
 showDeleteModal : Msg
@@ -27,7 +27,7 @@ showDeleteModal =
 
 
 view : Model -> Html Msg
-view model =
+view _ =
     section
         [ H.class "section" ]
         [ h2 [ H.class "title is-6" ]

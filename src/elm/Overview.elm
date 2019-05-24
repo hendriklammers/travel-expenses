@@ -14,10 +14,8 @@ import Expense exposing (Currency, Expense, filterDates)
 import Html
     exposing
         ( Html
-        , a
         , button
         , div
-        , h1
         , i
         , p
         , section
@@ -51,9 +49,7 @@ import Time
         , toHour
         , toMinute
         , toMonth
-        , toSecond
         , toYear
-        , utc
         )
 
 
@@ -366,16 +362,15 @@ viewExchange : Model -> Html Msg
 viewExchange { exchange, timeZone, fetchingExchange } =
     let
         loadingClass =
-            case fetchingExchange of
-                True ->
-                    " is-loading"
+            if fetchingExchange then
+                " is-loading"
 
-                False ->
-                    ""
+            else
+                ""
     in
     div [ H.class "exchange" ]
         (case exchange of
-            Just { rates, timestamp } ->
+            Just { timestamp } ->
                 [ small [ H.class ("exchange__text" ++ loadingClass) ]
                     [ text
                         ("Exchange rates: "
@@ -406,10 +401,6 @@ viewExchange { exchange, timeZone, fetchingExchange } =
                     ]
                 ]
         )
-
-
-
--- TODO: Store selected currency on model?
 
 
 view : Model -> Maybe Currency -> Html Msg

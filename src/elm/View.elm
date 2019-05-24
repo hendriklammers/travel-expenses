@@ -9,13 +9,10 @@ import Html
         , article
         , button
         , div
-        , footer
         , h1
-        , header
         , i
         , nav
         , p
-        , section
         , span
         , text
         )
@@ -191,30 +188,6 @@ viewError error =
 
         Nothing ->
             text ""
-
-
-viewMessage : Html Msg
-viewMessage =
-    article [ H.class "message is-danger" ]
-        [ div [ H.class "message-header" ]
-            [ span []
-                [ text "Delete data" ]
-            , button [ H.class "delete" ]
-                [ text "Close" ]
-            ]
-        , div [ H.class "message-body has-text-grey-dark has-background-white" ]
-            [ p []
-                [ text "Are you sure you want to delete all data?" ]
-            , div [ H.class "buttons" ]
-                [ button
-                    [ H.class "button" ]
-                    [ text "Cancel" ]
-                , button
-                    [ H.class "button is-danger" ]
-                    [ text "Delete" ]
-                ]
-            ]
-        ]
 
 
 viewModal : Maybe Modal -> Html Msg

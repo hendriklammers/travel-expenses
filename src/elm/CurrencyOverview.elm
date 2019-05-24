@@ -1,16 +1,12 @@
 module CurrencyOverview exposing (view)
 
-import Date exposing (Date)
-import DatePicker
 import Dict exposing (Dict)
 import Expense exposing (Currency, Expense, filterDates)
 import Html
     exposing
         ( Html
-        , article
         , button
         , div
-        , h2
         , header
         , p
         , section
@@ -19,7 +15,6 @@ import Html
         , tbody
         , td
         , text
-        , tfoot
         , th
         , thead
         , tr

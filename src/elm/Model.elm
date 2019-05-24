@@ -320,11 +320,7 @@ update msg model =
                     , Task.perform (SetTimestamp rates) Time.now
                     )
 
-                Err error ->
-                    let
-                        log =
-                            Debug.log "http" error
-                    in
+                Err _ ->
                     ( { model
                         | fetchingExchange = False
                         , error =

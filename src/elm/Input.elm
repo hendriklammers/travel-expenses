@@ -4,10 +4,8 @@ import Expense exposing (Category, Currency)
 import Html
     exposing
         ( Html
-        , a
         , button
         , div
-        , fieldset
         , form
         , input
         , label
@@ -72,8 +70,8 @@ viewAmount model =
 viewCurrencyOption : Maybe Currency -> Currency -> Html Msg
 viewCurrencyOption active { code, name } =
     option
-        ([ H.value code ]
-            ++ (case active of
+        (H.value code
+            :: (case active of
                     Just c ->
                         [ H.selected (c.code == code) ]
 

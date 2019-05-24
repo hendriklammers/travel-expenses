@@ -28,7 +28,7 @@ routeToString route =
         Overview ->
             "Overview"
 
-        CurrencyOverview cur ->
+        CurrencyOverview _ ->
             -- "Overview" ++ String.toUpper cur
             "Overview"
 

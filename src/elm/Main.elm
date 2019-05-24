@@ -1,6 +1,6 @@
 module Main exposing (main)
 
-import Browser exposing (Document)
+import Browser exposing (application)
 import Model exposing (Flags, Model, Msg(..))
 import View exposing (view)
 
@@ -12,7 +12,7 @@ subscriptions =
 
 main : Program Flags Model Msg
 main =
-    Browser.application
+    application
         { init = Model.init
         , subscriptions = subscriptions
         , update = Model.update
