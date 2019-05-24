@@ -95,6 +95,7 @@ const development = {
     stats: 'errors-only',
     port: 3000,
     historyApiFallback: true,
+    hot: true
   },
   watch: true,
 }
