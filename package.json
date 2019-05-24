@@ -4,6 +4,7 @@
   "description": "Simple app to keep track of travel expenses with automatic currency converter",
   "main": "src/index.js",
   "scripts": {
+    "analyse": "elm-analyse",
     "api": "json-server --watch ./data/exchange.json --port 4000",
     "build": "webpack",
     "prod": "NODE_ENV=production webpack",
@@ -24,6 +25,7 @@
     "clean-webpack-plugin": "^2.0.2",
     "css-loader": "^2.1.1",
     "dotenv-webpack": "^1.5.7",
+    "elm-analyse": "^0.16.4",
     "elm-hot-webpack-loader": "^1.0.2",
     "elm-webpack-loader": "^5.0.0",
     "file-loader": "^3.0.1",
