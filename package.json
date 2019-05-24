@@ -6,9 +6,8 @@
   "scripts": {
     "api": "json-server --watch ./data/exchange.json --port 4000",
     "build": "webpack",
-    "dev": "webpack-dev-server",
     "prod": "NODE_ENV=production webpack",
-    "start": "npm run dev",
+    "start": "webpack-dev-server",
     "test": "elm-test",
     "test-watch": "elm-test --watch"
   },
@@ -23,7 +22,6 @@
     "browser-sync": "^2.26.5",
     "browser-sync-webpack-plugin": "^2.2.2",
     "clean-webpack-plugin": "^2.0.2",
-    "copy-webpack-plugin": "^5.0.3",
     "css-loader": "^2.1.1",
     "dotenv-webpack": "^1.5.7",
     "elm-hot-webpack-loader": "^1.0.2",

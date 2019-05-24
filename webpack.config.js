@@ -2,7 +2,6 @@ const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const autoprefixer = require('autoprefixer')
-const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
@@ -64,7 +63,7 @@ const common = {
   }
 }
 
-const dev = {
+const development = {
   mode: 'development',
   plugins: [
     // Suggested for hot-loading
@@ -94,22 +93,16 @@ const dev = {
   },
   devServer: {
     stats: 'errors-only',
-    // content: path.join(__dirname, 'src/assets'),
     port: 3000,
     historyApiFallback: true,
   },
   watch: true,
 }
 
-const prod = {
+const production = {
   mode: 'production',
   plugins: [
     new CleanWebpackPlugin(),
-    new CopyWebpackPlugin([
-      {
-        from: 'src/assets'
-      }
-    ]),
     new MiniCssExtractPlugin({
       filename: '[name]-[hash].css'
     })
@@ -149,5 +142,4 @@ const prod = {
   }
 }
 
-console.log(`Building for ${env}..`)
-module.exports = merge(common, env === 'production' ? prod : dev)
+module.exports = merge(common, env === 'production' ? production : development)
