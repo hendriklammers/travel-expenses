@@ -1,7 +1,6 @@
 const path = require('path')
 const webpack = require('webpack')
 const merge = require('webpack-merge')
-const history = require('koa-connect-history-api-fallback')
 const autoprefixer = require('autoprefixer')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
@@ -94,24 +93,10 @@ const dev = {
     ]
   },
   devServer: {
-    // inline: true,
-    // stats: 'errors-only',
+    stats: 'errors-only',
     // content: path.join(__dirname, 'src/assets'),
     port: 3000,
     historyApiFallback: true,
-    // add: app =>
-    //   app.use(
-    //     history({
-    //       verbose: true,
-    //       rewrites: [
-    //         {
-    //           from: /\/index.js$/,
-    //           to: () => '/index.js'
-    //         }
-    //       ]
-    //     })
-    //   ),
-    // compress: true,
   },
   watch: true,
 }
