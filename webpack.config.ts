@@ -14,7 +14,7 @@ const common: webpack.Configuration = {
   mode,
   entry: './src/index.ts',
   output: {
-    path: path.join(__dirname, 'dist'),
+    path: path.join(__dirname, 'public'),
     filename: mode === 'production' ? '[name]-[hash].js' : 'index.js',
   },
   plugins: [
@@ -94,6 +94,7 @@ const development: webpack.Configuration = {
     ],
   },
   devServer: {
+    contentBase: path.join(__dirname, 'public'),
     stats: 'errors-only',
     port: 3000,
     historyApiFallback: true,
