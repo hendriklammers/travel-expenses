@@ -4,6 +4,7 @@ import merge from 'webpack-merge'
 import autoprefixer from 'autoprefixer'
 import HTMLWebpackPlugin from 'html-webpack-plugin'
 import CleanWebpackPlugin from 'clean-webpack-plugin'
+import CopyPlugin from 'copy-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import Dotenv from 'dotenv-webpack'
 
@@ -94,7 +95,7 @@ const development: webpack.Configuration = {
     ],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'public'),
+    contentBase: path.join(__dirname, 'src/assets/'),
     stats: 'errors-only',
     port: 3000,
     historyApiFallback: true,
@@ -106,6 +107,9 @@ const development: webpack.Configuration = {
 const production: webpack.Configuration = {
   plugins: [
     new CleanWebpackPlugin(),
+    new CopyPlugin([
+      { from: 'src/assets', to: path.join(__dirname, 'public') },
+    ]),
     new MiniCssExtractPlugin({
       filename: '[name]-[hash].css',
     }),
@@ -118,6 +122,9 @@ const production: webpack.Configuration = {
         use: [
           {
             loader: 'elm-webpack-loader',
+            options: {
+              optimize: true,
+            },
           },
         ],
       },

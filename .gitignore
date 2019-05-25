@@ -3,5 +3,6 @@
 node_modules
 elm-stuff
 dist
+public
 .env
 expenses.json
