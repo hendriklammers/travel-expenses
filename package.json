@@ -1,7 +1,7 @@
 {
   "name": "travel-expenses",
   "version": "0.1.0",
-  "description": "Simple app to keep track of travel expenses with automatic currency converter",
+  "description": "Simple PWA to keep track of travel expenses with automatic currency converter",
   "main": "src/index.js",
   "scripts": {
     "analyse": "elm-analyse",
