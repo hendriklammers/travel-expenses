@@ -242,7 +242,7 @@ view model =
     , body =
         [ viewModal model.modal
         , div
-            [ H.class ("container-fluid " ++ routeToClass model.route) ]
+            [ H.class ("app-container " ++ routeToClass model.route) ]
             [ viewError model.error
             , viewNavbar model
             , viewPage model
