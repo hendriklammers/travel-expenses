@@ -243,10 +243,7 @@ init flags url key =
         [ Cmd.map ToStartDatePicker startDatePickerFx
         , Cmd.map ToEndDatePicker endDatePickerFx
         , Task.perform SetTimeZone Time.here
-        , Http.get
-            { url = "/currencies.json"
-            , expect = Http.expectJson ReceiveCurrencies currencyListDecoder
-            }
+        , fetchCurrencies
         ]
     )
 
@@ -561,6 +558,14 @@ endSettings startDate =
         | placeholder = "End date"
         , isDisabled = isDisabled
     }
+
+
+fetchCurrencies : Cmd Msg
+fetchCurrencies =
+    Http.get
+        { url = "/currencies.json"
+        , expect = Http.expectJson ReceiveCurrencies currencyListDecoder
+        }
 
 
 fetchRates : Cmd Msg
