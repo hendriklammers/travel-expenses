@@ -7,6 +7,7 @@
     "analyse": "elm-analyse",
     "api": "json-server --watch ./data/exchange.json --port 4000",
     "build": "webpack -p",
+    "ci": "elm-analyse && elm-test && npm run build",
     "start": "webpack-dev-server",
     "test": "elm-test",
     "test-watch": "elm-test --watch",
