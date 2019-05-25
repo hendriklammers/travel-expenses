@@ -139,6 +139,6 @@ filterDates dateRange expenses =
 downloadExpenses : List Expense -> Cmd msg
 downloadExpenses expenses =
     Download.string
-        "expenses.json"
+        "expenses_export.json"
         "application/json"
         (expenseListEncoder 2 expenses)
