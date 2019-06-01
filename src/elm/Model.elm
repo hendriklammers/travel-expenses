@@ -59,6 +59,7 @@ type alias Model =
     , category : Maybe Category
     , categories : List Category
     , currency : Maybe Currency
+    , currencies : List Currency
     , activeCurrencies : List Currency
     , seed : Seed
     , expenses : List Expense
@@ -76,6 +77,10 @@ type alias Model =
     , overviewTableSort : TableSort
     , currencyTableSort : TableSort
     , modal : Maybe Modal
+
+    -- Allows user to edit active currencies
+    -- Probably better to make Modal more generic
+    , showCurrencies : Bool
     }
 
 
@@ -110,6 +115,7 @@ type Msg
     | ShowModal Modal
     | CloseModal
     | OverwriteExpenses (List Expense)
+    | ShowCurrencies Bool
 
 
 type MenuState
@@ -174,38 +180,6 @@ categories =
     ]
 
 
-activeCurrencies : List Currency
-activeCurrencies =
-    [ { code = "USD"
-      , name = "United States Dollar"
-      }
-    , { code = "EUR"
-      , name = "Euro"
-      }
-    , { code = "THB"
-      , name = "Thai Baht"
-      }
-    , { code = "VND"
-      , name = "Vietnamese Dong"
-      }
-    , { code = "KHR"
-      , name = "Cambodian Riel"
-      }
-    , { code = "LAK"
-      , name = "Laotian Kip"
-      }
-    , { code = "MYR"
-      , name = "Malaysian Ringgit"
-      }
-    , { code = "SGD"
-      , name = "Singapore Dollar"
-      }
-    , { code = "IDR"
-      , name = "Indonesian Rupiah"
-      }
-    ]
-
-
 init : Flags -> Url.Url -> Nav.Key -> ( Model, Cmd Msg )
 init flags url key =
     let
@@ -219,7 +193,8 @@ init flags url key =
       , category = List.head categories
       , categories = categories
       , currency = jsonFlag currencyDecoder flags.currency
-      , activeCurrencies = activeCurrencies
+      , currencies = []
+      , activeCurrencies = []
       , seed = initialSeed flags.seed
       , expenses =
             Maybe.withDefault []
@@ -238,6 +213,7 @@ init flags url key =
       , overviewTableSort = Nothing
       , currencyTableSort = Nothing
       , modal = Nothing
+      , showCurrencies = False
       }
     , Cmd.batch
         [ Cmd.map ToStartDatePicker startDatePickerFx
@@ -319,7 +295,20 @@ update msg model =
         ReceiveCurrencies result ->
             case result of
                 Ok currencies ->
-                    ( { model | activeCurrencies = currencies }, Cmd.none )
+                    let
+                        active =
+                            if model.activeCurrencies == [] then
+                                currencies
+
+                            else
+                                model.currencies
+                    in
+                    ( { model
+                        | currencies = currencies
+                        , activeCurrencies = active
+                      }
+                    , Cmd.none
+                    )
 
                 Err _ ->
                     ( { model
@@ -499,6 +488,9 @@ update msg model =
 
         CloseModal ->
             ( { model | modal = Nothing }, Cmd.none )
+
+        ShowCurrencies state ->
+            ( { model | showCurrencies = state }, Cmd.none )
 
 
 updateTableSort : String -> TableSort -> TableSort

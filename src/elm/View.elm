@@ -1,6 +1,7 @@
 module View exposing (view)
 
 import Browser
+import Currencies
 import Expense exposing (Currency)
 import Html
     exposing
@@ -241,6 +242,11 @@ view model =
     { title = "Travel Expenses"
     , body =
         [ viewModal model.modal
+        , if model.showCurrencies then
+            Currencies.view model
+
+          else
+            text ""
         , div
             [ H.class ("app-container " ++ routeToClass model.route) ]
             [ viewError model.error
