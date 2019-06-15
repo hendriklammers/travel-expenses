@@ -1,5 +1,6 @@
 module Currencies exposing (view)
 
+import Dict
 import Expense exposing (Currency)
 import Html
     exposing
@@ -61,7 +62,10 @@ viewTable model =
                 ]
             ]
         , tbody []
-            (List.map viewRow model.currencies)
+            (model.currencies
+                |> Dict.toList
+                |> List.map (Tuple.second >> viewRow)
+            )
         ]
 
 

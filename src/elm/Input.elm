@@ -1,5 +1,6 @@
 module Input exposing (view)
 
+import Dict
 import Expense exposing (Category, Currency)
 import Html
     exposing
@@ -95,9 +96,9 @@ viewCurrency { currencies, currency } =
                 [ H.class "select is-fullwidth" ]
                 [ select
                     [ onInput SelectCurrency ]
-                    (List.map
-                        (viewCurrencyOption currency)
-                        currencies
+                    (currencies
+                        |> Dict.toList
+                        |> List.map (Tuple.second >> viewCurrencyOption currency)
                     )
                 ]
             ]
