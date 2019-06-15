@@ -98,6 +98,7 @@ viewCurrency { currencies, currency } =
                     [ onInput SelectCurrency ]
                     (currencies
                         |> Dict.toList
+                        |> List.filter (Tuple.second >> .active)
                         |> List.map (Tuple.second >> viewCurrencyOption currency)
                     )
                 ]

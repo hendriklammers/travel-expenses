@@ -115,6 +115,7 @@ type Msg
     | CloseModal
     | OverwriteExpenses (List Expense)
     | ShowCurrencies Bool
+    | CurrencyToggleSelected Currency
 
 
 type MenuState
@@ -483,6 +484,17 @@ update msg model =
 
         ShowCurrencies state ->
             ( { model | showCurrencies = state }, Cmd.none )
+
+        CurrencyToggleSelected { code } ->
+            ( { model
+                | currencies =
+                    Dict.update
+                        code
+                        (Maybe.map (\currency -> { currency | active = not currency.active }))
+                        model.currencies
+              }
+            , Cmd.none
+            )
 
 
 updateTableSort : String -> TableSort -> TableSort
