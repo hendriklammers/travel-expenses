@@ -60,7 +60,6 @@ type alias Model =
     , categories : List Category
     , currency : Maybe Currency
     , currencies : List Currency
-    , activeCurrencies : List Currency
     , seed : Seed
     , expenses : List Expense
     , error : Maybe Error
@@ -194,7 +193,6 @@ init flags url key =
       , categories = categories
       , currency = jsonFlag currencyDecoder flags.currency
       , currencies = []
-      , activeCurrencies = []
       , seed = initialSeed flags.seed
       , expenses =
             Maybe.withDefault []
@@ -251,7 +249,7 @@ update msg model =
             )
 
         SelectCurrency selected ->
-            case find (\{ code } -> selected == code) model.activeCurrencies of
+            case find (\{ code } -> selected == code) model.currencies of
                 Just currency ->
                     let
                         cmd =
@@ -295,17 +293,8 @@ update msg model =
         ReceiveCurrencies result ->
             case result of
                 Ok currencies ->
-                    let
-                        active =
-                            if model.activeCurrencies == [] then
-                                currencies
-
-                            else
-                                model.currencies
-                    in
                     ( { model
                         | currencies = currencies
-                        , activeCurrencies = active
                       }
                     , Cmd.none
                     )

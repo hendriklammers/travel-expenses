@@ -28,7 +28,11 @@ viewRow { code, name } =
         [ td [] [ text code ]
         , td [] [ text name ]
         , td []
-            [ input [ H.type_ "checkbox" ] []
+            [ input
+                [ H.type_ "checkbox"
+                , H.checked False
+                ]
+                []
             ]
         ]
 

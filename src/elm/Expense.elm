@@ -48,6 +48,8 @@ categoryDecoder =
 type alias Currency =
     { code : String
     , name : String
+    , active : Bool
+    , selected : Bool
     }
 
 
@@ -61,9 +63,11 @@ currencyEncoder { code, name } =
 
 currencyDecoder : Decoder Currency
 currencyDecoder =
-    Decode.map2 Currency
+    Decode.map4 Currency
         (Decode.field "code" Decode.string)
         (Decode.field "name" Decode.string)
+        (Decode.succeed False)
+        (Decode.succeed False)
 
 
 currencyListDecoder : Decoder (List Currency)
