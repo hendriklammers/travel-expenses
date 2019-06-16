@@ -24,3 +24,7 @@ app.ports.storeExpenses.subscribe(expenses => {
 app.ports.storeExchange.subscribe(exchange => {
   localStorage.exchange = exchange
 })
+
+app.ports.storeActiveCurrencies.subscribe(currencies => {
+  localStorage.activeCurrencies = currencies
+})

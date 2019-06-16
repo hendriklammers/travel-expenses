@@ -64,8 +64,8 @@ viewTable model =
             ]
         , tbody []
             (model.currencies
-                |> Dict.toList
-                |> List.map (Tuple.second >> viewRow)
+                |> Dict.values
+                |> List.map viewRow
             )
         ]
 

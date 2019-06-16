@@ -35,6 +35,7 @@ import Expense
         , currencyDecoder
         , currencyEncoder
         , currencyListDecoder
+        , currencyListEncoder
         , downloadExpenses
         , expenseListDecoder
         , expenseListEncoder
@@ -525,8 +526,8 @@ update msg model =
             )
 
         SaveSelectedCurrencies ->
-            ( { model
-                | currencies =
+            let
+                currencies =
                     Dict.map
                         (\_ currency ->
                             { currency
@@ -535,9 +536,18 @@ update msg model =
                             }
                         )
                         model.currencies
+
+                activeCurrencies =
+                    currencies
+                        |> Dict.filter (\_ { active } -> active)
+                        |> Dict.values
+            in
+            ( { model
+                | currencies = currencies
                 , showCurrencies = False
               }
-            , Cmd.none
+            , Ports.storeActiveCurrencies
+                (currencyListEncoder 0 activeCurrencies)
             )
 
 

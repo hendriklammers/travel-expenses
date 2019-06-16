@@ -8,6 +8,7 @@ module Expense exposing
     , currencyDecoder
     , currencyEncoder
     , currencyListDecoder
+    , currencyListEncoder
     , dateDecoder
     , downloadExpenses
     , expenseDecoder
@@ -65,6 +66,13 @@ currencyEncoder { code, name } =
         [ ( "code", Encode.string code )
         , ( "name", Encode.string name )
         ]
+
+
+currencyListEncoder : Int -> List Currency -> String
+currencyListEncoder indentation currencies =
+    currencies
+        |> Encode.list currencyEncoder
+        |> Encode.encode indentation
 
 
 currencyDecoder : Decoder Currency

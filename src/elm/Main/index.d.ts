@@ -15,6 +15,9 @@ export namespace Elm {
         storeExchange: {
           subscribe(callback: (data: string) => void): void
         }
+        storeActiveCurrencies: {
+          subscribe(callback: (data: string) => void): void
+        }
       };
     }
     export function init(options: {
