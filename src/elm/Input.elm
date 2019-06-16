@@ -99,7 +99,8 @@ viewCurrency { currencies, currency } =
                     (currencies
                         |> Dict.toList
                         |> List.filter (Tuple.second >> .active)
-                        |> List.map (Tuple.second >> viewCurrencyOption currency)
+                        |> List.map
+                            (Tuple.second >> viewCurrencyOption currency)
                     )
                 ]
             ]

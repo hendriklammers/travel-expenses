@@ -1,5 +1,6 @@
 module Expense exposing
     ( Category
+    , Currencies
     , Currency
     , Expense
     , categoryDecoder
@@ -17,6 +18,7 @@ module Expense exposing
     )
 
 import Date exposing (Date)
+import Dict exposing (Dict)
 import File.Download as Download
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
@@ -51,6 +53,10 @@ type alias Currency =
     , active : Bool
     , selected : Bool
     }
+
+
+type alias Currencies =
+    Dict String Currency
 
 
 currencyEncoder : Currency -> Encode.Value

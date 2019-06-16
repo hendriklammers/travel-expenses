@@ -29,6 +29,7 @@ import Exchange
 import Expense
     exposing
         ( Category
+        , Currencies
         , Currency
         , Expense
         , currencyDecoder
@@ -59,7 +60,7 @@ type alias Model =
     , category : Maybe Category
     , categories : List Category
     , currency : Maybe Currency
-    , currencies : Dict String Currency
+    , currencies : Currencies
     , seed : Seed
     , expenses : List Expense
     , error : Maybe Error
@@ -116,6 +117,7 @@ type Msg
     | OverwriteExpenses (List Expense)
     | ShowCurrencies Bool
     | CurrencyToggleSelected Currency
+    | SaveSelectedCurrencies
 
 
 type MenuState
@@ -474,7 +476,9 @@ update msg model =
             )
 
         DeleteData ->
-            ( { model | expenses = [], modal = Nothing }, Ports.storeExpenses "" )
+            ( { model | expenses = [], modal = Nothing }
+            , Ports.storeExpenses ""
+            )
 
         ShowModal modal ->
             ( { model | modal = Just modal }, Cmd.none )
@@ -487,14 +491,34 @@ update msg model =
 
         CurrencyToggleSelected { code } ->
             ( { model
-                | currencies =
-                    Dict.update
-                        code
-                        (Maybe.map (\currency -> { currency | active = not currency.active }))
-                        model.currencies
+                | currencies = toggleCurrencySelect code model.currencies
               }
             , Cmd.none
             )
+
+        SaveSelectedCurrencies ->
+            ( { model
+                | currencies =
+                    Dict.map
+                        (\_ currency ->
+                            { currency
+                                | active = currency.selected
+                                , selected = False
+                            }
+                        )
+                        model.currencies
+                , showCurrencies = False
+              }
+            , Cmd.none
+            )
+
+
+toggleCurrencySelect : String -> Currencies -> Currencies
+toggleCurrencySelect code currencies =
+    Dict.update
+        code
+        (Maybe.map (\currency -> { currency | selected = not currency.selected }))
+        currencies
 
 
 updateTableSort : String -> TableSort -> TableSort

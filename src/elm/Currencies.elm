@@ -24,14 +24,14 @@ import Model exposing (Model, Msg(..))
 
 
 viewRow : Currency -> Html Msg
-viewRow ({ code, name, active } as currency) =
+viewRow ({ code, name, active, selected } as currency) =
     tr [ H.class "row" ]
         [ td [] [ text code ]
         , td [] [ text name ]
         , td []
             [ input
                 [ H.type_ "checkbox"
-                , H.checked active
+                , H.checked selected
                 , onClick (CurrencyToggleSelected currency)
                 ]
                 []
@@ -99,20 +99,20 @@ view model =
                     ]
                 , div [ H.class "message-body has-text-grey-dark has-background-white is-paddingless" ]
                     [ viewTable model
-
-                    -- , div [ H.class "buttons" ]
-                    --     [ button
-                    --         [ H.class "button"
-                    --         , onClick (ShowCurrencies False)
-                    --         ]
-                    --         [ text "Cancel" ]
-                    --     , button
-                    --         [ H.class "button is-primary"
-                    --
-                    --         -- , onClick action
-                    --         ]
-                    --         [ text "Save" ]
-                    --     ]
+                    ]
+                , div [ H.class "message-footer" ]
+                    [ div [ H.class "buttons" ]
+                        [ button
+                            [ H.class "button"
+                            , onClick (ShowCurrencies False)
+                            ]
+                            [ text "Cancel" ]
+                        , button
+                            [ H.class "button is-primary"
+                            , onClick SaveSelectedCurrencies
+                            ]
+                            [ text "Save" ]
+                        ]
                     ]
                 ]
             ]
