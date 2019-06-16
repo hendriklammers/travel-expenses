@@ -5,14 +5,17 @@ import Expense exposing (Category, Currency)
 import Html
     exposing
         ( Html
+        , a
         , button
         , div
         , form
+        , i
         , input
         , label
         , option
         , section
         , select
+        , span
         , text
         )
 import Html.Attributes as H
@@ -99,17 +102,28 @@ viewCurrency { currencies, currency } =
                 activeCurrencies
     in
     div
-        [ H.class "field" ]
+        [ H.class "field input-currency" ]
         [ label
             [ H.class "label" ]
             [ text "Currency" ]
         , div
             [ H.class "control is-expanded" ]
             [ div
-                [ H.class "select is-fullwidth" ]
+                [ H.class "select" ]
                 [ select
                     [ onInput SelectCurrency ]
                     (List.map (viewCurrencyOption currency) options)
+                ]
+            , span
+                [ H.class "button"
+                , onClick OpenCurrencies
+                ]
+                [ span
+                    [ H.class "icon is-small" ]
+                    [ i
+                        [ H.class "fas fa-cog" ]
+                        []
+                    ]
                 ]
             ]
         ]
