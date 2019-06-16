@@ -85,6 +85,19 @@ viewCurrencyOption active { code, name } =
 
 viewCurrency : Model -> Html Msg
 viewCurrency { currencies, currency } =
+    let
+        activeCurrencies =
+            currencies
+                |> Dict.values
+                |> List.filter .active
+
+        options =
+            if activeCurrencies == [] then
+                Dict.values currencies
+
+            else
+                activeCurrencies
+    in
     div
         [ H.class "field" ]
         [ label
@@ -96,12 +109,7 @@ viewCurrency { currencies, currency } =
                 [ H.class "select is-fullwidth" ]
                 [ select
                     [ onInput SelectCurrency ]
-                    (currencies
-                        |> Dict.toList
-                        |> List.filter (Tuple.second >> .active)
-                        |> List.map
-                            (Tuple.second >> viewCurrencyOption currency)
-                    )
+                    (List.map (viewCurrencyOption currency) options)
                 ]
             ]
         ]
