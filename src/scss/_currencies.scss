@@ -1,0 +1,34 @@
+.modal.active-currencies {
+  .modal-content {
+    height: calc(100vh - 160px);
+    overflow: auto;
+  }
+
+  .message {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .message-header {
+    flex: 0 0 auto;
+  }
+
+  .message-body {
+    flex: 1;
+    overflow-y: scroll;
+  }
+
+  .message-footer {
+    flex: 0 0 auto;
+    padding: 0.75em 1em;
+  }
+
+  .buttons {
+    margin: 0;
+
+    .button {
+      margin-bottom: 0;
+    }
+  }
+}
