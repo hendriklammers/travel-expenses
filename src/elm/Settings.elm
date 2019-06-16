@@ -36,7 +36,7 @@ view _ =
         , div [ H.class "buttons" ]
             [ button
                 [ H.class "button is-fullwidth"
-                , onClick (ShowCurrencies True)
+                , onClick OpenCurrencies
                 ]
                 [ span
                     [ H.class "icon" ]

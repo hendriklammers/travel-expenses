@@ -83,7 +83,7 @@ view model =
         [ H.class "modal active-currencies" ]
         [ div
             [ H.class "modal-background"
-            , onClick (ShowCurrencies False)
+            , onClick CloseCurrencies
             ]
             []
         , div [ H.class "modal-content" ]
@@ -93,7 +93,7 @@ view model =
                         [ text title ]
                     , button
                         [ H.class "delete"
-                        , onClick (ShowCurrencies False)
+                        , onClick CloseCurrencies
                         ]
                         [ text "Close" ]
                     ]
@@ -104,7 +104,7 @@ view model =
                     [ div [ H.class "buttons" ]
                         [ button
                             [ H.class "button"
-                            , onClick (ShowCurrencies False)
+                            , onClick CloseCurrencies
                             ]
                             [ text "Cancel" ]
                         , button

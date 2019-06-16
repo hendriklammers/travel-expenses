@@ -115,7 +115,8 @@ type Msg
     | ShowModal Modal
     | CloseModal
     | OverwriteExpenses (List Expense)
-    | ShowCurrencies Bool
+    | OpenCurrencies
+    | CloseCurrencies
     | CurrencyToggleSelected Currency
     | SaveSelectedCurrencies
 
@@ -486,8 +487,35 @@ update msg model =
         CloseModal ->
             ( { model | modal = Nothing }, Cmd.none )
 
-        ShowCurrencies state ->
-            ( { model | showCurrencies = state }, Cmd.none )
+        OpenCurrencies ->
+            ( { model
+                | showCurrencies = True
+                , currencies =
+                    Dict.map
+                        (\_ currency ->
+                            { currency
+                                | selected = currency.active
+                            }
+                        )
+                        model.currencies
+              }
+            , Cmd.none
+            )
+
+        CloseCurrencies ->
+            ( { model
+                | showCurrencies = False
+                , currencies =
+                    Dict.map
+                        (\_ currency ->
+                            { currency
+                                | selected = False
+                            }
+                        )
+                        model.currencies
+              }
+            , Cmd.none
+            )
 
         CurrencyToggleSelected { code } ->
             ( { model
