@@ -8,6 +8,7 @@ const flag = (val: string | undefined) =>
 const flags = {
   seed: Math.floor(Math.random() * 0x0fffffff),
   currency: flag(localStorage.currency),
+  activeCurrencies: flag(localStorage.activeCurrencies),
   expenses: flag(localStorage.expenses),
   exchange: flag(localStorage.exchange),
 }

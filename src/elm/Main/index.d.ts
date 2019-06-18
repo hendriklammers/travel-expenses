@@ -22,7 +22,7 @@ export namespace Elm {
     }
     export function init(options: {
       node?: HTMLElement | null;
-      flags: { seed: number; currency: string | null; exchange: string | null; expenses: string | null };
+      flags: { seed: number; currency: string | null; activeCurrencies: string | null; exchange: string | null; expenses: string | null };
     }): Elm.Main.App;
   }
 }

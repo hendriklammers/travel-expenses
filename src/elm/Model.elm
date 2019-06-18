@@ -156,6 +156,7 @@ type alias Error =
 type alias Flags =
     { seed : Int
     , currency : Maybe String
+    , activeCurrencies : Maybe String
     , exchange : Maybe String
     , expenses : Maybe String
     }
@@ -192,12 +193,27 @@ init flags url key =
 
         ( endDatePicker, endDatePickerFx ) =
             DatePicker.init
+
+        currencies =
+            case jsonFlag currencyListDecoder flags.activeCurrencies of
+                Just ls ->
+                    ls
+                        |> List.map
+                            (\{ code, name } ->
+                                ( code
+                                , Currency code name True False
+                                )
+                            )
+                        |> Dict.fromList
+
+                Nothing ->
+                    Dict.empty
     in
     ( { amount = Nothing
       , category = List.head categories
       , categories = categories
       , currency = jsonFlag currencyDecoder flags.currency
-      , currencies = Dict.empty
+      , currencies = currencies
       , seed = initialSeed flags.seed
       , expenses =
             Maybe.withDefault []
@@ -298,11 +314,15 @@ update msg model =
         ReceiveCurrencies result ->
             case result of
                 Ok currencies ->
-                    ( { model
-                        | currencies =
+                    let
+                        all =
                             currencies
                                 |> List.map (\cur -> ( cur.code, cur ))
                                 |> Dict.fromList
+                    in
+                    ( { model
+                        -- Merge active currencies with all available currencies
+                        | currencies = Dict.union model.currencies all
                       }
                     , Cmd.none
                     )
