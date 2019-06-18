@@ -25,14 +25,16 @@ import Model exposing (Model, Msg(..))
 
 viewRow : Currency -> Html Msg
 viewRow ({ code, name, active, selected } as currency) =
-    tr [ H.class "row" ]
+    tr
+        [ H.class "row"
+        , onClick (CurrencyToggleSelected currency)
+        ]
         [ td [] [ text code ]
         , td [] [ text name ]
         , td []
             [ input
                 [ H.type_ "checkbox"
                 , H.checked selected
-                , onClick (CurrencyToggleSelected currency)
                 ]
                 []
             ]
