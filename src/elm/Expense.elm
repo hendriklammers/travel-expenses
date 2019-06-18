@@ -78,7 +78,8 @@ currencyListEncoder indentation currencies =
 currencyDecoder : Decoder Currency
 currencyDecoder =
     Decode.map4 Currency
-        (Decode.field "code" Decode.string)
+        -- Store currency codes in lowercase
+        (Decode.field "code" (Decode.map String.toLower Decode.string))
         (Decode.field "name" Decode.string)
         (Decode.succeed False)
         (Decode.succeed False)

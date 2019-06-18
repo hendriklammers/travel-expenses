@@ -29,7 +29,7 @@ viewRow ({ code, name, active, selected } as currency) =
         [ H.class "row"
         , onClick (CurrencyToggleSelected currency)
         ]
-        [ td [] [ text code ]
+        [ td [] [ text <| String.toUpper code ]
         , td [] [ text name ]
         , td []
             [ input

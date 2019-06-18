@@ -69,7 +69,7 @@ addAmount { currency, amount } acc =
 
 
 type alias Row =
-    { currency : String
+    { currencyCode : String
     , amount : Float
     , conversion : Maybe Float
     }
@@ -124,7 +124,7 @@ sortRows sort rows =
             let
                 sortList =
                     if column == "currency" then
-                        List.sortBy .currency
+                        List.sortBy .currencyCode
 
                     else if column == "amount" then
                         List.sortBy .amount
@@ -249,17 +249,17 @@ addSortClass column sort =
 
 
 viewRow : Row -> Html Msg
-viewRow { currency, amount, conversion } =
-    tr [ onClick (RowClick (String.toLower currency)), H.class "row" ]
+viewRow { currencyCode, amount, conversion } =
+    tr [ onClick (RowClick (String.toLower currencyCode)), H.class "row" ]
         [ td []
             [ div
                 [ H.class
                     ("currency-flag currency-flag-sm currency-flag-"
-                        ++ String.toLower currency
+                        ++ String.toLower currencyCode
                     )
                 ]
                 []
-            , text currency
+            , text <| String.toUpper currencyCode
             ]
         , td [] [ text (Round.round 2 amount) ]
         , td [] [ text (conversionString conversion) ]

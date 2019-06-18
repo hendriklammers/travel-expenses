@@ -160,7 +160,7 @@ view model currency =
                 [ div
                     [ H.class
                         ("currency-flag currency-flag-lg currency-flag-"
-                            ++ String.toLower currency.code
+                            ++ currency.code
                         )
                     ]
                     []
