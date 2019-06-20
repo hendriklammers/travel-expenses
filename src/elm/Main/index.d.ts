@@ -18,6 +18,9 @@ export namespace Elm {
         storeActiveCurrencies: {
           subscribe(callback: (data: string) => void): void
         }
+        updateLocation: {
+          send(data: { accuracy: number; latitude: number; longitude: number }): void
+        }
       };
     }
     export function init(options: {

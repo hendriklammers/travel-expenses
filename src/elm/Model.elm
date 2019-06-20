@@ -46,6 +46,7 @@ import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
 import List.Extra exposing (find)
+import Location exposing (Location(..), LocationData)
 import Ports
 import Random exposing (Seed, initialSeed, step)
 import Route exposing (Route(..), toRoute)
@@ -82,6 +83,7 @@ type alias Model =
     -- Allows user to edit active currencies
     -- Probably better to make Modal more generic
     , showCurrencies : Bool
+    , location : Location
     }
 
 
@@ -120,6 +122,7 @@ type Msg
     | CloseCurrencies
     | CurrencyToggleSelected Currency
     | SaveSelectedCurrencies
+    | ReceiveLocation LocationData
 
 
 type MenuState
@@ -233,6 +236,7 @@ init flags url key =
       , currencyTableSort = Nothing
       , modal = Nothing
       , showCurrencies = False
+      , location = Unavailable
       }
     , Cmd.batch
         [ Cmd.map ToStartDatePicker startDatePickerFx
@@ -569,6 +573,13 @@ update msg model =
             , Ports.storeActiveCurrencies
                 (currencyListEncoder 0 activeCurrencies)
             )
+
+        ReceiveLocation location ->
+            let
+                log =
+                    Debug.log "location" location
+            in
+            ( model, Cmd.none )
 
 
 toggleCurrencySelect : String -> Currencies -> Currencies

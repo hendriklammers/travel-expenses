@@ -29,3 +29,17 @@ app.ports.storeExchange.subscribe(exchange => {
 app.ports.storeActiveCurrencies.subscribe(currencies => {
   localStorage.activeCurrencies = currencies
 })
+
+type Location = {
+  accuracy: number
+  latitude: number
+  longitude: number
+}
+
+if (navigator.geolocation) {
+  const watchId = navigator.geolocation.watchPosition(position => {
+    const { accuracy, latitude, longitude } = position.coords
+    const location: Location = { accuracy, latitude, longitude }
+    app.ports.updateLocation.send(location)
+  })
+}
