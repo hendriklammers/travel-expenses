@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "react",
-    "lib": ["webworker", "dom"]
+    "lib": ["dom"]
   },
   "include": [
     "src/**/*",
