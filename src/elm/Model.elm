@@ -79,9 +79,6 @@ type alias Model =
     , overviewTableSort : TableSort
     , currencyTableSort : TableSort
     , modal : Maybe Modal
-
-    -- Allows user to edit active currencies
-    -- Probably better to make Modal more generic
     , showCurrencies : Bool
     , location : Location
     }
