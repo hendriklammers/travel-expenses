@@ -1,9 +1,14 @@
-module Location exposing (Location(..), LocationData)
+module Location exposing (Location(..), LocationData, locationDecoder)
+
+import Json.Decode as Decode exposing (Decoder)
+import Json.Encode as Encode
 
 
 type Location
     = Unavailable
     | NotSupported
+    | TimeOut
+    | PermissionDenied
     | Location LocationData
 
 
@@ -12,3 +17,38 @@ type alias LocationData =
     , latitude : Float
     , longitude : Float
     }
+
+
+locationDecoder : Decoder Location
+locationDecoder =
+    Decode.oneOf
+        [ Decode.map
+            Location
+            (Decode.field "data" locationDataDecoder)
+        , Decode.field "error" Decode.string
+            |> Decode.andThen locationErrorDecoder
+        ]
+
+
+locationErrorDecoder : String -> Decoder Location
+locationErrorDecoder msg =
+    case msg of
+        "PERMISSION_DENIED" ->
+            Decode.succeed PermissionDenied
+
+        "PERMISSION_UNAVAILABLE" ->
+            Decode.succeed Unavailable
+
+        "PERMISSION_TIMEOUT" ->
+            Decode.succeed TimeOut
+
+        _ ->
+            Decode.fail "Unknown Error"
+
+
+locationDataDecoder : Decoder LocationData
+locationDataDecoder =
+    Decode.map3 LocationData
+        (Decode.field "accuracy" Decode.float)
+        (Decode.field "latitude" Decode.float)
+        (Decode.field "longitude" Decode.float)

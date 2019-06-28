@@ -19,7 +19,7 @@ export namespace Elm {
           subscribe(callback: (data: string) => void): void
         }
         updateLocation: {
-          send(data: { accuracy: number; latitude: number; longitude: number }): void
+          send(data: string): void
         }
       };
     }

@@ -30,16 +30,41 @@ app.ports.storeActiveCurrencies.subscribe(currencies => {
   localStorage.activeCurrencies = currencies
 })
 
-type Location = {
-  accuracy: number
-  latitude: number
-  longitude: number
+const positionSuccess = ({ coords }: Position) => {
+  const { accuracy, latitude, longitude } = coords
+  app.ports.updateLocation.send(
+    JSON.stringify({
+      data: { accuracy, latitude, longitude },
+      error: null,
+    })
+  )
+}
+
+const positionError = ({ code }: PositionError) => {
+  let error
+  switch (code) {
+    case 1:
+      error = 'PERMISSION_DENIED'
+      break
+    case 2:
+      error = 'PERMISSION_UNAVAILABLE'
+      break
+    case 3:
+      error = 'PERMISSION_TIMEOUT'
+      break
+  }
+  app.ports.updateLocation.send(
+    JSON.stringify({
+      data: null,
+      error,
+    })
+  )
 }
 
 if (navigator.geolocation) {
-  const watchId = navigator.geolocation.watchPosition(position => {
-    const { accuracy, latitude, longitude } = position.coords
-    const location: Location = { accuracy, latitude, longitude }
-    app.ports.updateLocation.send(location)
+  navigator.geolocation.watchPosition(positionSuccess, positionError, {
+    enableHighAccuracy: false,
+    timeout: 5000,
+    maximumAge: 0,
   })
 }

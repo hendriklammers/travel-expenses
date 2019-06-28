@@ -21,4 +21,4 @@ port storeExchange : String -> Cmd msg
 port storeActiveCurrencies : String -> Cmd msg
 
 
-port updateLocation : (LocationData -> msg) -> Sub msg
+port updateLocation : (String -> msg) -> Sub msg

@@ -119,7 +119,7 @@ type Msg
     | CloseCurrencies
     | CurrencyToggleSelected Currency
     | SaveSelectedCurrencies
-    | ReceiveLocation LocationData
+    | ReceiveLocation (Result Decode.Error Location)
 
 
 type MenuState
@@ -571,12 +571,21 @@ update msg model =
                 (currencyListEncoder 0 activeCurrencies)
             )
 
-        ReceiveLocation location ->
-            let
-                log =
-                    Debug.log "location" location
-            in
-            ( model, Cmd.none )
+        ReceiveLocation result ->
+            case result of
+                Ok location ->
+                    let
+                        log =
+                            Debug.log "location" location
+                    in
+                    ( { model | location = location }, Cmd.none )
+
+                Err err ->
+                    let
+                        log =
+                            Debug.log "Decoding error" err
+                    in
+                    ( model, Cmd.none )
 
 
 toggleCurrencySelect : String -> Currencies -> Currencies
