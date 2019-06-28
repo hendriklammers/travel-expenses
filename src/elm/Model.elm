@@ -574,17 +574,9 @@ update msg model =
         ReceiveLocation result ->
             case result of
                 Ok location ->
-                    let
-                        log =
-                            Debug.log "location" location
-                    in
                     ( { model | location = location }, Cmd.none )
 
-                Err err ->
-                    let
-                        log =
-                            Debug.log "Decoding error" err
-                    in
+                Err _ ->
                     ( model, Cmd.none )
 
 
