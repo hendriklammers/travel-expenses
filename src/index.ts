@@ -67,4 +67,12 @@ if (navigator.geolocation) {
     timeout: 5000,
     maximumAge: 0,
   })
+} else {
+  // Not supported
+  app.ports.updateLocation.send(
+    JSON.stringify({
+      data: null,
+      error: 'NOT_SUPPORTED',
+    })
+  )
 }

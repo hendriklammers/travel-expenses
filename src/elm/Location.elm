@@ -36,14 +36,14 @@ locationErrorDecoder msg =
         "PERMISSION_DENIED" ->
             Decode.succeed PermissionDenied
 
-        "PERMISSION_UNAVAILABLE" ->
+        "POSITION_UNAVAILABLE" ->
             Decode.succeed Unavailable
 
-        "PERMISSION_TIMEOUT" ->
+        "TIMEOUT" ->
             Decode.succeed TimeOut
 
         _ ->
-            Decode.fail "Unknown Error"
+            Decode.succeed NotSupported
 
 
 locationDataDecoder : Decoder LocationData
