@@ -663,27 +663,42 @@ fetchRates =
         }
 
 
+type alias FormInput =
+    { amount : Float
+    , category : Category
+    , currency : Currency
+    }
+
+
 addExpense : Model -> Time.Posix -> ( Model, Cmd Msg )
 addExpense model date =
-    let
-        ( id, seed ) =
-            step Uuid.uuidGenerator model.seed
-    in
     case
         Maybe.map3
-            (Expense id date)
+            FormInput
             model.amount
             model.category
             model.currency
     of
-        Just e ->
+        Just { amount, category, currency } ->
+            let
+                ( id, seed ) =
+                    step Uuid.uuidGenerator model.seed
+
+                expense =
+                    Expense
+                        id
+                        date
+                        amount
+                        category
+                        currency
+            in
             ( { model
                 | seed = seed
                 , amount = Nothing
                 , error = Nothing
-                , expenses = e :: model.expenses
+                , expenses = expense :: model.expenses
               }
-            , Ports.storeExpenses (expenseListEncoder 0 (e :: model.expenses))
+            , Ports.storeExpenses (expenseListEncoder 0 (expense :: model.expenses))
             )
 
         Nothing ->
