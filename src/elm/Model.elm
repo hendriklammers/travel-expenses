@@ -471,7 +471,6 @@ update msg model =
             ( model, downloadExpenses model.expenses )
 
         ImportData ->
-            -- TODO: Add option to append to current data
             ( model, Select.file [ "application/json" ] FileSelected )
 
         FileSelected file ->
