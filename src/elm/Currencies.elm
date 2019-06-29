@@ -24,7 +24,7 @@ import Model exposing (Model, Msg(..))
 
 
 viewRow : Currency -> Html Msg
-viewRow ({ code, name, active, selected } as currency) =
+viewRow ({ code, name, selected } as currency) =
     tr
         [ H.class "row"
         , onClick (CurrencyToggleSelected currency)

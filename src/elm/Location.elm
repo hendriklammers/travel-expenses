@@ -1,7 +1,6 @@
-module Location exposing (Location(..), LocationData, locationDecoder)
+module Location exposing (Location(..), locationDecoder)
 
 import Json.Decode as Decode exposing (Decoder)
-import Json.Encode as Encode
 
 
 type Location

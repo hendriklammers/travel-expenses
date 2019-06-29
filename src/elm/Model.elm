@@ -45,8 +45,7 @@ import File.Select as Select
 import Http
 import Json.Decode as Decode
 import Json.Encode as Encode
-import List.Extra exposing (find)
-import Location exposing (Location(..), LocationData)
+import Location exposing (Location(..))
 import Ports
 import Random exposing (Seed, initialSeed, step)
 import Route exposing (Route(..), toRoute)

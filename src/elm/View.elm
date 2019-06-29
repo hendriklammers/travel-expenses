@@ -3,7 +3,6 @@ module View exposing (view)
 import Browser
 import Currencies
 import Dict
-import Expense exposing (Currency)
 import Html
     exposing
         ( Html

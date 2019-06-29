@@ -5,7 +5,6 @@ import Expense exposing (Category, Currency)
 import Html
     exposing
         ( Html
-        , a
         , button
         , div
         , form

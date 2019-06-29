@@ -6,8 +6,6 @@ port module Ports exposing
     , updateLocation
     )
 
-import Location exposing (LocationData)
-
 
 port storeCurrency : String -> Cmd msg
 

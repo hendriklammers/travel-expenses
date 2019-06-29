@@ -3,7 +3,6 @@ module Settings exposing (view)
 import Html
     exposing
         ( Html
-        , a
         , button
         , div
         , h2
