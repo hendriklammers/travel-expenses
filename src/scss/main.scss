@@ -5,13 +5,13 @@
 @import "functions";
 @import "settings";
 // Import all for now
-@import "~bulma/bulma";
+@import "~bulma";
 
-@import "~currency-flags/dist/currency-flags.css";
+// @import "~currency-flags/dist/currency-flags";
 
-$fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
-@import "~@fortawesome/fontawesome-free/scss/fontawesome";
-@import "~@fortawesome/fontawesome-free/scss/solid";
+// $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
+// @import "~@fortawesome/fontawesome-free/scss/fontawesome";
+// @import "~@fortawesome/fontawesome-free/scss/solid";
 
 @import "base";
 @import "input";

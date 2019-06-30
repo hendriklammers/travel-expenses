@@ -6,3 +6,4 @@ dist
 public
 .env
 expenses.json
+.cache
