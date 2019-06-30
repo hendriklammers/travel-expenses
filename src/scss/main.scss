@@ -1,17 +1,15 @@
-// @import "~bulma/sass/utilities/_all";
-// @import "~bulma/sass/grid/columns";
-// @import "~bulma/sass/elements/button.sass";
-
 @import "functions";
 @import "settings";
 // Import all for now
 @import "~bulma";
 
-// @import "~currency-flags/dist/currency-flags";
+// Copied content from npm module
+@import "currency-flags";
 
-// $fa-font-path: "~@fortawesome/fontawesome-free/webfonts";
-// @import "~@fortawesome/fontawesome-free/scss/fontawesome";
-// @import "~@fortawesome/fontawesome-free/scss/solid";
+// $fa-font-path: "./node_modules/@fortawesome/fontawesome-free/webfonts";
+// @import "~@fortawesome/fontawesome-free/scss";
+// @import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+// @import "~@fortawesome/fontawesome-free/scss/solid.scss";
 
 @import "base";
 @import "input";
