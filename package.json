@@ -4,13 +4,8 @@
   "description": "Simple PWA to keep track of travel expenses with automatic currency converter",
   "main": "src/index.js",
   "scripts": {
-    "analyse": "elm-analyse",
     "build": "parcel build src/index.html",
-    "format": "elm-format --validate src/",
-    "start": "parcel src/index.html --open",
-    "test": "elm-test",
-    "test-watch": "elm-test --watch",
-    "types": "elm-typescript-interop"
+    "start": "parcel src/index.html --open"
   },
   "author": "Hendrik Lammers (www.hendriklammers.com)",
   "license": "MIT",
