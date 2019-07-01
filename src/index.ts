@@ -1,4 +1,3 @@
-import './scss/main.scss'
 import { Elm } from './elm/Main'
 
 // Flags should be either a string value or null
