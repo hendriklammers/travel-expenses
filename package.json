@@ -15,6 +15,7 @@
     "node-elm-compiler": "^5.0.3",
     "node-sass": "^4.12.0",
     "parcel-bundler": "^1.12.3",
+    "parcel-plugin-static-files-copy": "^2.1.2",
     "prettier": "^1.17.1",
     "tslint": "^5.17.0",
     "typescript": "^3.5.2"
@@ -23,7 +24,6 @@
     "last 2 versions"
   ],
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.5.0",
     "bulma": "^0.7.2",
     "currency-flags": "^1.8.0"
   }
