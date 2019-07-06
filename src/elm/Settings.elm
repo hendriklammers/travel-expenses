@@ -38,9 +38,7 @@ view _ =
                 [ H.class "button is-fullwidth"
                 , onClick OpenCurrencies
                 ]
-                [ span
-                    [ H.class "icon is-small" ]
-                    [ Icons.euroSign ]
+                [ Icons.euroSign
                 , span [] [ text "Active currencies" ]
                 ]
             ]
@@ -49,23 +47,17 @@ view _ =
         , div [ H.class "buttons" ]
             [ button
                 [ H.class "button is-fullwidth", onClick ExportData ]
-                [ span
-                    [ H.class "icon" ]
-                    [ Icons.download ]
+                [ Icons.download
                 , span [] [ text "Export data" ]
                 ]
             , button
                 [ H.class "button is-fullwidth", onClick ImportData ]
-                [ span
-                    [ H.class "icon" ]
-                    [ Icons.fileUpload ]
+                [ Icons.fileUpload
                 , span [] [ text "Import data" ]
                 ]
             , button
                 [ H.class "button is-fullwidth", onClick showDeleteModal ]
-                [ span
-                    [ H.class "icon" ]
-                    [ Icons.trash ]
+                [ Icons.trash
                 , span [] [ text "Delete data" ]
                 ]
             ]

@@ -382,10 +382,7 @@ viewExchange { exchange, timeZone, fetchingExchange } =
                     [ H.class "button is-small exchange__update"
                     , onClick LoadExchange
                     ]
-                    [ span
-                        [ H.class "icon is-small" ]
-                        [ Icons.sync ]
-                    ]
+                    [ Icons.sync ]
                 ]
 
             Nothing ->
@@ -395,9 +392,7 @@ viewExchange { exchange, timeZone, fetchingExchange } =
                     [ H.class ("button is-small exchange__update" ++ loadingClass)
                     , onClick LoadExchange
                     ]
-                    [ span
-                        [ H.class "icon is-small" ]
-                        [ Icons.sync ]
+                    [ Icons.sync
                     , span [] [ text "Update" ]
                     ]
                 ]

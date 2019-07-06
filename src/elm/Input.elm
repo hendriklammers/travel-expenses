@@ -19,7 +19,7 @@ import Html
         )
 import Html.Attributes as H
 import Html.Events exposing (onClick, onInput, onSubmit)
-import Icons exposing (cog)
+import Icons
 import Model exposing (Model, Msg(..))
 
 
@@ -118,11 +118,7 @@ viewCurrency { currencies, currency } =
                 [ H.class "button"
                 , onClick OpenCurrencies
                 ]
-                [ span
-                    [ H.class "icon is-small" ]
-                    [ cog
-                    ]
-                ]
+                [ Icons.cog ]
             ]
         ]
 
