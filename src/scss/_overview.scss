@@ -11,6 +11,11 @@
 .exchange {
   &__update {
     margin-left: 10px;
+
+    .icon__svg {
+      width: 1em;
+      fill: $dark;
+    }
   }
 }
 

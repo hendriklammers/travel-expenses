@@ -6,6 +6,10 @@
 .navbar-brand {
   .icon {
     margin-right: rem(5);
+
+    &__svg {
+      fill: $light;
+    }
   }
 }
 
@@ -22,5 +26,15 @@
     .button {
       flex: 1;
     }
+  }
+}
+
+.icon {
+  svg {
+    display: inline-block;
+    line-height: 1;
+    width: 1em;
+    height: 1em;
+    fill: $dark;
   }
 }

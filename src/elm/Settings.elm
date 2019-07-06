@@ -13,6 +13,7 @@ import Html
         )
 import Html.Attributes as H
 import Html.Events exposing (onClick)
+import Icons
 import Model exposing (Model, Msg(..))
 
 
@@ -38,8 +39,8 @@ view _ =
                 , onClick OpenCurrencies
                 ]
                 [ span
-                    [ H.class "icon" ]
-                    [ i [ H.class "fas fa-euro-sign" ] [] ]
+                    [ H.class "icon is-small" ]
+                    [ Icons.euroSign ]
                 , span [] [ text "Active currencies" ]
                 ]
             ]
@@ -50,21 +51,21 @@ view _ =
                 [ H.class "button is-fullwidth", onClick ExportData ]
                 [ span
                     [ H.class "icon" ]
-                    [ i [ H.class "fas fa-download" ] [] ]
+                    [ Icons.download ]
                 , span [] [ text "Export data" ]
                 ]
             , button
                 [ H.class "button is-fullwidth", onClick ImportData ]
                 [ span
                     [ H.class "icon" ]
-                    [ i [ H.class "fas fa-file-upload" ] [] ]
+                    [ Icons.fileUpload ]
                 , span [] [ text "Import data" ]
                 ]
             , button
                 [ H.class "button is-fullwidth", onClick showDeleteModal ]
                 [ span
                     [ H.class "icon" ]
-                    [ i [ H.class "fas fa-trash" ] [] ]
+                    [ Icons.trash ]
                 , span [] [ text "Delete data" ]
                 ]
             ]

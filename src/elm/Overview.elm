@@ -32,6 +32,7 @@ import Html
         )
 import Html.Attributes as H
 import Html.Events exposing (onClick)
+import Icons
 import Model
     exposing
         ( Model
@@ -383,7 +384,7 @@ viewExchange { exchange, timeZone, fetchingExchange } =
                     ]
                     [ span
                         [ H.class "icon is-small" ]
-                        [ i [ H.class "fas fa-sync" ] [] ]
+                        [ Icons.sync ]
                     ]
                 ]
 
@@ -396,7 +397,7 @@ viewExchange { exchange, timeZone, fetchingExchange } =
                     ]
                     [ span
                         [ H.class "icon is-small" ]
-                        [ i [ H.class "fas fa-sync" ] [] ]
+                        [ Icons.sync ]
                     , span [] [ text "Update" ]
                     ]
                 ]

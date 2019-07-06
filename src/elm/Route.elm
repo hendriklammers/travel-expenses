@@ -1,6 +1,5 @@
 module Route exposing
     ( Route(..)
-    , routeIcon
     , routeParser
     , routeToClass
     , routeToString
@@ -37,25 +36,6 @@ routeToString route =
 
         NotFound ->
             "Not found"
-
-
-routeIcon : Route -> String
-routeIcon route =
-    case route of
-        Input ->
-            "edit"
-
-        Settings ->
-            "wrench"
-
-        Overview ->
-            "chart-bar"
-
-        CurrencyOverview _ ->
-            "chart-bar"
-
-        NotFound ->
-            "exclamation-triangle"
 
 
 routeToClass : Route -> String

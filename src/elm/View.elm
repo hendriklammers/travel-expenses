@@ -34,7 +34,6 @@ import Overview
 import Route
     exposing
         ( Route(..)
-        , routeIcon
         , routeToClass
         , routeToString
         )
@@ -67,21 +66,12 @@ viewNavbar model =
             [ H.class "navbar-brand" ]
             [ h1
                 [ H.class "navbar-item" ]
-                [ navbarIcon model.route
-                , span []
+                [ span []
                     [ text (routeToString model.route) ]
                 ]
             , viewBurger model
             ]
         , viewMenu model
-        ]
-
-
-navbarIcon : Route -> Html Msg
-navbarIcon route =
-    span
-        [ H.class "icon" ]
-        [ i [ H.class ("fas fa-" ++ routeIcon route) ] []
         ]
 
 
