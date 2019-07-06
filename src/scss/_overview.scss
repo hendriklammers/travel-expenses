@@ -16,6 +16,10 @@
       width: 1em;
       fill: $dark;
     }
+
+    &.is-loading .icon {
+      visibility: hidden;
+    }
   }
 }
 
