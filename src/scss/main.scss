@@ -1,13 +1,9 @@
-@import "functions";
-@import "settings";
-// Import all for now
-@import "~bulma";
-
-// Copied content from npm module
-@import "currency-flags";
-
-@import "base";
-@import "input";
-@import "datepicker";
-@import "overview";
-@import "currencies";
+@import "modules/functions";
+@import "modules/settings";
+@import "~bulma"; // Import all for now
+@import "vendor/currency-flags";
+@import "vendor/datepicker";
+@import "partials/base";
+@import "partials/input";
+@import "partials/overview";
+@import "partials/currencies";
