@@ -144,12 +144,12 @@ orderList sort =
 
 
 view : Model -> Currency -> Html Msg
-view model currency =
+view model { code, name } =
     let
         filtered =
             model.expenses
                 |> filterDates ( model.startDate, model.endDate )
-                |> List.filter (\e -> e.currency == currency)
+                |> List.filter (\{ currency } -> currency.code == code)
 
         total =
             List.foldl (\{ amount } acc -> acc + amount) 0 filtered
@@ -160,12 +160,12 @@ view model currency =
                 [ div
                     [ H.class
                         ("currency-flag currency-flag-lg currency-flag-"
-                            ++ String.toLower currency.code
+                            ++ String.toLower code
                         )
                     ]
                     []
                 , span []
-                    [ text currency.name ]
+                    [ text name ]
                 , button
                     [ H.class "delete is-medium"
                     , onClick CloseCurrencyOverview
@@ -179,7 +179,7 @@ view model currency =
                         [ text (Round.round 2 total) ]
                     , span
                         [ H.class "total__label" ]
-                        [ text (currency.code ++ " in total") ]
+                        [ text (code ++ " in total") ]
                     ]
                 , filtered
                     |> groupByCategory
