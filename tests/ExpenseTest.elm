@@ -19,8 +19,9 @@ import Expense
         )
 import Fuzz exposing (Fuzzer)
 import Json.Decode as Decode
+import Location exposing (LocationData, locationDataDecoder, locationDataEncoder)
 import Random exposing (step)
-import Test exposing (..)
+import Test exposing (Test, describe, fuzz, test, todo)
 import Time exposing (Month(..), Posix, millisToPosix)
 import Uuid
 
@@ -30,6 +31,7 @@ suite =
     describe "Expense module"
         [ testCurrency
         , testCategory
+        , testLocationData
         , testExpense
         , testExpenseList
         , testDateFilter
@@ -38,9 +40,11 @@ suite =
 
 currencyFuzzer : Fuzzer Currency
 currencyFuzzer =
-    Fuzz.map2 Currency
+    Fuzz.map4 Currency
         Fuzz.string
         Fuzz.string
+        (Fuzz.constant False)
+        (Fuzz.constant False)
 
 
 testCurrency : Test
@@ -50,24 +54,25 @@ testCurrency =
             \_ ->
                 let
                     input =
-                        """
-                        {
-                            "code": "THB",
-                            "name": "Thai Baht"
-                        }
-                        """
-
-                    output =
-                        Decode.decodeString currencyDecoder input
+                        Decode.decodeString
+                            currencyDecoder
+                            """
+                            {
+                                "code": "THB",
+                                "name": "Thai Baht"
+                            }
+                            """
                 in
-                Expect.equal output
-                    (Ok (Currency "THB" "Thai Baht"))
+                Expect.equal
+                    input
+                    (Ok (Currency "THB" "Thai Baht" False False))
         , fuzz currencyFuzzer "round trip" <|
             \currency ->
                 currency
                     |> currencyEncoder
                     |> Decode.decodeValue currencyDecoder
-                    |> Expect.equal (Ok currency)
+                    |> Expect.equal
+                        (Ok currency)
         ]
 
 
@@ -84,7 +89,7 @@ testCategory =
         [ test "Decodes json string into Category" <|
             \_ ->
                 let
-                    input =
+                    json =
                         """
                         {
                             "id": "92149113-B678-4EEE-ACB6-E346990A35B8",
@@ -92,10 +97,10 @@ testCategory =
                         }
                         """
 
-                    output =
-                        Decode.decodeString categoryDecoder input
+                    input =
+                        Decode.decodeString categoryDecoder json
                 in
-                Expect.equal output
+                Expect.equal input
                     (Ok
                         (Category
                             "92149113-B678-4EEE-ACB6-E346990A35B8"
@@ -108,6 +113,39 @@ testCategory =
                     |> categoryEncoder
                     |> Decode.decodeValue categoryDecoder
                     |> Expect.equal (Ok category)
+        ]
+
+
+locationDataFuzzer : Fuzzer LocationData
+locationDataFuzzer =
+    Fuzz.tuple ( Fuzz.float, Fuzz.float )
+
+
+testLocationData : Test
+testLocationData =
+    describe "JSON encoding/decoding LocationData"
+        [ test "Decode LocationData tuple into json" <|
+            \_ ->
+                let
+                    json =
+                        """
+                        {
+                            "latitude": 52.370216,
+                            "longitude": 4.895168
+                        }
+                        """
+
+                    input =
+                        Decode.decodeString locationDataDecoder json
+                in
+                Expect.equal input
+                    (Ok ( 52.370216, 4.895168 ))
+        , fuzz locationDataFuzzer "round trip" <|
+            \locationData ->
+                locationData
+                    |> locationDataEncoder
+                    |> Decode.decodeValue locationDataDecoder
+                    |> Expect.equal (Ok locationData)
         ]
 
 
@@ -135,12 +173,12 @@ uuidFuzzer =
 
 expenseFuzzer : Fuzzer Expense
 expenseFuzzer =
-    Fuzz.map5 Expense
-        uuidFuzzer
-        dateFuzzer
-        Fuzz.float
-        categoryFuzzer
-        currencyFuzzer
+    Fuzz.map Expense uuidFuzzer
+        |> Fuzz.andMap dateFuzzer
+        |> Fuzz.andMap Fuzz.float
+        |> Fuzz.andMap categoryFuzzer
+        |> Fuzz.andMap currencyFuzzer
+        |> Fuzz.andMap (Fuzz.maybe locationDataFuzzer)
 
 
 testExpense : Test
@@ -216,7 +254,8 @@ testDateFilter =
                             Category
                                 "5772822A-42B4-4605-A5C3-0504498C3432"
                                 "Food & Drink"
-                      , currency = Currency "MYR" "Malaysian Ringgit"
+                      , currency = Currency "MYR" "Malaysian Ringgit" False False
+                      , location = Nothing
                       }
                     , { id = generateUuid 3
                       , date = millisToPosix 1543683600000
@@ -225,7 +264,8 @@ testDateFilter =
                             Category
                                 "5772822A-42B4-4605-A5C3-0504498C3432"
                                 "Food & Drink"
-                      , currency = Currency "MYR" "Malaysian Ringgit"
+                      , currency = Currency "MYR" "Malaysian Ringgit" False False
+                      , location = Just ( 14.015947299999999, 99.98238850000001 )
                       }
                     ]
         , test "Filter out dates after end date" <|
@@ -244,7 +284,8 @@ testDateFilter =
                             Category
                                 "5772822A-42B4-4605-A5C3-0504498C3432"
                                 "Food & Drink"
-                      , currency = Currency "MYR" "Malaysian Ringgit"
+                      , currency = Currency "MYR" "Malaysian Ringgit" False False
+                      , location = Just ( 14.015947299999999, 99.98238850000001 )
                       }
                     ]
         , todo "Add fuzz test for dates filter"
@@ -260,7 +301,8 @@ expenses =
             Category
                 "5772822A-42B4-4605-A5C3-0504498C3432"
                 "Food & Drink"
-      , currency = Currency "MYR" "Malaysian Ringgit"
+      , currency = Currency "MYR" "Malaysian Ringgit" False False
+      , location = Nothing
       }
     , { id = generateUuid 3
       , date = millisToPosix 1543683600000
@@ -269,7 +311,8 @@ expenses =
             Category
                 "5772822A-42B4-4605-A5C3-0504498C3432"
                 "Food & Drink"
-      , currency = Currency "MYR" "Malaysian Ringgit"
+      , currency = Currency "MYR" "Malaysian Ringgit" False False
+      , location = Just ( 14.015947299999999, 99.98238850000001 )
       }
     , { id = generateUuid 3
       , date = millisToPosix 1543208400000
@@ -278,6 +321,7 @@ expenses =
             Category
                 "5772822A-42B4-4605-A5C3-0504498C3432"
                 "Food & Drink"
-      , currency = Currency "MYR" "Malaysian Ringgit"
+      , currency = Currency "MYR" "Malaysian Ringgit" False False
+      , location = Just ( 14.015947299999999, 99.98238850000001 )
       }
     ]
