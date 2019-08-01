@@ -1,6 +1,13 @@
-module Location exposing (Location(..), locationDecoder)
+module Location exposing
+    ( Location(..)
+    , LocationData
+    , locationDataDecoder
+    , locationDataEncoder
+    , locationDecoder
+    )
 
 import Json.Decode as Decode exposing (Decoder)
+import Json.Encode as Encode
 
 
 type Location
@@ -12,10 +19,7 @@ type Location
 
 
 type alias LocationData =
-    { accuracy : Float
-    , latitude : Float
-    , longitude : Float
-    }
+    ( Float, Float )
 
 
 locationDecoder : Decoder Location
@@ -47,7 +51,14 @@ locationErrorDecoder msg =
 
 locationDataDecoder : Decoder LocationData
 locationDataDecoder =
-    Decode.map3 LocationData
-        (Decode.field "accuracy" Decode.float)
+    Decode.map2 Tuple.pair
         (Decode.field "latitude" Decode.float)
         (Decode.field "longitude" Decode.float)
+
+
+locationDataEncoder : LocationData -> Encode.Value
+locationDataEncoder ( latitude, longitude ) =
+    Encode.object
+        [ ( "latitude", Encode.float latitude )
+        , ( "longitude", Encode.float longitude )
+        ]

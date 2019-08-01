@@ -23,6 +23,13 @@ import Dict exposing (Dict)
 import File.Download as Download
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
+import Location
+    exposing
+        ( Location(..)
+        , LocationData
+        , locationDataDecoder
+        , locationDataEncoder
+        )
 import Time exposing (Posix)
 import Uuid
 
@@ -78,8 +85,7 @@ currencyListEncoder indentation currencies =
 currencyDecoder : Decoder Currency
 currencyDecoder =
     Decode.map4 Currency
-        -- Store currency codes in lowercase
-        (Decode.field "code" (Decode.map String.toLower Decode.string))
+        (Decode.field "code" Decode.string)
         (Decode.field "name" Decode.string)
         (Decode.succeed False)
         (Decode.succeed False)
@@ -96,18 +102,27 @@ type alias Expense =
     , amount : Float
     , category : Category
     , currency : Currency
+    , location : Maybe LocationData
     }
 
 
 expenseEncoder : Expense -> Encode.Value
-expenseEncoder { category, amount, currency, id, date } =
+expenseEncoder { category, amount, currency, id, date, location } =
     Encode.object
-        [ ( "id", Uuid.encode id )
-        , ( "date", Encode.int (Time.posixToMillis date) )
-        , ( "amount", Encode.float amount )
-        , ( "category", categoryEncoder category )
-        , ( "currency", currencyEncoder currency )
-        ]
+        ([ ( "id", Uuid.encode id )
+         , ( "date", Encode.int (Time.posixToMillis date) )
+         , ( "amount", Encode.float amount )
+         , ( "category", categoryEncoder category )
+         , ( "currency", currencyEncoder currency )
+         ]
+            ++ (case location of
+                    Just data ->
+                        [ ( "location", locationDataEncoder data ) ]
+
+                    _ ->
+                        []
+               )
+        )
 
 
 expenseListEncoder : Int -> List Expense -> String
@@ -119,12 +134,13 @@ expenseListEncoder indentation expenses =
 
 expenseDecoder : Decoder Expense
 expenseDecoder =
-    Decode.map5 Expense
+    Decode.map6 Expense
         (Decode.field "id" Uuid.decoder)
         (Decode.field "date" dateDecoder)
         (Decode.field "amount" Decode.float)
         (Decode.field "category" categoryDecoder)
         (Decode.field "currency" currencyDecoder)
+        (Decode.maybe <| Decode.field "location" locationDataDecoder)
 
 
 expenseListDecoder : Decoder (List Expense)

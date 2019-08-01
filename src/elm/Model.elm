@@ -682,6 +682,14 @@ addExpense model date =
                 ( id, seed ) =
                     step Uuid.uuidGenerator model.seed
 
+                location =
+                    case model.location of
+                        Location data ->
+                            Just data
+
+                        _ ->
+                            Nothing
+
                 expense =
                     Expense
                         id
@@ -689,6 +697,7 @@ addExpense model date =
                         amount
                         category
                         currency
+                        location
             in
             ( { model
                 | seed = seed
