@@ -8,7 +8,6 @@ import Html
         , button
         , div
         , form
-        , i
         , input
         , label
         , option

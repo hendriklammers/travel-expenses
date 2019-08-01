@@ -6,7 +6,6 @@ import Html
         , button
         , div
         , h2
-        , i
         , section
         , span
         , text

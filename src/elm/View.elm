@@ -11,7 +11,6 @@ import Html
         , button
         , div
         , h1
-        , i
         , nav
         , p
         , span
