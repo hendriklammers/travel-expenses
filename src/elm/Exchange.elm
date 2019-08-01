@@ -36,7 +36,7 @@ exchangeDecoder : Decoder Exchange
 exchangeDecoder =
     Decode.map2 Exchange
         (Decode.field "timestamp" decodeDate)
-        (Decode.field "rates" <| Decode.dict Decode.float)
+        ratesDecoder
 
 
 ratesEncoder : Dict String Float -> Encode.Value

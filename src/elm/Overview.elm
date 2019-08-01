@@ -16,7 +16,6 @@ import Html
         ( Html
         , button
         , div
-        , i
         , p
         , section
         , small
@@ -57,7 +56,7 @@ import Time
 addAmount : Expense -> Dict String Float -> Dict String Float
 addAmount { currency, amount } acc =
     Dict.update
-        currency.code
+        (String.toUpper currency.code)
         (\value ->
             case value of
                 Nothing ->
@@ -251,7 +250,7 @@ addSortClass column sort =
 
 viewRow : Row -> Html Msg
 viewRow { currencyCode, amount, conversion } =
-    tr [ onClick (RowClick (String.toLower currencyCode)), H.class "row" ]
+    tr [ onClick (RowClick currencyCode), H.class "row" ]
         [ td []
             [ div
                 [ H.class
@@ -260,7 +259,7 @@ viewRow { currencyCode, amount, conversion } =
                     )
                 ]
                 []
-            , text <| String.toUpper currencyCode
+            , text currencyCode
             ]
         , td [] [ text (Round.round 2 amount) ]
         , td [] [ text (conversionString conversion) ]

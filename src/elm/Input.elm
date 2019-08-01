@@ -83,7 +83,7 @@ viewCurrencyOption active { code, name } =
                         []
                )
         )
-        [ text (String.toUpper code ++ " - " ++ name) ]
+        [ text (code ++ " - " ++ name) ]
 
 
 viewCurrency : Model -> Html Msg

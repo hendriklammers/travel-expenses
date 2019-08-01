@@ -440,11 +440,11 @@ update msg model =
             , Ports.storeExchange (exchangeEncoder exchange)
             )
 
-        RowClick currency ->
+        RowClick currencyCode ->
             ( model
             , Nav.pushUrl
                 model.key
-                (Builder.absolute [ "overview", currency ] [])
+                (Builder.absolute [ "overview", currencyCode ] [])
             )
 
         SortOverviewTable column ->
@@ -705,7 +705,8 @@ addExpense model date =
                 , error = Nothing
                 , expenses = expense :: model.expenses
               }
-            , Ports.storeExpenses (expenseListEncoder 0 (expense :: model.expenses))
+            , Ports.storeExpenses
+                (expenseListEncoder 0 (expense :: model.expenses))
             )
 
         Nothing ->
