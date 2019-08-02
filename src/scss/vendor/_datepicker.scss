@@ -168,9 +168,10 @@ $datepicker-row-border-color: $grey-lighter;
   }
 }
 
-.#{$datepicker-ns}weekdays {
+.elm-datepicker .#{$datepicker-ns}weekdays {
   td {
     height: rem(36);
+    text-align: center;
   }
 }
 
@@ -184,8 +185,9 @@ $datepicker-row-border-color: $grey-lighter;
   cursor: default;
 }
 
-.#{$datepicker-ns}day {
+.elm-datepicker .#{$datepicker-ns}day {
   cursor: pointer;
+  text-align: center;
 
   &:hover {
     background: $datepicker-hl;
@@ -201,7 +203,7 @@ $datepicker-row-border-color: $grey-lighter;
   }
 }
 
-.#{$datepicker-ns}picked {
+.elm-datepicker .#{$datepicker-ns}picked {
   color: $datepicker-picked-fg;
   background: $datepicker-picked-bg;
 
