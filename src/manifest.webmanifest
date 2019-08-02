@@ -1,0 +1,22 @@
+{
+  "name": "Travel Expenses",
+  "short_name": "Expenses",
+  "theme_color": "#22d0b2",
+  "background_color": "#f5f5f5",
+  "display": "standalone",
+  "Scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "splash_pages": null
+}
