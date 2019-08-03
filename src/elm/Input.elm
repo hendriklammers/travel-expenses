@@ -52,7 +52,9 @@ viewAmount model =
     in
     div [ H.class "field" ]
         [ label
-            [ H.class "label" ]
+            [ H.class "label"
+            , H.for "amount-input"
+            ]
             [ text "Amount" ]
         , div
             [ H.class "control" ]
@@ -103,14 +105,18 @@ viewCurrency { currencies, currency } =
     div
         [ H.class "field input-currency" ]
         [ label
-            [ H.class "label" ]
+            [ H.class "label"
+            , H.for "currency-select"
+            ]
             [ text "Currency" ]
         , div
             [ H.class "control is-expanded" ]
             [ div
                 [ H.class "select" ]
                 [ select
-                    [ onInput SelectCurrency ]
+                    [ onInput SelectCurrency
+                    , H.id "currency-select"
+                    ]
                     (List.map (viewCurrencyOption currency) options)
                 ]
             , span
