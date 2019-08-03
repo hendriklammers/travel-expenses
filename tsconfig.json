@@ -4,12 +4,13 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
+    "strictFunctionTypes": false,
     "forceConsistentCasingInFileNames": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "jsx": "react",
-    "lib": ["es2019", "dom"]
+    "lib": ["es2019", "dom", "webworker"]
   },
   "include": [
     "src/**/*"
