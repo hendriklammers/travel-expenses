@@ -21,7 +21,7 @@ import Fuzz exposing (Fuzzer)
 import Json.Decode as Decode
 import Location exposing (LocationData, locationDataDecoder, locationDataEncoder)
 import Random exposing (step)
-import Test exposing (Test, describe, fuzz, test, todo)
+import Test exposing (Test, describe, fuzz, test)
 import Time exposing (Month(..), Posix, millisToPosix)
 import Uuid
 
@@ -288,7 +288,6 @@ testDateFilter =
                       , location = Just ( 14.015947299999999, 99.98238850000001 )
                       }
                     ]
-        , todo "Add fuzz test for dates filter"
         ]
 
 
