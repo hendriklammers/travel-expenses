@@ -8,11 +8,13 @@
     "build": "rimraf ./dist && npm run parcel && npm run purify",
     "parcel": "parcel build src/index.html --no-source-maps --no-content-hash",
     "start": "parcel src/index.html --open",
-    "purify": "./scripts/purify.sh"
+    "purify": "./scripts/purify.sh",
+    "ci": "elm-analyse && elm-test && elm-format --validate && npm run build"
   },
   "author": "Hendrik Lammers (www.hendriklammers.com)",
   "license": "MIT",
   "devDependencies": {
+    "elm-analyse": "^0.16.4",
     "elm-hot": "^1.1.0",
     "node-elm-compiler": "^5.0.4",
     "node-sass": "^4.12.0",
