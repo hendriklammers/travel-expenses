@@ -78,11 +78,9 @@ if (navigator.geolocation) {
 
 // Register service-worker
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    try {
-      navigator.serviceWorker.register('/sw.ts')
-    } catch (err) {
-      console.log('ServiceWorker registration failed: ', err)
-    }
-  })
+  try {
+    navigator.serviceWorker.register('/sw.ts')
+  } catch (err) {
+    console.log('ServiceWorker registration failed: ', err)
+  }
 }
