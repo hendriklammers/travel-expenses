@@ -4,4 +4,4 @@ elm:
 node_js:
   - '10'
 script:
-  - npm run ci
+  - npm run travis

@@ -9,7 +9,7 @@
     "parcel": "parcel build src/index.html --no-source-maps --no-content-hash",
     "start": "parcel src/index.html --open",
     "purify": "./scripts/purify.sh",
-    "ci": "elm-analyse && elm-test && elm-format --validate && npm run build"
+    "travis": "elm-analyse && elm-test && elm-format --validate && npm run build"
   },
   "author": "Hendrik Lammers (www.hendriklammers.com)",
   "license": "MIT",
