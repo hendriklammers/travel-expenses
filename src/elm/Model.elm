@@ -319,10 +319,19 @@ update msg model =
                             currencies
                                 |> List.map (\cur -> ( cur.code, cur ))
                                 |> Dict.fromList
+
+                        selectedCurrency =
+                            case model.currency of
+                                Nothing ->
+                                    List.head currencies
+
+                                _ ->
+                                    model.currency
                     in
                     ( { model
                         -- Merge active currencies with all available currencies
                         | currencies = Dict.union model.currencies all
+                        , currency = selectedCurrency
                       }
                     , Cmd.none
                     )
