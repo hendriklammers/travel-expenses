@@ -2,8 +2,6 @@
 
 Simple PWA to keep track of travel expenses with automatic currency converter
 
-🚧 **Under Construction** 🚧
-
 ## License
 
 MIT
