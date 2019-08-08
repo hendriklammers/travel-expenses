@@ -80,6 +80,7 @@ type alias Model =
     , modal : Maybe Modal
     , showCurrencies : Bool
     , location : Location
+    , saveLocation : Bool
     }
 
 
@@ -119,6 +120,7 @@ type Msg
     | CurrencyToggleSelected Currency
     | SaveSelectedCurrencies
     | ReceiveLocation (Result Decode.Error Location)
+    | UpdateSaveLocation Bool
 
 
 type MenuState
@@ -233,6 +235,7 @@ init flags url key =
       , modal = Nothing
       , showCurrencies = False
       , location = Unavailable
+      , saveLocation = False
       }
     , Cmd.batch
         [ Cmd.map ToStartDatePicker startDatePickerFx
@@ -586,6 +589,9 @@ update msg model =
                 Err _ ->
                     ( model, Cmd.none )
 
+        UpdateSaveLocation checked ->
+            ( { model | saveLocation = checked }, Cmd.none )
+
 
 toggleCurrencySelect : String -> Currencies -> Currencies
 toggleCurrencySelect code currencies =
@@ -692,8 +698,9 @@ addExpense model date =
                     step Uuid.uuidGenerator model.seed
 
                 location =
-                    case model.location of
-                        Location data ->
+                    -- Only add location when data is available and saveLocation is true
+                    case ( model.location, model.saveLocation ) of
+                        ( Location data, True ) ->
                             Just data
 
                         _ ->

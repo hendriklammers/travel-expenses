@@ -17,7 +17,7 @@ import Html
         , text
         )
 import Html.Attributes as H
-import Html.Events exposing (onClick, onInput, onSubmit)
+import Html.Events exposing (onCheck, onClick, onInput, onSubmit)
 import Icons
 import Model exposing (Model, Msg(..))
 
@@ -32,9 +32,26 @@ view model =
             , H.action ""
             ]
             [ viewAmount model
+            , viewLocation model.saveLocation
             , viewCurrency model
             , viewCategories model
             , viewSubmitButton
+            ]
+        ]
+
+
+viewLocation : Bool -> Html Msg
+viewLocation checked =
+    div [ H.class "field location" ]
+        [ label
+            [ H.class "checkbox" ]
+            [ input
+                [ H.type_ "checkbox"
+                , H.checked checked
+                , onCheck UpdateSaveLocation
+                ]
+                []
+            , text " Save location"
             ]
         ]
 
